@@ -1,5 +1,6 @@
 <template>
   <div>
+    <div class="controls"><input v-model="tickInterval" /></div>
     <v-stage ref="stage" :config="configKonva" @dragstart="handleDragstart" @dragend="handleDragend">
       <v-layer ref="layer">
         <v-image
@@ -15,7 +16,8 @@
             draggable: true,
             width: imgWidth,
             height: imgHeight,
-
+            stroke: item.stroke,
+            strokeWidth: item.strokeWidth,
             // scaleX: dragItemId === item.id ? item.scale * 1.2 : item.scale,
             // scaleY: dragItemId === item.id ? item.scale * 1.2 : item.scale,
             // shadowColor: 'black',
@@ -51,11 +53,9 @@ export default {
       configKonva: {
         width: width,
         height: height,
-        background: "white",
       },
       // image: null,
       // lfsImage: null,
-
       lastNow: null,
       ticks: 0,
       tickInterval: 1000,
@@ -75,6 +75,8 @@ export default {
         x: Math.random() * innerWidth,
         y: Math.random() * innerHeight,
         rotation: this.randomInt(-20, 20),
+        stroke: "white",
+        strokeWidth: 10,
         // scale: Math.random(),
       });
     },
@@ -132,5 +134,11 @@ export default {
 body {
   margin: 0;
   padding: 0;
+}
+.controls {
+  position: fixed;
+  top: 50px;
+  right: 0px;
+  z-index: 1000;
 }
 </style>
