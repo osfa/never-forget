@@ -5,15 +5,21 @@
       <v-layer ref="layer">
         <v-image
           v-for="item in list"
+          ref="setItemRef"
           :key="item.id"
           :config="{
             x: item.x,
             y: item.y,
             rotation: item.rotation,
 
+            // opacity: 0,
+
             id: item.id,
             image: item.image,
-            draggable: true,
+
+            draggable: false,
+            listening: false,
+
             width: item.width,
             height: item.height,
             stroke: item.stroke,
@@ -50,6 +56,7 @@ export default {
       imgHeight,
       imgPaths: imgLibrary.testBatch,
       list: [],
+      itemRefs: [],
       dragItemId: null,
       configKonva: {
         width: width,
@@ -59,30 +66,64 @@ export default {
       // lfsImage: null,
       lastNow: null,
       ticks: 0,
-      tickInterval: 1000,
+      tickInterval: 3000,
     };
   },
   methods: {
+    setItemRef(el) {
+      // console.log("setItemRef", el);
+      // console.log(el.getNode());
+      // this.$nextTick(() => {
+      //   el.getNode().to({
+      //     opacity: 1.0,
+      //     duration: 0.5,
+      //   });
+      // });
+      // if (el) {
+      //   this.itemRefs.push(el);
+      // }
+    },
     tick() {
       this.ticks += 1;
       this.addMemory(this.imgPaths.sample());
+      // console.log(this.$refs.layer);
     },
     addMemory(imgPath) {
       const image = new window.Image();
       image.src = imgPath;
-      const w = this.randomInt(300, 400);
-      this.list.push({
-        image,
-        id: Math.round(Math.random() * 10000).toString(),
-        x: Math.random() * innerWidth,
-        y: Math.random() * innerHeight,
-        rotation: this.randomInt(-20, 20),
-        stroke: "white",
-        strokeWidth: 10,
-        width: w,
-        height: w / aspectRatio,
-        // scale: Math.random(),
-      });
+      image.onload = (e) => {
+        // set image only when it is loaded
+        const w = this.randomInt(300, 400);
+        const id = Math.round(Math.random() * 10000).toString();
+        this.list.push({
+          image,
+          id,
+          x: Math.random() * innerWidth,
+          y: Math.random() * innerHeight,
+          rotation: this.randomInt(-20, 20),
+          stroke: "white",
+          strokeWidth: 10,
+          width: w,
+          height: w / aspectRatio,
+          opacity: 0,
+          // scale: Math.random(),
+        });
+
+        // hmm like this somehow?
+        // this.$nextTick(() => {
+        //   const node = this.$refs.image.getStage();
+        //   node.cache();
+        //   node.getLayer().batchDraw();
+        // });
+
+        // const item = this.list.find((i) => i.id === id);
+        // console.log(this.$refs);
+        // item.to({
+        //   scaleX: Math.random() + 0.8,
+        //   scaleY: Math.random() + 0.8,
+        //   duration: 0.2,
+        // });
+      };
     },
     frame() {
       const now = Date.now();
@@ -131,6 +172,19 @@ export default {
     //   this.image = image;
     // };
   },
+  // beforeUpdate() {
+  //   console.log("beforeUpdate");
+  //   this.itemRefs = [];
+  // },
+  // updated() {
+  //   console.log("wut?");
+  //   console.log(this.itemRefs);
+  //   this.$refs.itemRefs[this.$refs.itemRefs.length - 1].to({
+  //     scaleX: Math.random() + 0.8,
+  //     scaleY: Math.random() + 0.8,
+  //     duration: 0.2,
+  //   });
+  // },
 };
 </script>
 

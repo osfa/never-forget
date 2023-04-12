@@ -4,6 +4,8 @@
 <script>
 import * as Tone from "tone";
 // import bell3 from "../assets/bell3.mp3";
+import { audioLibrary } from "../audioLibrary.js";
+
 export default {
   data() {
     return {
@@ -18,15 +20,28 @@ export default {
       const context = new Tone.Context();
       Tone.setContext(context);
       this.audioCtx = context.rawContext;
-      this.noiseMaker = new Tone.Noise("brown");
-      const autoFilter = new Tone.AutoFilter({
-        frequency: 0.01,
-        baseFrequency: 200,
-        octaves: 3,
-      }).toDestination();
-      this.noiseMaker.connect(autoFilter);
-      autoFilter.start();
-      this.noiseMaker.start();
+
+      // const file1 = audioLibrary.uiSamples.sample();
+      const file1 = "/audio/cabin.mp3";
+      console.log("loading into sampleslot1", file1);
+
+      const sampler1 = new Tone.Player(file1, () => {
+        this.sampler1 = sampler1;
+        // this.sampler1.playbackRate = 0.9
+        this.sampler1.autostart = true;
+        this.sampler1.loop = true;
+        this.sampler1.volume.value = -12;
+      }).toDestination(); // .connect(reverb)
+
+      // this.noiseMaker = new Tone.Noise("brown");
+      // const autoFilter = new Tone.AutoFilter({
+      //   frequency: 0.01,
+      //   baseFrequency: 200,
+      //   octaves: 3,
+      // }).toDestination();
+      // this.noiseMaker.connect(autoFilter);
+      // autoFilter.start();
+      // this.noiseMaker.start();
     },
   },
   created() {
