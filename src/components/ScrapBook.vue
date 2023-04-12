@@ -14,17 +14,17 @@
             id: item.id,
             image: item.image,
             draggable: true,
-            width: imgWidth,
-            height: imgHeight,
+            width: item.width,
+            height: item.height,
             stroke: item.stroke,
             strokeWidth: item.strokeWidth,
             // scaleX: dragItemId === item.id ? item.scale * 1.2 : item.scale,
             // scaleY: dragItemId === item.id ? item.scale * 1.2 : item.scale,
-            // shadowColor: 'black',
-            // shadowBlur: 10,
+            shadowColor: 'black',
+            shadowBlur: 10,
             // shadowOffsetX: dragItemId === item.id ? 15 : 5,
             // shadowOffsetY: dragItemId === item.id ? 15 : 5,
-            // shadowOpacity: 0.6,
+            shadowOpacity: 0.6,
           }"></v-image>
       </v-layer>
     </v-stage>
@@ -34,6 +34,7 @@
 <script>
 const imgWidth = 500;
 const imgHeight = 353;
+const aspectRatio = 500 / 353;
 
 const width = window.innerWidth;
 const height = window.innerHeight;
@@ -69,6 +70,7 @@ export default {
     addMemory(imgPath) {
       const image = new window.Image();
       image.src = imgPath;
+      const w = this.randomInt(300, 400);
       this.list.push({
         image,
         id: Math.round(Math.random() * 10000).toString(),
@@ -77,6 +79,8 @@ export default {
         rotation: this.randomInt(-20, 20),
         stroke: "white",
         strokeWidth: 10,
+        width: w,
+        height: w / aspectRatio,
         // scale: Math.random(),
       });
     },
