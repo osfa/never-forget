@@ -12,6 +12,17 @@
             strokeWidth: 10,
             rotation: 5,
           }" />
+
+        <v-image
+          :config="{
+            image: lfsImage,
+            width: 500,
+            height: 353,
+            draggable: true,
+            stroke: 'white',
+            strokeWidth: 10,
+            rotation: 5,
+          }" />
         <!-- <v-star
           v-for="item in list"
           :key="item.id"
@@ -53,6 +64,7 @@ export default {
         background: "white",
       },
       image: null,
+      lfsImage: null,
     };
   },
   methods: {
@@ -87,6 +99,13 @@ export default {
       // set image only when it is loaded
       console.log("loaded");
       this.image = image;
+    };
+    const lfsImage = new window.Image();
+    lfsImage.src = "./memories/00007-2017427528_44.png";
+    lfsImage.onload = () => {
+      // set image only when it is loaded
+      console.log("loaded");
+      this.lfsImage = lfsImage;
     };
   },
 };
