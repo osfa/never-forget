@@ -2,6 +2,9 @@
 // import HelloWorld from "./components/HelloWorld.vue";
 import ScrapBook from "./components/ScrapBook.vue";
 import BarebonesTone from "./components/BarebonesTone.vue";
+Array.prototype.sample = function () {
+  return this[Math.floor(Math.random() * this.length)];
+};
 </script>
 
 <template>

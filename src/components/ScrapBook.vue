@@ -13,8 +13,8 @@
             id: item.id,
             image: item.image,
             draggable: true,
-            width: 500,
-            height: 353,
+            width: imgWidth,
+            height: imgHeight,
 
             // scaleX: dragItemId === item.id ? item.scale * 1.2 : item.scale,
             // scaleY: dragItemId === item.id ? item.scale * 1.2 : item.scale,
@@ -24,62 +24,27 @@
             // shadowOffsetY: dragItemId === item.id ? 15 : 5,
             // shadowOpacity: 0.6,
           }"></v-image>
-        <!-- <v-image
-          :config="{
-            image: image,
-            width: 500,
-            height: 353,
-            draggable: true,
-            stroke: 'white',
-            strokeWidth: 10,
-            rotation: 5,
-          }" />
-
-        <v-image
-          :config="{
-            image: lfsImage,
-            width: 500,
-            height: 353,
-            draggable: true,
-            stroke: 'white',
-            strokeWidth: 10,
-            rotation: 5,
-          }" /> -->
-        <!-- <v-star
-          v-for="item in list"
-          :key="item.id"
-          :config="{
-            x: item.x,
-            y: item.y,
-            rotation: item.rotation,
-            id: item.id,
-            numPoints: 5,
-            innerRadius: 30,
-            outerRadius: 50,
-            fill: '#89b717',
-            opacity: 0.8,
-            draggable: true,
-            scaleX: dragItemId === item.id ? item.scale * 1.2 : item.scale,
-            scaleY: dragItemId === item.id ? item.scale * 1.2 : item.scale,
-            shadowColor: 'black',
-            shadowBlur: 10,
-            shadowOffsetX: dragItemId === item.id ? 15 : 5,
-            shadowOffsetY: dragItemId === item.id ? 15 : 5,
-            shadowOpacity: 0.6,
-          }"></v-star> -->
       </v-layer>
     </v-stage>
   </div>
 </template>
 
 <script>
+const imgWidth = 500;
+const imgHeight = 353;
+
 const width = window.innerWidth;
 const height = window.innerHeight;
+
+const innerWidth = window.innerWidth - imgWidth;
+const innerHeight = window.innerHeight - imgHeight;
 import { imgLibrary } from "../imgLibrary.js";
 
 export default {
   data() {
     return {
+      imgWidth,
+      imgHeight,
       imgPaths: imgLibrary.testBatch,
       list: [],
       dragItemId: null,
@@ -88,19 +53,49 @@ export default {
         height: height,
         background: "white",
       },
-      image: null,
-      lfsImage: null,
+      // image: null,
+      // lfsImage: null,
+
+      lastNow: null,
+      ticks: 0,
+      tickInterval: 1000,
     };
   },
   methods: {
+    tick() {
+      this.ticks += 1;
+      this.addMemory(this.imgPaths.sample());
+    },
+    addMemory(imgPath) {
+      const image = new window.Image();
+      image.src = imgPath;
+      this.list.push({
+        image,
+        id: Math.round(Math.random() * 10000).toString(),
+        x: Math.random() * innerWidth,
+        y: Math.random() * innerHeight,
+        rotation: this.randomInt(-20, 20),
+        // scale: Math.random(),
+      });
+    },
+    frame() {
+      const now = Date.now();
+      if (!this.lastNow || now - this.lastNow >= this.tickInterval) {
+        this.lastNow = now;
+        this.tick();
+      }
+      requestAnimationFrame(() => {
+        this.frame();
+      });
+    },
     handleDragstart(e) {
       // save drag element:
       this.dragItemId = e.target.id();
       // move current element to the top:
-      // const item = this.list.find((i) => i.id === this.dragItemId);
-      // const index = this.list.indexOf(item);
-      // this.list.splice(index, 1);
-      // this.list.push(item);
+      const item = this.list.find((i) => i.id === this.dragItemId);
+      const index = this.list.indexOf(item);
+      this.list.splice(index, 1);
+      this.list.push(item);
     },
     handleDragend(e) {
       this.dragItemId = null;
@@ -116,28 +111,10 @@ export default {
     },
   },
   mounted() {
-    this.imgPaths.forEach((element) => {
-      console.log(element);
-      const image = new window.Image();
-      image.src = element;
-      this.list.push({
-        image,
-        id: Math.round(Math.random() * 10000).toString(),
-        x: Math.random() * width,
-        y: Math.random() * height,
-        rotation: Math.random() * 180,
-        // scale: Math.random(),
-      });
-    });
-    // for (let n = 0; n < 30; n++) {
-    //   this.list.push({
-    //     id: Math.round(Math.random() * 10000).toString(),
-    //     x: Math.random() * width,
-    //     y: Math.random() * height,
-    //     rotation: Math.random() * 180,
-    //     scale: Math.random(),
-    //   });
-    // }
+    // this.imgPaths.forEach((element) => {
+    //   this.addMemory(element);
+    // });
+    this.frame();
   },
   created() {
     // const image = new window.Image();
@@ -146,13 +123,6 @@ export default {
     //   // set image only when it is loaded
     //   console.log("loaded");
     //   this.image = image;
-    // };
-    // const lfsImage = new window.Image();
-    // lfsImage.src = "./memories/00007-2017427528_44.png";
-    // lfsImage.onload = () => {
-    //   // set image only when it is loaded
-    //   console.log("loaded");
-    //   this.lfsImage = lfsImage;
     // };
   },
 };
