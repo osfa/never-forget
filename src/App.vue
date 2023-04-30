@@ -1,6 +1,7 @@
 <script setup>
 // import HelloWorld from "./components/HelloWorld.vue";
-import ScrapBook from "./components/ScrapBook.vue";
+// import ScrapBook from "./components/ScrapBook.vue";
+import AudioVisualBook from "./components/AudioVisualBook.vue";
 import BarebonesTone from "./components/BarebonesTone.vue";
 Array.prototype.sample = function () {
   return this[Math.floor(Math.random() * this.length)];
@@ -18,7 +19,8 @@ Array.prototype.sample = function () {
   </div> -->
   <!-- <HelloWorld msg="Vite + Vue" /> -->
   <!-- <img src="/00007-2017427528_44.png" class="logo" alt="Vite logo" /> -->
-  <ScrapBook />
+  <AudioVisualBook />
+  <!-- <ScrapBook /> -->
   <BarebonesTone />
   <!-- <AudioModule /> -->
 </template>

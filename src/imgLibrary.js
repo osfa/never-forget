@@ -1,5 +1,8 @@
 export const imgLibrary = {
   testBatch: [
+    "./memories/frame-test.jpg",
+    "./memories/frame-test1.jpg",
+    "./memories/double1.jpg",
     "./memories/00001-2017427526_46.jpg",
     "./memories/00002-2017427527_22.jpg",
     "./memories/00006-956240288_39.jpg",
