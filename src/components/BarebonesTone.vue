@@ -33,6 +33,17 @@ export default {
         this.sampler1.volume.value = -12;
       }).toDestination(); // .connect(reverb)
 
+      const file2 = "/audio/bush-interview.mp3";
+      console.log("loading into sampleslot2", file2);
+
+      const sampler2 = new Tone.Player(file2, () => {
+        this.sampler2 = sampler2;
+        // this.sampler1.playbackRate = 0.9
+        this.sampler2.autostart = true;
+        this.sampler2.loop = true;
+        this.sampler2.volume.value = -12;
+      }).toDestination();
+
       // this.noiseMaker = new Tone.Noise("brown");
       // const autoFilter = new Tone.AutoFilter({
       //   frequency: 0.01,
