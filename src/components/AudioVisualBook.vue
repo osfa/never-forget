@@ -1,7 +1,9 @@
 <template>
   <div>
     <!-- <div class="controls"><input v-model="tickInterval" /></div> -->
-    <div class="slide-background" :style="{ backgroundImage: 'url(' + imgPaths[0] + ')' }"></div>
+    <!-- <div class="slide-background fadeIn" ></div> -->
+    <!-- <img class="fade-in-image chapter" v-for="(chapter, idx) in chapters" :key="idx" :src="chapter.imgPath" /> -->
+    <div class="fade-in-image chapter-bkg" v-for="(chapter, idx) in chapters" :key="idx" :style="{ backgroundImage: 'url(' + chapter.imgPath + ')' }" />
   </div>
 </template>
 
@@ -15,7 +17,11 @@ export default {
       itemRefs: [],
       lastNow: null,
       ticks: 0,
-      tickInterval: 3000,
+      tickInterval: 1000,
+      slideTickInterval: 10,
+      imgIdx: 0,
+
+      chapters: [],
     };
   },
   methods: {
@@ -23,6 +29,25 @@ export default {
       this.ticks += 1;
       // this.addMemory(this.imgPaths.sample());
       // console.log(this.$refs.layer);
+      if (this.ticks % this.slideTickInterval === 0) {
+        // this.$emit('tick16')
+        const image = new window.Image();
+        image.src = this.imgPaths[this.imgIdx + 1];
+        image.onload = () => {
+          console.log("loaded");
+          this.imgIdx += 1;
+          // this.createChapter(this.imgPaths[this.imgIdx]);
+          const imgPath = "./memories/batch-1-100k/" + imgLibrary.batch1.sample();
+          this.createChapter(imgPath);
+        };
+      }
+    },
+    createChapter(imgPath) {
+      const chapter = {
+        imgPath,
+        audioClip: "",
+      };
+      this.chapters.push(chapter);
     },
     frame() {
       const now = Date.now();
@@ -30,6 +55,7 @@ export default {
         this.lastNow = now;
         this.tick();
       }
+
       requestAnimationFrame(() => {
         this.frame();
       });
@@ -48,6 +74,9 @@ export default {
     // this.imgPaths.forEach((element) => {
     //   this.addMemory(element);
     // });
+    // this.createChapter(this.imgPaths[this.imgIdx]);
+    const imgPath = "./memories/batch-1-100k/" + imgLibrary.batch1.sample();
+    this.createChapter(imgPath);
     this.frame();
   },
   created() {
@@ -85,6 +114,17 @@ export default {
   }
 }
 
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+.fade-in-image {
+  animation: fadeIn 3s;
+}
 .slide-background {
   width: 100vw;
   height: 100vh;
@@ -108,5 +148,22 @@ body {
   top: 50px;
   right: 0px;
   z-index: 1000;
+}
+.chapter {
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+.chapter-bkg {
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-size: contain;
 }
 </style>
