@@ -1,4 +1,5 @@
 export const audioLibrary = {
+  bush: ["/audio/bush-1.mp3", "/audio/bush-2.mp3", "/audio/bush-interview.mp3"],
   hangDrum: [
     "/audio/hangdrum/A-sharp-4_light.wav",
     "/audio/hangdrum/A3_light.wav",

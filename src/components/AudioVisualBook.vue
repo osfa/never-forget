@@ -9,6 +9,8 @@
 
 <script>
 import { imgLibrary } from "../imgLibrary.js";
+// const basePath = "./memories/batch-1-500k/";
+const basePath = "./memories/batch-2-depth-500k/";
 
 export default {
   data() {
@@ -22,6 +24,8 @@ export default {
       imgIdx: 0,
 
       chapters: [],
+      // batch: imgLibrary.batch2,
+      batch: imgLibrary.batch2.map((x) => "./memories/batch-2-depth-500k/" + x).concat(imgLibrary.batch1.map((x) => "./memories/batch-1-500k/" + x)),
     };
   },
   methods: {
@@ -37,7 +41,7 @@ export default {
           console.log("loaded");
           this.imgIdx += 1;
           // this.createChapter(this.imgPaths[this.imgIdx]);
-          const imgPath = "./memories/batch-1-100k/" + imgLibrary.batch1.sample();
+          const imgPath = this.batch.sample();
           this.createChapter(imgPath);
         };
       }
@@ -45,7 +49,7 @@ export default {
     createChapter(imgPath) {
       const chapter = {
         imgPath,
-        audioClip: "",
+        audioClip: null,
       };
       this.chapters.push(chapter);
     },
@@ -55,7 +59,6 @@ export default {
         this.lastNow = now;
         this.tick();
       }
-
       requestAnimationFrame(() => {
         this.frame();
       });
@@ -75,19 +78,11 @@ export default {
     //   this.addMemory(element);
     // });
     // this.createChapter(this.imgPaths[this.imgIdx]);
-    const imgPath = "./memories/batch-1-100k/" + imgLibrary.batch1.sample();
+    const imgPath = this.batch.sample();
     this.createChapter(imgPath);
     this.frame();
   },
-  created() {
-    // const image = new window.Image();
-    // image.src = "./00001-2017427526_46.jpg";
-    // image.onload = () => {
-    //   // set image only when it is loaded
-    //   console.log("loaded");
-    //   this.image = image;
-    // };
-  },
+  created() {},
 };
 </script>
 
@@ -102,7 +97,6 @@ export default {
     background-size: 40%;
   }
 }
-
 @keyframes slidein {
   from {
     background-position: top;
@@ -113,7 +107,6 @@ export default {
     background-size: 115%;
   }
 }
-
 @keyframes fadeIn {
   0% {
     opacity: 0;
@@ -123,7 +116,7 @@ export default {
   }
 }
 .fade-in-image {
-  animation: fadeIn 3s;
+  animation: fadeIn 1s;
 }
 .slide-background {
   width: 100vw;
@@ -164,6 +157,15 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  background-size: contain;
+}
+@media (orientation: landscape) {
+  .chapter-bkg {
+    background-size: cover;
+  }
+}
+@media (orientation: portrait) {
+  .chapter-bkg {
+    background-size: contain;
+  }
 }
 </style>

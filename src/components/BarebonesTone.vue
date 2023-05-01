@@ -17,9 +17,11 @@ export default {
       isPlaying: false,
       hasInit: false,
       audioCtx: undefined,
-      sampler1: null,
-      sampler2: null,
+      ambiancePlayer: null,
+      narrationPlayer: null,
       noiseMaker: null,
+      // narrationClipPath: "/audio/bush-interview.mp3",
+      narrationClipPath: "/audio/bell3.mp3",
     };
   },
   methods: {
@@ -31,26 +33,32 @@ export default {
       Tone.setContext(context);
       this.audioCtx = context.rawContext;
 
-      // const file1 = audioLibrary.uiSamples.sample();
       const file1 = "/audio/cabin.mp3";
-      const sampler1 = new Tone.Player(file1, () => {
-        console.log("loaded into sampleslot1", file1);
-        this.sampler1 = sampler1;
+      const ambiancePlayer = new Tone.Player(file1, () => {
+        console.log("loaded into ambiancePlayer", file1);
+        this.ambiancePlayer = ambiancePlayer;
         // this.sampler1.playbackRate = 0.9
-        this.sampler1.autostart = true;
-        this.sampler1.loop = true;
-        this.sampler1.volume.value = -9;
+        this.ambiancePlayer.autostart = true;
+        this.ambiancePlayer.loop = true;
+        this.ambiancePlayer.volume.value = -9;
+      }).toDestination();
+      ambiancePlayer.onstop = () => {
+        console.log("ambiancePlayer stopped");
+      };
+
+      const narrationUrls = audioLibrary.bush.reduce((acc, curr) => ((acc[curr] = curr), acc), {});
+      const narrationPlayer = new Tone.Players(narrationUrls, () => {
+        console.log("loaded into narrationPlayer", narrationUrls);
+        this.narrationPlayer = narrationPlayer;
+        this.narrationPlayer.volume.value = -16;
+        console.log("started this.narrationPlayer");
+        narrationPlayer.player(audioLibrary.bush.sample()).start();
       }).toDestination();
 
-      const file2 = "/audio/bush-interview.mp3";
-      const sampler2 = new Tone.Player(file2, () => {
-        console.log("loaded into sampleslot2", file1);
-        this.sampler2 = sampler2;
-        // this.sampler2.playbackRate = 0.9
-        this.sampler2.autostart = true;
-        this.sampler2.loop = true;
-        this.sampler2.volume.value = -20;
-      }).toDestination();
+      narrationPlayer.onstop = () => {
+        console.log("narrationPlayer stopped");
+        narrationPlayer.player(audioLibrary.bush.sample()).start();
+      };
 
       this.noiseMaker = new Tone.Noise("brown");
       const autoFilter = new Tone.AutoFilter({
@@ -58,7 +66,7 @@ export default {
         baseFrequency: 200,
         octaves: 3,
       }).toDestination();
-      this.noiseMaker.volume.value = -14;
+      this.noiseMaker.volume.value = 6;
       this.noiseMaker.connect(autoFilter);
       autoFilter.start();
       this.noiseMaker.start();
