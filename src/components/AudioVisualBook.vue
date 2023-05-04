@@ -6,9 +6,9 @@
       <div @click="newSequence">new sequence</div>
       <div @click="newCard">new card</div>
     </div>
-    <div class="fade-in-image chapter-bkg" v-for="(chapter, idx) in chapters" :key="idx" :style="{ backgroundImage: 'url(' + chapter.imgPath + ')' }" />
-    <div class="sequence-container"><img class="fade-in-image chapter-card" v-for="(chapter, idx) in chapters.reverse()" :key="idx" :src="chapter.imgPath" /></div>
-    <img class="slot" @click="newSequence" v-for="(slot, idx) in slots" :key="idx" :src="slot.imgPath" />
+    <!-- <div class="fade-in-image chapter-bkg" v-for="(chapter, idx) in chapters" :key="idx" :style="{ backgroundImage: 'url(' + chapter.imgPath + ')' }" /> -->
+    <div class="sequence-container"><img class="fade-in-image chapter-card" v-for="(chapter, idx) in chapters" :key="idx" :src="chapter.imgPath" /></div>
+    <!-- <img class="slot" @click="newSequence" v-for="(slot, idx) in slots" :key="idx" :src="slot.imgPath" /> -->
   </div>
 </template>
 
@@ -95,8 +95,11 @@ export default {
     },
   },
   mounted() {
-    const imgPath = this.batch.sample();
-    this.createChapter(imgPath);
+    this.createChapter(this.batch.sample());
+    this.createChapter(this.batch.sample());
+    this.createChapter(this.batch.sample());
+    this.createChapter(this.batch.sample());
+    this.createChapter(this.batch.sample());
     this.frame();
   },
   created() {},
