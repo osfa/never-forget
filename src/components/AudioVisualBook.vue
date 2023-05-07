@@ -3,18 +3,18 @@
     <div class="controls">
       <!-- <div>tickInterval <input v-model="tickInterval" /></div>
       <div>slideTickInterval <input v-model="slideTickInterval" /></div> -->
-      <div class="btn" @click="newCard">new card</div>
+      <!-- <div class="btn" @click="newCard">new card</div> -->
       <div class="btn" @click="newSequence">finish sequence</div>
       <h4 style="margin-bottom: 5px">storage</h4>
-      <div class="btn" @click="exportSequences">save sequences from storage</div>
+      <div class="btn" @click="exportSequences">save sequences to storage</div>
       <div class="btn" @click="clearStoredSequences">clear sequences from storage</div>
     </div>
     <!-- <div class="fade-in-image chapter-bkg" v-for="(chapter, idx) in chapters" :key="idx" :style="{ backgroundImage: 'url(' + chapter.imgPath + ')' }" /> -->
     <div class="sequence-container">
-      <img @click="setCursor(idx)" class="fade-in-image chapter-card" v-for="(chapter, idx) in currentSequence" :key="idx" :src="chapter.imgPath" />
+      <img @click="hotSwapCard(idx)" class="fade-in-image chapter-card" v-for="(chapter, idx) in currentSequence" :key="idx" :src="chapter.imgPath" />
     </div>
-    <div class="sequences-container" v-for="(sequence, idx) in sequences">
-      <img class="fade-in-image chapter-card" v-for="(chapter, idx) in sequence" :key="idx" :src="chapter.imgPath" />
+    <div class="sequences-container" v-for="(sequence, sequenceIdx) in sequences">
+      <img class="fade-in-image chapter-card" @dblclick="hotSwapStoredCard(sequenceIdx, cardIdx)" v-for="(chapter, cardIdx) in sequence" :key="idx" :src="chapter.imgPath" />
     </div>
   </div>
 </template>
@@ -53,6 +53,20 @@ export default {
     };
   },
   methods: {
+    hotSwapCard(cardIdx) {
+      const chapter = {
+        imgPath: this.batch.sample(),
+        audioClip: null,
+      };
+      this.currentSequence.splice(cardIdx, 1, chapter);
+    },
+    hotSwapStoredCard(sequenceIdx, cardIdx) {
+      const chapter = {
+        imgPath: this.batch.sample(),
+        audioClip: null,
+      };
+      this.sequences[sequenceIdx].splice(cardIdx, 1, chapter);
+    },
     newCard() {
       const chapter = {
         imgPath: this.batch.sample(),
@@ -132,6 +146,10 @@ export default {
     this.frame();
   },
   created() {
+    this.newCard();
+    this.newCard();
+    this.newCard();
+    this.newCard();
     this.sequences = JSON.parse(localStorage.getItem("savedSequences") || "[]");
     console.log("parsed sequences:", this.sequences);
   },
@@ -221,6 +239,8 @@ body {
   flex-wrap: wrap;
   overflow-x: hidden;
   justify-content: center;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
 }
 .chapter-card {
   width: 30vw;
