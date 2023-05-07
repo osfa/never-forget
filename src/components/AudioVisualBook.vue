@@ -1,14 +1,21 @@
 <template>
   <div>
     <div class="controls">
-      <div>tickInterval <input v-model="tickInterval" /></div>
-      <div>slideTickInterval <input v-model="slideTickInterval" /></div>
-      <div @click="newSequence">new sequence</div>
-      <div @click="newCard">new card</div>
+      <!-- <div>tickInterval <input v-model="tickInterval" /></div>
+      <div>slideTickInterval <input v-model="slideTickInterval" /></div> -->
+      <div class="btn" @click="newCard">new card</div>
+      <div class="btn" @click="newSequence">finish sequence</div>
+      <h4 style="margin-bottom: 5px">storage</h4>
+      <div class="btn" @click="exportSequences">save sequences from storage</div>
+      <div class="btn" @click="clearStoredSequences">clear sequences from storage</div>
     </div>
     <!-- <div class="fade-in-image chapter-bkg" v-for="(chapter, idx) in chapters" :key="idx" :style="{ backgroundImage: 'url(' + chapter.imgPath + ')' }" /> -->
-    <div class="sequence-container"><img class="fade-in-image chapter-card" v-for="(chapter, idx) in chapters" :key="idx" :src="chapter.imgPath" /></div>
-    <!-- <img class="slot" @click="newSequence" v-for="(slot, idx) in slots" :key="idx" :src="slot.imgPath" /> -->
+    <div class="sequence-container">
+      <img @click="setCursor(idx)" class="fade-in-image chapter-card" v-for="(chapter, idx) in currentSequence" :key="idx" :src="chapter.imgPath" />
+    </div>
+    <div class="sequences-container" v-for="(sequence, idx) in sequences">
+      <img class="fade-in-image chapter-card" v-for="(chapter, idx) in sequence" :key="idx" :src="chapter.imgPath" />
+    </div>
   </div>
 </template>
 
@@ -21,10 +28,14 @@ const anime911 = imgLibrary.anime911.map((x) => "./memories/batch-911-anime-sel1
 const secondelife911 = imgLibrary.secondlife911.map((x) => "./memories/batch-911-second-life-sel1-500k/" + x);
 const batch1 = imgLibrary.batch1.map((x) => "./memories/batch-1-500k/" + x);
 const batch2 = imgLibrary.batch2.map((x) => "./memories/batch-2-depth-500k/" + x);
+console.log("wth", localStorage.getItem("savedSequences"));
+
 export default {
   data() {
     return {
-      imgPaths: imgLibrary.testBatch,
+      isPaused: true,
+
+      // imgPaths: imgLibrary.testBatch,
       itemRefs: [],
       lastNow: null,
       ticks: 0,
@@ -35,9 +46,10 @@ export default {
       chapters: [],
       batch: batch2.concat(batch1).concat(anime911).concat(secondelife911),
 
+      sequenceLength: 4,
+      currentSequenceCursor: 0,
       currentSequence: [],
       sequences: [],
-      slots: [],
     };
   },
   methods: {
@@ -52,17 +64,36 @@ export default {
       this.sequences.push(this.currentSequence);
       this.currentSequence = [];
     },
+    setCursor(idx) {
+      this.currentSequenceCursor = idx;
+    },
+    updateAtCursor() {
+      const chapter = {
+        imgPath: this.batch.sample(),
+        audioClip: null,
+      };
+      this.currentSequence.splice(this.currentSequenceCursor, 1, chapter);
+    },
+    clearStoredSequences() {
+      localStorage.removeItem("savedSequences");
+    },
+    exportSequences() {
+      const s = JSON.stringify(this.sequences);
+      console.log("exportSequences:", s);
+      localStorage.setItem("savedSequences", s);
+    },
     tick() {
       this.ticks += 1;
       // console.log(this.$refs.layer);
       if (this.ticks % this.slideTickInterval === 0) {
         // this.$emit('tick16')
         const image = new window.Image();
-        image.src = this.imgPaths[this.imgIdx + 1];
+        const imgPath = this.batch.sample();
+        // image.src = this.imgPaths[this.imgIdx + 1];
+        image.src = imgPath;
         image.onload = () => {
           console.log("loaded");
           this.imgIdx += 1;
-          const imgPath = this.batch.sample();
           this.createChapter(imgPath);
         };
       }
@@ -75,6 +106,9 @@ export default {
       this.chapters.push(chapter);
     },
     frame() {
+      if (this.isPaused) {
+        return;
+      }
       const now = Date.now();
       if (!this.lastNow || now - this.lastNow >= this.tickInterval) {
         this.lastNow = now;
@@ -95,14 +129,12 @@ export default {
     },
   },
   mounted() {
-    this.createChapter(this.batch.sample());
-    this.createChapter(this.batch.sample());
-    this.createChapter(this.batch.sample());
-    this.createChapter(this.batch.sample());
-    this.createChapter(this.batch.sample());
     this.frame();
   },
-  created() {},
+  created() {
+    this.sequences = JSON.parse(localStorage.getItem("savedSequences") || "[]");
+    console.log("parsed sequences:", this.sequences);
+  },
 };
 </script>
 
@@ -152,10 +184,17 @@ export default {
   animation-iteration-count: infinite;
   animation-direction: alternate;
 }
+
+.btn {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
 html,
 body {
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
 }
 
 .controls {
@@ -168,6 +207,15 @@ body {
 .sequence-container {
   width: 100vw;
   height: 100vh;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  overflow: hidden;
+  justify-content: center;
+  background-color: black;
+}
+.sequences-container {
+  width: 100vw;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
