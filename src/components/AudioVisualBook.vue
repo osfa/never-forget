@@ -74,9 +74,19 @@ export default {
       };
       this.currentSequence.push(chapter);
     },
-    newSequence() {
+    seed() {
+      this.newCard();
+      this.newCard();
+      this.newCard();
+      this.newCard();
+    },
+    finishSequence() {
       this.sequences.push(this.currentSequence);
       this.currentSequence = [];
+      this.seed();
+    },
+    newSequence() {
+      this.finishSequence();
     },
     setCursor(idx) {
       this.currentSequenceCursor = idx;
@@ -146,10 +156,7 @@ export default {
     this.frame();
   },
   created() {
-    this.newCard();
-    this.newCard();
-    this.newCard();
-    this.newCard();
+    this.seed();
     this.sequences = JSON.parse(localStorage.getItem("savedSequences") || "[]");
     console.log("parsed sequences:", this.sequences);
   },
