@@ -149,7 +149,7 @@ export const audioLibrary = {
 
     ["/audio/normalized/synth/harr2.mp3", "/audio/normalized/synth/harry.mp3"],
 
-    [{ path: "/audio/normalized/synth/laugh.mp3", volume: -6 }],
+    // [{ path: "/audio/normalized/synth/laugh.mp3", volume: -6 }],
 
     ["/audio/normalized/synth/millenium-falcon.mp3", "/audio/normalized/synth/spaceship.mp3"],
 
@@ -238,7 +238,7 @@ export const audioLibrary = {
 
     [
       { path: "/audio/normalized/natural/cicada.mp3", volume: -12 },
-      { path: "/audio/normalized/natural/cicada-anime.mp3", volume: 0 },
+      { path: "/audio/normalized/natural/cicada-anime.mp3", volume: -6 },
     ],
 
     ["/audio/normalized/natural/cosmic-1.mp3", "/audio/normalized/natural/cosmic.mp3"],
@@ -461,7 +461,7 @@ export const audioLibrary = {
 
     "/audio/normalized/synth/ice.mp3",
 
-    "/audio/normalized/synth/laugh.mp3",
+    // "/audio/normalized/synth/laugh.mp3",
 
     "/audio/normalized/synth/library.mp3",
 

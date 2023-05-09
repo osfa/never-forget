@@ -11,26 +11,53 @@
       <div class="btn" @click="toggleCardStyle">toggle card style</div>
     </div>
 
-    <div class="sequence-container">
-      <div v-show="fullCards" class="fade-in-image chapter-bkg" v-for="(chapter, idx) in currentSequence" :key="idx" :style="{ backgroundImage: 'url(' + chapter.imgPath + ')' }" />
-      <img v-show="!fullCards" @click="hotSwapCard(idx)" class="fade-in-image chapter-card" v-for="(chapter, idx) in currentSequence" :key="idx" :src="chapter.imgPath" />
+    <div class="main-sequence-container">
+      <div
+        v-show="fullCards"
+        @click="hotSwapCard(idx)"
+        class="fade-in-image chapter-bkg"
+        v-for="(chapter, idx) in currentSequence"
+        :key="idx"
+        :style="{ backgroundImage: 'url(' + chapter.imgPath + ')' }" />
+      <!-- <img v-show="!fullCards" @click="hotSwapCard(idx)" class="fade-in-image chapter-card" v-for="(chapter, idx) in currentSequence" :src="chapter.imgPath" /> -->
+      <!-- <div v-show="!fullCards" @click="hotSwapCard(idx)" class="fade-in-image chapter-card" v-for="(chapter, idx) in currentSequence">
+        <img :src="chapter.imgPath" />
+      </div> -->
     </div>
 
-    <div class="sequences-container" v-for="(sequence, sequenceIdx) in sequences">
-      <div v-show="fullCards" class="fade-in-image chapter-bkg" v-for="(chapter, idx) in sequence" :key="idx" :style="{ backgroundImage: 'url(' + chapter.imgPath + ')' }" />
-      <img v-show="!fullCards" class="fade-in-image chapter-card" @dblclick="hotSwapStoredCard(sequenceIdx, cardIdx)" v-for="(chapter, cardIdx) in sequence" :key="idx" :src="chapter.imgPath" />
-    </div>
+    <!-- <div class="sequences-container" v-for="(sequence, sequenceIdx) in sequences">
+      <div v-show="fullCards" class="fade-in-image chapter-bkg" v-for="(chapter, idx) in sequence" :style="{ backgroundImage: 'url(' + chapter.imgPath + ')' }" />
+      <img v-show="!fullCards" class="fade-in-image chapter-card" @dblclick="hotSwapStoredCard(sequenceIdx, cardIdx)" v-for="(chapter, cardIdx) in sequence" :src="chapter.imgPath" />
+    </div> -->
     <BarebonesTone ref="audioModule" automaticFade />
   </div>
 </template>
 <script>
 import { imgLibrary } from "../imgLibrary.js";
+import { imgLibrary2 } from "../imgLibrary2.js";
 import BarebonesTone from "./BarebonesTone.vue";
 
 const anime911 = imgLibrary.anime911.map((x) => "./memories/batch-911-anime-sel1-500k/" + x);
-const secondelife911 = imgLibrary.secondlife911.map((x) => "./memories/batch-911-second-life-sel1-500k/" + x);
-const batch1 = imgLibrary.batch1.map((x) => "./memories/batch-1-500k/" + x);
-const batch2 = imgLibrary.batch2.map((x) => "./memories/batch-2-depth-500k/" + x);
+const secondlife911 = imgLibrary.secondlife911.map((x) => "./memories/batch-911-second-life-sel1-500k/" + x);
+// const batch1 = imgLibrary.batch1.map((x) => "./memories/batch-1-500k/" + x);
+// const batch2 = imgLibrary.batch2.map((x) => "./memories/batch-2-depth-500k/" + x);
+
+const parseInputs = (array, subdir) => {
+  return array[subdir].map((x) => "./memories/" + x.replace(subdir + "/", subdir + "/_fried-q10-sharpen0/") + "-fried.jpg");
+};
+
+// imgLibrary2["911-anime-500k"].map((x) => "./memories/" + x.replace("911-anime-500k/", "911-anime-500k/_fried-q10-sharpen0/") + "-fried.jpg");
+const batch1 = parseInputs(imgLibrary2, "911-anime-500k").concat(parseInputs(imgLibrary2, "911-anime-500k"));
+const batch2 = parseInputs(imgLibrary2, "911-caspar-500k").concat(parseInputs(imgLibrary2, "911-caspar-500k"));
+const batch3 = parseInputs(imgLibrary2, "911-secondlife-500k").concat(parseInputs(imgLibrary2, "911-secondlife-500k"));
+const batch4 = parseInputs(imgLibrary2, "ava-anime-500k");
+const batch5 = parseInputs(imgLibrary2, "ava-caspar-500k");
+const batch6 = parseInputs(imgLibrary2, "ava-secondlife-500k");
+const batch7 = parseInputs(imgLibrary2, "vip-caspar-500k").concat(parseInputs(imgLibrary2, "vip-caspar-500k"));
+const batch8 = parseInputs(imgLibrary2, "vip-secondlife-500k").concat(parseInputs(imgLibrary2, "vip-secondlife-500k"));
+const batch9 = parseInputs(imgLibrary2, "vip-anime-500k").concat(parseInputs(imgLibrary2, "911-anime-500k"));
+
+const concatted = batch1.concat(batch2).concat(batch3).concat(batch4).concat(batch5).concat(batch6).concat(batch7).concat(batch8).concat(batch9);
 
 export default {
   components: {
@@ -51,7 +78,8 @@ export default {
       imgIdx: 0,
 
       chapters: [],
-      batch: batch2.concat(batch1).concat(anime911).concat(secondelife911),
+      batch: concatted,
+      // batch: batch2.concat(batch1).concat(anime911).concat(secondlife911),
 
       sequenceLength: 4,
       currentSequenceCursor: 0,
@@ -67,6 +95,7 @@ export default {
       this.showControls = false;
     },
     hotSwapCard(cardIdx) {
+      console.log("hot swap:", cardIdx);
       const chapter = {
         imgPath: this.batch.sample(),
         audioClip: null,
@@ -193,7 +222,7 @@ body {
   z-index: 3000;
 }
 
-.sequence-container {
+.main-sequence-container {
   width: 100vw;
   height: 100vh;
   display: flex;
@@ -221,13 +250,20 @@ body {
   margin: 0;
   padding: 0;
   margin: 10px;
+  background-color: red;
 }
 
 .chapter-card {
   width: 48vw;
+  width: 49vw;
+  height: 49vh;
   z-index: 2000;
   margin: 0;
   padding: 0;
+}
+.chapter-card img {
+  width: 100%;
+  object-fit: contain;
 }
 
 .chapter {
@@ -242,7 +278,7 @@ body {
 .chapter-bkg {
   width: 100vw;
   height: 100vh;
-  pointer-events: none;
+  /* pointer-events: none; */
 
   /* position: fixed;
   top: 0;
@@ -252,6 +288,7 @@ body {
 @media (orientation: landscape) {
   .chapter-bkg {
     background-size: cover;
+    background-size: contain;
   }
 }
 @media (orientation: portrait) {
