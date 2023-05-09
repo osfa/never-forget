@@ -4,6 +4,13 @@
 <script>
 import * as Tone from "tone";
 import { audioLibrary } from "../audioLibrary.js";
+
+const narrationUrls = audioLibrary.bush.reduce((acc, curr) => ((acc[curr] = curr), acc), {});
+const narrationPlayer = new Tone.Players(narrationUrls, () => {
+  console.log("loaded into narrationPlayer", narrationUrls);
+  narrationPlayer.volume.value = -16;
+}).toDestination();
+
 export default {
   props: {
     automaticFade: { type: Boolean, default: false },
@@ -17,13 +24,19 @@ export default {
       hasInit: false,
       audioCtx: undefined,
       ambiancePlayer: null,
-      narrationPlayer: null,
+      // narrationPlayer: null, // doesn't fly in vue3
+      narrationPlayer: () => narrationPlayer,
       noiseMaker: null,
-      // narrationClipPath: "/audio/bush-interview.mp3",
-      narrationClipPath: "/audio/bell3.mp3",
     };
   },
   methods: {
+    playTick() {
+      if (!this.isPlaying) return;
+      if (narrationPlayer && narrationPlayer.state === "stopped") {
+        console.log("starting new narration");
+        narrationPlayer.player(audioLibrary.bush.sample()).start();
+      }
+    },
     muteIcon() {
       return this.isPlaying ? "🗣️" : "🕳️";
     },
@@ -41,6 +54,7 @@ export default {
         this.ambiancePlayer.loop = true;
         this.ambiancePlayer.volume.value = -9;
       }).toDestination();
+
       ambiancePlayer.onstop = () => {
         console.log("ambiancePlayer stopped");
       };
@@ -50,12 +64,12 @@ export default {
         console.log("loaded into narrationPlayer", narrationUrls);
         this.narrationPlayer = narrationPlayer;
         this.narrationPlayer.volume.value = -16;
-        console.log("started this.narrationPlayer");
-        narrationPlayer.player(audioLibrary.bush.sample()).start();
-        narrationPlayer.onstop = () => {
-          console.log("narrationPlayer stopped");
-          narrationPlayer.player(audioLibrary.bush.sample()).start();
-        };
+        // console.log("started this.narrationPlayer");
+        // narrationPlayer.player(audioLibrary.bush.sample()).start();
+        // narrationPlayer.onstop = () => {
+        //   console.log("narrationPlayer stopped");
+        //   narrationPlayer.player(audioLibrary.bush.sample()).start();
+        // };
       }).toDestination();
 
       this.noiseMaker = new Tone.Noise("brown");

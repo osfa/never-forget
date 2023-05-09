@@ -16,10 +16,12 @@
     <div class="sequences-container" v-for="(sequence, sequenceIdx) in sequences">
       <img class="fade-in-image chapter-card" @dblclick="hotSwapStoredCard(sequenceIdx, cardIdx)" v-for="(chapter, cardIdx) in sequence" :key="idx" :src="chapter.imgPath" />
     </div>
+    <BarebonesTone ref="audioModule" />
   </div>
 </template>
 <script setup>
 import { useRoute } from "vue-router";
+import BarebonesTone from "./BarebonesTone.vue";
 
 const route = useRoute();
 console.log("query", route.query.urls);
@@ -34,15 +36,11 @@ const anime911 = imgLibrary.anime911.map((x) => "./memories/batch-911-anime-sel1
 const secondelife911 = imgLibrary.secondlife911.map((x) => "./memories/batch-911-second-life-sel1-500k/" + x);
 const batch1 = imgLibrary.batch1.map((x) => "./memories/batch-1-500k/" + x);
 const batch2 = imgLibrary.batch2.map((x) => "./memories/batch-2-depth-500k/" + x);
-console.log("wth", localStorage.getItem("savedSequences"));
-// const route = useRoute();
-// const id = route.params.id; // read parameter id (it is reactive)
-// console.log("id", id);
 
 export default {
   data() {
     return {
-      isPaused: true,
+      isPaused: false,
 
       // imgPaths: imgLibrary.testBatch,
       itemRefs: [],
@@ -117,7 +115,8 @@ export default {
     },
     tick() {
       this.ticks += 1;
-      // console.log(this.$refs.layer);
+      this.$refs.audioModule.playTick();
+
       if (this.ticks % this.slideTickInterval === 0) {
         // this.$emit('tick16')
         const image = new window.Image();

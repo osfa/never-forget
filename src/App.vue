@@ -19,10 +19,9 @@ Array.prototype.sample = function () {
   </div> -->
   <!-- <HelloWorld msg="Vite + Vue" /> -->
   <!-- <img src="/00007-2017427528_44.png" class="logo" alt="Vite logo" /> -->
-  <router-link to="/">Home</router-link>
+  <!-- <router-link to="/">Home</router-link> -->
   <AudioVisualBook />
-  <!-- <ScrapBook /> -->
-  <BarebonesTone />
+  <!-- <BarebonesTone /> -->
   <!-- <AudioModule /> -->
 </template>
 
