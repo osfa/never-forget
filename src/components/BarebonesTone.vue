@@ -24,7 +24,7 @@ export default {
       narrationVolume: -9,
 
       noiseMaker: null,
-      noiserMakerVolume: -16,
+      noiserMakerVolume: -32,
 
       ambianceVolume: -6,
       ambianceChannel1: undefined,
@@ -37,14 +37,13 @@ export default {
       crossFade: undefined,
       crossDirection: false,
       crossFadeInterval: undefined,
-      crossFadeDuration: 30, // in seconds
+      crossFadeDuration: 10, // in seconds
     };
   },
   methods: {
     playTick() {
       if (!this.isPlaying) return;
       if (this.narrationPlayer && this.narrationPlayer.state === "stopped") {
-        console.log("starting new narration");
         this.narrationPlayer.player(audioLibrary.bush.sample()).start();
       }
     },

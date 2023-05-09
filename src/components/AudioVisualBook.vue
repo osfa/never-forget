@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="controls">
+    <div v-if="showControls" class="controls" @dblclick="hideControls()">
       <!-- <div>tickInterval <input v-model="tickInterval" /></div>
       <div>slideTickInterval <input v-model="slideTickInterval" /></div> -->
       <!-- <div class="btn" @click="newCard">new card</div> -->
@@ -8,23 +8,23 @@
       <h4 style="margin-bottom: 5px">storage</h4>
       <div class="btn" @click="exportSequences">save sequences to storage</div>
       <div class="btn" @click="clearStoredSequences">clear sequences from storage</div>
+      <div class="btn" @click="toggleCardStyle">toggle card style</div>
     </div>
-    <!-- <div class="fade-in-image chapter-bkg" v-for="(chapter, idx) in chapters" :key="idx" :style="{ backgroundImage: 'url(' + chapter.imgPath + ')' }" /> -->
+
     <div class="sequence-container">
-      <img @click="hotSwapCard(idx)" class="fade-in-image chapter-card" v-for="(chapter, idx) in currentSequence" :key="idx" :src="chapter.imgPath" />
+      <div v-show="fullCards" class="fade-in-image chapter-bkg" v-for="(chapter, idx) in currentSequence" :key="idx" :style="{ backgroundImage: 'url(' + chapter.imgPath + ')' }" />
+      <img v-show="!fullCards" @click="hotSwapCard(idx)" class="fade-in-image chapter-card" v-for="(chapter, idx) in currentSequence" :key="idx" :src="chapter.imgPath" />
     </div>
+
     <div class="sequences-container" v-for="(sequence, sequenceIdx) in sequences">
-      <img class="fade-in-image chapter-card" @dblclick="hotSwapStoredCard(sequenceIdx, cardIdx)" v-for="(chapter, cardIdx) in sequence" :key="idx" :src="chapter.imgPath" />
+      <div v-show="fullCards" class="fade-in-image chapter-bkg" v-for="(chapter, idx) in sequence" :key="idx" :style="{ backgroundImage: 'url(' + chapter.imgPath + ')' }" />
+      <img v-show="!fullCards" class="fade-in-image chapter-card" @dblclick="hotSwapStoredCard(sequenceIdx, cardIdx)" v-for="(chapter, cardIdx) in sequence" :key="idx" :src="chapter.imgPath" />
     </div>
     <BarebonesTone ref="audioModule" automaticFade />
-    <!-- <HelloWorld /> -->
   </div>
 </template>
 <script>
 import { imgLibrary } from "../imgLibrary.js";
-// const basePath = "./memories/batch-1-500k/";
-// const basePath = "./memories/batch-2-depth-500k/";
-// import { useRoute } from "vue-router";
 import BarebonesTone from "./BarebonesTone.vue";
 
 const anime911 = imgLibrary.anime911.map((x) => "./memories/batch-911-anime-sel1-500k/" + x);
@@ -39,6 +39,8 @@ export default {
   data() {
     return {
       isPaused: false,
+      showControls: true,
+      fullCards: true,
 
       // imgPaths: imgLibrary.testBatch,
       itemRefs: [],
@@ -58,6 +60,12 @@ export default {
     };
   },
   methods: {
+    toggleCardStyle() {
+      this.fullCards = !this.fullCards;
+    },
+    hideControls() {
+      this.showControls = false;
+    },
     hotSwapCard(cardIdx) {
       const chapter = {
         imgPath: this.batch.sample(),
@@ -171,6 +179,87 @@ export default {
 </script>
 
 <style>
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+.controls {
+  position: fixed;
+  top: 25px;
+  left: 25px;
+  z-index: 3000;
+}
+
+.sequence-container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  overflow-x: hidden;
+  justify-content: center;
+  background-color: black;
+}
+
+.sequences-container {
+  width: 100vw;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  overflow-x: hidden;
+  justify-content: center;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+}
+
+.chapter-card {
+  width: 30vw;
+  z-index: 1000;
+  margin: 0;
+  padding: 0;
+  margin: 10px;
+}
+
+.chapter-card {
+  width: 48vw;
+  z-index: 2000;
+  margin: 0;
+  padding: 0;
+}
+
+.chapter {
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.chapter-bkg {
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+
+  /* position: fixed;
+  top: 0;
+  left: 0; */
+}
+
+@media (orientation: landscape) {
+  .chapter-bkg {
+    background-size: cover;
+  }
+}
+@media (orientation: portrait) {
+  .chapter-bkg {
+    background-size: contain;
+  }
+}
+
 @keyframes bg-scrolling {
   0% {
     background-position: 50px 50px;
@@ -220,81 +309,5 @@ export default {
 .btn {
   cursor: pointer;
   text-decoration: underline;
-}
-
-html,
-body {
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-}
-
-.controls {
-  position: fixed;
-  top: 25px;
-  left: 25px;
-  z-index: 3000;
-}
-
-.sequence-container {
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  overflow: hidden;
-  justify-content: center;
-  background-color: black;
-}
-.sequences-container {
-  width: 100vw;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  overflow-x: hidden;
-  justify-content: center;
-  margin-bottom: 1rem;
-  margin-top: 1rem;
-}
-.chapter-card {
-  width: 30vw;
-  z-index: 1000;
-  margin: 0;
-  padding: 0;
-  margin: 10px;
-}
-.chapter-card {
-  width: 48vw;
-  z-index: 2000;
-  margin: 0;
-  padding: 0;
-}
-
-.chapter {
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-}
-.chapter-bkg {
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-}
-
-@media (orientation: landscape) {
-  .chapter-bkg {
-    background-size: cover;
-  }
-}
-@media (orientation: portrait) {
-  .chapter-bkg {
-    background-size: contain;
-  }
 }
 </style>
