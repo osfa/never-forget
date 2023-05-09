@@ -16,21 +16,16 @@
     <div class="sequences-container" v-for="(sequence, sequenceIdx) in sequences">
       <img class="fade-in-image chapter-card" @dblclick="hotSwapStoredCard(sequenceIdx, cardIdx)" v-for="(chapter, cardIdx) in sequence" :key="idx" :src="chapter.imgPath" />
     </div>
-    <BarebonesTone ref="audioModule" />
+    <BarebonesTone ref="audioModule" automaticFade />
+    <!-- <HelloWorld /> -->
   </div>
 </template>
-<script setup>
-import { useRoute } from "vue-router";
-import BarebonesTone from "./BarebonesTone.vue";
-
-const route = useRoute();
-console.log("query", route.query.urls);
-</script>
 <script>
 import { imgLibrary } from "../imgLibrary.js";
 // const basePath = "./memories/batch-1-500k/";
 // const basePath = "./memories/batch-2-depth-500k/";
 // import { useRoute } from "vue-router";
+import BarebonesTone from "./BarebonesTone.vue";
 
 const anime911 = imgLibrary.anime911.map((x) => "./memories/batch-911-anime-sel1-500k/" + x);
 const secondelife911 = imgLibrary.secondlife911.map((x) => "./memories/batch-911-second-life-sel1-500k/" + x);
@@ -38,6 +33,9 @@ const batch1 = imgLibrary.batch1.map((x) => "./memories/batch-1-500k/" + x);
 const batch2 = imgLibrary.batch2.map((x) => "./memories/batch-2-depth-500k/" + x);
 
 export default {
+  components: {
+    BarebonesTone,
+  },
   data() {
     return {
       isPaused: false,

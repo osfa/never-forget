@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import App from "./App.vue";
 
+// from vue3? borken?
 export default createRouter({
   history: createWebHistory(),
   routes: [
