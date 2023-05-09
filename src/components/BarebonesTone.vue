@@ -4,7 +4,6 @@
 <script>
 import * as Tone from "tone";
 import { audioLibrary } from "../audioLibrary.js";
-
 export default {
   props: {
     automaticFade: { type: Boolean, default: false },
@@ -53,12 +52,11 @@ export default {
         this.narrationPlayer.volume.value = -16;
         console.log("started this.narrationPlayer");
         narrationPlayer.player(audioLibrary.bush.sample()).start();
+        narrationPlayer.onstop = () => {
+          console.log("narrationPlayer stopped");
+          narrationPlayer.player(audioLibrary.bush.sample()).start();
+        };
       }).toDestination();
-
-      narrationPlayer.onstop = () => {
-        console.log("narrationPlayer stopped");
-        narrationPlayer.player(audioLibrary.bush.sample()).start();
-      };
 
       this.noiseMaker = new Tone.Noise("brown");
       const autoFilter = new Tone.AutoFilter({

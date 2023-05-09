@@ -18,17 +18,26 @@
     </div>
   </div>
 </template>
+<script setup>
+import { useRoute } from "vue-router";
 
+const route = useRoute();
+console.log("query", route.query.urls);
+</script>
 <script>
 import { imgLibrary } from "../imgLibrary.js";
 // const basePath = "./memories/batch-1-500k/";
 // const basePath = "./memories/batch-2-depth-500k/";
+// import { useRoute } from "vue-router";
 
 const anime911 = imgLibrary.anime911.map((x) => "./memories/batch-911-anime-sel1-500k/" + x);
 const secondelife911 = imgLibrary.secondlife911.map((x) => "./memories/batch-911-second-life-sel1-500k/" + x);
 const batch1 = imgLibrary.batch1.map((x) => "./memories/batch-1-500k/" + x);
 const batch2 = imgLibrary.batch2.map((x) => "./memories/batch-2-depth-500k/" + x);
 console.log("wth", localStorage.getItem("savedSequences"));
+// const route = useRoute();
+// const id = route.params.id; // read parameter id (it is reactive)
+// console.log("id", id);
 
 export default {
   data() {
@@ -154,6 +163,7 @@ export default {
   },
   mounted() {
     this.frame();
+    console.log(this.$route);
   },
   created() {
     this.seed();
