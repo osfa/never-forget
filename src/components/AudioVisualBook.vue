@@ -3,22 +3,33 @@
     <div v-if="showControls" class="controls" @dblclick="hideControls()">
       <!-- <div>tickInterval <input v-model="tickInterval" /></div>
       <div>slideTickInterval <input v-model="slideTickInterval" /></div> -->
-      <!-- <div class="btn" @click="newCard">new card</div> -->
-      <div class="btn" @click="newSequence">finish sequence</div>
-      <h4 style="margin-bottom: 5px">storage</h4>
-      <div class="btn" @click="exportSequences">save sequences to storage</div>
-      <div class="btn" @click="clearStoredSequences">clear sequences from storage</div>
-      <div class="btn" @click="toggleCardStyle">toggle card style</div>
+      <!-- <div class="btn" @click="newCard">🎲</div> -->
+      <!-- <div class="btn" @click="newSequence">finish sequence</div>
+      <h4 style="margin-bottom: 5px">storage</h4> -->
+      <!-- 🧙‍♀️ 🎰 🎱 🎲 🔮 ✨ ✅ 🌟 -->
+      <div class="btn action" @click="exportSequences">💾</div>
+      <div class="btn action" @click="clearStoredSequences">❌</div>
+      <!-- <div class="btn" @click="fullCards = !fullCards">toggle card style</div> -->
+      <!-- <div class="btn" @click="scrollToBottom">scroll</div> -->
+      <div class="btn action" @click="showBlacklist = !showBlacklist">🎱</div>
     </div>
 
-    <div class="main-sequence-container">
+    <div v-if="showBlacklist" class="main-sequence-container">
+      <div class="fade-in-image chapter-bkg" v-for="(imgPath, idx) in blackList" :style="{ backgroundImage: 'url(' + imgPath + ')' }">
+        <div class="action-bar"><span @click="reinstate(idx)" class="action">🟢</span></div>
+      </div>
+    </div>
+
+    <div v-if="!showBlacklist" class="main-sequence-container">
       <div
         v-show="fullCards"
         @click="hotSwapCard(idx)"
         class="fade-in-image chapter-bkg"
+        ref="sequences"
         v-for="(chapter, idx) in currentSequence"
-        :key="idx"
-        :style="{ backgroundImage: 'url(' + chapter.imgPath + ')' }" />
+        :style="{ backgroundImage: 'url(' + chapter.imgPath + ')' }">
+        <div class="action-bar"><span @click="blackListCard(idx)" class="action">⚫</span> <span @click="superStarCard(idx)" class="action">✨</span></div>
+      </div>
       <!-- <img v-show="!fullCards" @click="hotSwapCard(idx)" class="fade-in-image chapter-card" v-for="(chapter, idx) in currentSequence" :src="chapter.imgPath" /> -->
       <!-- <div v-show="!fullCards" @click="hotSwapCard(idx)" class="fade-in-image chapter-card" v-for="(chapter, idx) in currentSequence">
         <img :src="chapter.imgPath" />
@@ -36,7 +47,7 @@
 import { imgLibrary } from "../imgLibrary.js";
 import { imgLibrary2 } from "../imgLibrary2.js";
 import BarebonesTone from "./BarebonesTone.vue";
-
+// .slice().reverse()
 const anime911 = imgLibrary.anime911.map((x) => "./memories/batch-911-anime-sel1-500k/" + x);
 const secondlife911 = imgLibrary.secondlife911.map((x) => "./memories/batch-911-second-life-sel1-500k/" + x);
 // const batch1 = imgLibrary.batch1.map((x) => "./memories/batch-1-500k/" + x);
@@ -65,6 +76,9 @@ export default {
   },
   data() {
     return {
+      blackList: [],
+      showBlacklist: false,
+
       isPaused: false,
       showControls: true,
       fullCards: true,
@@ -74,25 +88,25 @@ export default {
       lastNow: null,
       ticks: 0,
       tickInterval: 1000,
-      slideTickInterval: 4,
-      imgIdx: 0,
+      slideTickInterval: 8,
+      // imgIdx: 0,
 
-      chapters: [],
+      currentSequence: [],
       batch: concatted,
       // batch: batch2.concat(batch1).concat(anime911).concat(secondlife911),
 
-      sequenceLength: 4,
-      currentSequenceCursor: 0,
+      // sequenceLength: 4,
+      // currentSequenceCursor: 0,
       currentSequence: [],
       sequences: [],
     };
   },
   methods: {
-    toggleCardStyle() {
-      this.fullCards = !this.fullCards;
+    scrollToSequence(idx) {
+      this.$refs.sequences[idx].scrollIntoView({ behavior: "smooth" });
     },
     hideControls() {
-      this.showControls = false;
+      // this.showControls = false;
     },
     hotSwapCard(cardIdx) {
       console.log("hot swap:", cardIdx);
@@ -102,13 +116,24 @@ export default {
       };
       this.currentSequence.splice(cardIdx, 1, chapter);
     },
-    hotSwapStoredCard(sequenceIdx, cardIdx) {
-      const chapter = {
-        imgPath: this.batch.sample(),
-        audioClip: null,
-      };
-      this.sequences[sequenceIdx].splice(cardIdx, 1, chapter);
+    blackListCard(cardIdx) {
+      console.log("blackListCard:", cardIdx);
+      this.blackList.push(this.currentSequence[cardIdx].imgPath);
+      this.exportBlackList();
     },
+    reinstate(cardIdx) {
+      console.log("reinstate:", cardIdx);
+      this.blackList.splice(cardIdx, 1);
+      // @todo force explicit? also have hard coded blacklist..
+      // this.exportBlackList();
+    },
+    // hotSwapStoredCard(sequenceIdx, cardIdx) {
+    //   const chapter = {
+    //     imgPath: this.batch.sample(),
+    //     audioClip: null,
+    //   };
+    //   this.sequences[sequenceIdx].splice(cardIdx, 1, chapter);
+    // },
     newCard() {
       const chapter = {
         imgPath: this.batch.sample(),
@@ -117,7 +142,6 @@ export default {
       this.currentSequence.push(chapter);
     },
     seed() {
-      this.newCard();
       this.newCard();
       this.newCard();
       this.newCard();
@@ -130,47 +154,55 @@ export default {
     newSequence() {
       this.finishSequence();
     },
-    setCursor(idx) {
-      this.currentSequenceCursor = idx;
-    },
-    updateAtCursor() {
-      const chapter = {
-        imgPath: this.batch.sample(),
-        audioClip: null,
-      };
-      this.currentSequence.splice(this.currentSequenceCursor, 1, chapter);
-    },
+    // setCursor(idx) {
+    //   this.currentSequenceCursor = idx;
+    // },
+    // updateAtCursor() {
+    //   const chapter = {
+    //     imgPath: this.batch.sample(),
+    //     audioClip: null,
+    //   };
+    //   this.currentSequence.splice(this.currentSequenceCursor, 1, chapter);
+    // },
     clearStoredSequences() {
       localStorage.removeItem("savedSequences");
+      // localStorage.removeItem("blackList");
+    },
+    exportBlackList() {
+      const s = JSON.stringify(this.blackList);
+      console.log("exportBlackList:", s);
+      localStorage.setItem("blackList", s);
     },
     exportSequences() {
       const s = JSON.stringify(this.sequences);
       console.log("exportSequences:", s);
       localStorage.setItem("savedSequences", s);
     },
+    storyTick() {
+      const image = new window.Image();
+      const imgPath = this.batch.sample();
+      image.src = imgPath;
+      const sequenceIdx = this.randomInt(0, this.currentSequence.length);
+      image.onload = () => {
+        console.log("loaded into:", imgPath, sequenceIdx);
+        // const chapter = {
+        //   imgPath,
+        //   audioClip: null,
+        // };
+        // this.currentSequence.push(chapter);
+        this.scrollToSequence(sequenceIdx);
+        this.hotSwapCard(sequenceIdx);
+        this.slideTickInterval = [4, 8, 16].sample();
+      };
+    },
     tick() {
       this.ticks += 1;
-      this.$refs.audioModule.playTick();
+      if (this.$refs.audioModule) this.$refs.audioModule.playTick();
 
       if (this.ticks % this.slideTickInterval === 0) {
         // this.$emit('tick16')
-        const image = new window.Image();
-        const imgPath = this.batch.sample();
-        // image.src = this.imgPaths[this.imgIdx + 1];
-        image.src = imgPath;
-        image.onload = () => {
-          console.log("loaded");
-          this.imgIdx += 1;
-          this.createChapter(imgPath);
-        };
+        this.storyTick();
       }
-    },
-    createChapter(imgPath) {
-      const chapter = {
-        imgPath,
-        audioClip: null,
-      };
-      this.chapters.push(chapter);
     },
     frame() {
       if (this.isPaused) {
@@ -202,12 +234,33 @@ export default {
   created() {
     this.seed();
     this.sequences = JSON.parse(localStorage.getItem("savedSequences") || "[]");
+    this.sequences = [];
+    this.blackList = JSON.parse(localStorage.getItem("blackList") || "[]");
+    console.log("before", this.batch.length);
+    this.batch = this.batch.filter((x) => !this.blackList.includes(x));
+    console.log("after", this.batch.length);
     console.log("parsed sequences:", this.sequences);
   },
 };
 </script>
 
 <style>
+.action-bar {
+  position: absolute;
+  top: 1rem;
+  left: 0;
+  /* padding: 1rem; */
+  font-size: 1rem;
+  z-index: 10000;
+}
+.action {
+  padding: 1rem;
+  cursor: pointer;
+}
+.action:hover {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
 html,
 body {
   margin: 0;
@@ -217,9 +270,12 @@ body {
 
 .controls {
   position: fixed;
-  top: 25px;
-  left: 25px;
+  top: 75px;
+  right: 0px;
   z-index: 3000;
+}
+.controls .btn {
+  margin: 1rem 0;
 }
 
 .main-sequence-container {
@@ -230,7 +286,7 @@ body {
   flex-wrap: wrap;
   overflow-x: hidden;
   justify-content: center;
-  background-color: black;
+  background-color: white;
 }
 
 .sequences-container {
@@ -278,8 +334,9 @@ body {
 .chapter-bkg {
   width: 100vw;
   height: 100vh;
+  position: relative;
+  /* opacity: 0; */
   /* pointer-events: none; */
-
   /* position: fixed;
   top: 0;
   left: 0; */

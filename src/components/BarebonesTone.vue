@@ -44,6 +44,7 @@ export default {
     playTick() {
       if (!this.isPlaying) return;
       if (this.narrationPlayer && this.narrationPlayer.state === "stopped") {
+        console.log("new narration.");
         this.narrationPlayer.player(audioLibrary.bush.sample()).start();
       }
     },
