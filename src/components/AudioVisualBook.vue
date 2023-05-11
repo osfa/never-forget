@@ -108,10 +108,10 @@ export default {
     hideControls() {
       // this.showControls = false;
     },
-    hotSwapCard(cardIdx) {
+    hotSwapCard(cardIdx, imgPath) {
       console.log("hot swap:", cardIdx);
       const chapter = {
-        imgPath: this.batch.sample(),
+        imgPath: imgPath || this.batch.sample(),
         audioClip: null,
       };
       this.currentSequence.splice(cardIdx, 1, chapter);
@@ -190,8 +190,8 @@ export default {
         //   audioClip: null,
         // };
         // this.currentSequence.push(chapter);
+        this.hotSwapCard(sequenceIdx, imgPath);
         this.scrollToSequence(sequenceIdx);
-        this.hotSwapCard(sequenceIdx);
         this.slideTickInterval = [4, 8, 16].sample();
       };
     },
