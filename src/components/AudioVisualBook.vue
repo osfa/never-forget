@@ -109,12 +109,27 @@ export default {
       // this.showControls = false;
     },
     hotSwapCard(cardIdx, imgPath) {
-      console.log("hot swap:", cardIdx);
-      const chapter = {
-        imgPath: imgPath || this.batch.sample(),
-        audioClip: null,
-      };
-      this.currentSequence.splice(cardIdx, 1, chapter);
+      if (!imgPath) {
+        console.log("hot swap not loaded:", cardIdx);
+        const image = new window.Image();
+        imgPath = this.batch.sample();
+        image.src = imgPath;
+        image.onload = () => {
+          console.log("loaded into:", imgPath, sequenceIdx);
+          const chapter = {
+            imgPath,
+            audioClip: null,
+          };
+          this.currentSequence.splice(cardIdx, 1, chapter);
+        };
+      } else {
+        console.log("hot swap w loaded:", cardIdx, imgPath);
+        const chapter = {
+          imgPath,
+          audioClip: null,
+        };
+        this.currentSequence.splice(cardIdx, 1, chapter);
+      }
     },
     blackListCard(cardIdx) {
       console.log("blackListCard:", cardIdx);
