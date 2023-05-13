@@ -115,7 +115,7 @@ export default {
         imgPath = this.batch.sample();
         image.src = imgPath;
         image.onload = () => {
-          console.log("loaded into:", imgPath, sequenceIdx);
+          console.log("loaded into:", imgPath, cardIdx);
           const chapter = {
             imgPath,
             audioClip: null,
