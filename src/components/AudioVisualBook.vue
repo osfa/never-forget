@@ -32,7 +32,7 @@
           <span class="action">{{ imgIdx }} / {{ batch.length }}</span>
           <span class="action">{{ previouslyRated }}</span>
         </div>
-        <SmallClock :offset="idx * randomInt(-25, 25)" />
+        <SmallClock :offset="idx * randomInt(-25, 25) * offsetSeed" />
       </div>
       <!-- </transition-group> -->
     </div>
@@ -116,6 +116,7 @@ export default {
       rated: [],
 
       isLoading: false,
+      offsetSeed: 1,
     };
   },
   methods: {
@@ -162,7 +163,7 @@ export default {
     },
     hotSwapCard(cardIdx, chapterCard, doubleClick) {
       // console.log("hotSwapCard", cardIdx, imgPath);
-
+      this.offsetSeed = this.randomInt(1, 5);
       if (this.isRatingMode && !doubleClick) {
         return;
       }
@@ -389,6 +390,8 @@ body {
   bottom: 0.5rem;
   right: 2rem;
   font-size: 3rem;
+  text-shadow: 0px 0px 3px rgb(255, 255, 0);
+
   /* width: 15vw; */
 }
 

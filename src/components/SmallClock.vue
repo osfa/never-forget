@@ -1,7 +1,7 @@
 <template>
   <div class="clock-container text-sm md:text-lg font-weight-light">
     <div v-if="isUnixTime" class="clock-inner">
-      <div class="hour text-white">{{ unix }}</div>
+      <div class="hour text-white">9/{{ unix }}</div>
     </div>
   </div>
 </template>
@@ -44,11 +44,13 @@ export default {
   font-family: monospace;
   /* pointer-events: none; */
 
-  font-size: 0.6rem;
+  font-size: 1rem;
+  /* font-weight: bold; */
   /* font-size: 1rem; */
   letter-spacing: 0.4rem;
 
   color: white;
+  /* color: ; */
   position: absolute;
 
   width: 100vw;
@@ -61,19 +63,19 @@ export default {
 
   /* background-color: transparent; */
   /* kiosk */
-  text-shadow: 0 0 9px rgb(255, 255, 255);
+  text-shadow: 0 0 9px rgb(255, 255, 0);
 
   /* non-kiosk */
-  text-shadow: 0 0 5px rgb(255, 255, 255);
+  text-shadow: 0px 0px 3px rgb(255, 255, 0);
 }
 .clock-inner {
-  background-color: rgba(00, 00, 00, 0.25);
+  /* background-color: rgba(00, 00, 00, 0.25); */
   padding: 0.75rem 1.5rem;
 }
 
 @media (orientation: landscape) {
   .clock-container {
-    letter-spacing: 0.75rem;
+    letter-spacing: 0.7rem;
   }
 }
 /* .hour,
