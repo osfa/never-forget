@@ -17,13 +17,20 @@
     <div v-if="!showBlacklist" class="main-sequence-container">
       <transition-group name="fade" mode="out-in">
         <div
-          @click="hotSwapCard(idx)"
+          @dblclick="hotSwapCard(idx, undefined, true)"
+          @click="hotSwapCard(idx, undefined, false)"
           class="chapter-bkg"
           ref="sequences"
           v-for="(chapter, idx) in timelines"
           :key="`${chapter.imgPath}-${idx}`"
           :style="{ backgroundImage: 'url(' + chapter.imgPath + ')' }">
-          <div v-if="showControls" class="action-bar"><span @click="blackListCard(idx)" class="action">⚫</span> <span @click="superStarCard(idx)" class="action">✨</span></div>
+          <div v-if="showControls" class="action-bar">
+            <span @click="blackListCard(idx)" class="action">⚫</span><span @click="superStarCard(idx)" class="action">✨</span><span v-if="isRatingMode">{{ chapter.stars || "not rated" }}</span>
+          </div>
+          <div v-if="showControls" class="meta-bar">
+            <span class="action">{{ imgIdx }} / {{ batch.length }}</span>
+            <span class="action">{{ previouslyRated }}</span>
+          </div>
         </div>
       </transition-group>
     </div>
@@ -52,18 +59,19 @@ const batch5 = parseInputs(imgLibrary2, "ava-caspar-500k"); // pikc out bangers
 const batch6 = parseInputs(imgLibrary2, "ava-secondlife-500k");
 
 // vip
-const batch7 = parseInputs(imgLibrary2, "vip-caspar-500k").concat(parseInputs(imgLibrary2, "vip-caspar-500k"));
+const batch7 = []; //parseInputs(imgLibrary2, "vip-caspar-500k").concat(parseInputs(imgLibrary2, "vip-caspar-500k"));
 const batch8 = parseInputs(imgLibrary2, "vip-secondlife-500k").concat(parseInputs(imgLibrary2, "vip-secondlife-500k"));
 const batch9 = parseInputs(imgLibrary2, "vip-anime-500k").concat(parseInputs(imgLibrary2, "911-anime-500k"));
 
-// fixed, no ts:ed fried stuff?
+// fixed, no ts:ed fried stuff
 const allVariations = imgLibrary2["vip-1997"];
 const variationFiltered = allVariations.filter(function (value, index) {
   return index % 6 == 0;
 });
 
-// const concatted = variationFiltered; //batch1.concat(batch2).concat(batch3).concat(batch4).concat(batch5).concat(batch6).concat(batch7).concat(batch8).concat(batch9);
-const concatted = batch5.concat(batch7);
+// const concatted = variationFiltered; //
+// const concatted = batch5.concat(batch7);
+const concatted = batch1.concat(batch2).concat(batch3).concat(batch4).concat(batch5).concat(batch6).concat(batch7).concat(batch8).concat(batch9);
 
 const texts = [
   "After the man completes his voice-over, he takes a moment to collect himself. \n He gazes about the motion capture studio, his mind struggling to comprehend the depth of the experience.",
@@ -78,10 +86,14 @@ export default {
     return {
       timelines: [],
       batch: concatted,
+      chapters: [],
 
       isRatingMode: false,
-      isPaused: true,
-      showControls: true,
+      imgIdx: 0,
+      previouslyRated: 0,
+
+      isPaused: false,
+      showControls: false,
 
       lastNow: null,
       ticks: 0,
@@ -122,7 +134,7 @@ export default {
         return;
       } else if (e.key === "5") {
         this.rate(5, 0);
-        this.superStarCard(0);
+        // this.superStarCard(0);
         return;
       } else if (e.key === "f") {
         this.superStarCard(0);
@@ -139,31 +151,29 @@ export default {
       console.log("toggleControls");
       this.showControls = !this.showControls;
     },
-    createChapter(imgPath) {
-      return {
-        imgPath: imgPath || this.batch.sample(),
-        stars: null,
-        blackList: false,
-        starList: false,
-        variants: 8,
-      };
-    },
-    hotSwapCard(cardIdx, imgPath) {
+    hotSwapCard(cardIdx, chapterCard, doubleClick) {
       // console.log("hotSwapCard", cardIdx, imgPath);
-      if (!imgPath) {
-        // console.log("hot swap not loaded:", cardIdx);
+
+      if (this.isRatingMode && !doubleClick) {
+        return;
+      }
+
+      if (!chapterCard) {
         const image = new window.Image();
-        imgPath = this.batch.sample();
-        image.src = imgPath;
+        if (this.isRatingMode) {
+          this.imgIdx += 1;
+          chapterCard = this.batch[this.imgIdx];
+        } else {
+          chapterCard = this.batch.sample();
+        }
+        image.src = chapterCard.imgPath;
         image.onload = () => {
           // console.log("loaded into:", imgPath, cardIdx);
-          const chapter = this.createChapter(imgPath);
-          this.timelines.splice(cardIdx, 1, chapter);
+          // const chapter = this.createChapter(imgPath);
+          this.timelines.splice(cardIdx, 1, chapterCard);
         };
       } else {
-        // console.log("hot swap w loaded:", cardIdx, imgPath);
-        const chapter = this.createChapter(imgPath);
-        this.timelines.splice(cardIdx, 1, chapter);
+        this.timelines.splice(cardIdx, 1, chapterCard);
       }
     },
     blackListCard(cardIdx) {
@@ -183,12 +193,11 @@ export default {
       // this.exportBlackList();
     },
     newCard() {
-      const chapter = this.createChapter();
-      this.timelines.push(chapter);
+      this.timelines.push(this.batch.sample());
     },
     seed() {
-      if (this.isPaused || this.isRatingMode) {
-        this.newCard();
+      if (this.isRatingMode) {
+        this.timelines.push(this.batch[this.imgIdx]);
       } else {
         this.newCard();
         this.newCard();
@@ -212,12 +221,12 @@ export default {
     },
     storyTick() {
       const image = new window.Image();
-      const imgPath = this.batch.sample();
-      image.src = imgPath;
+      const chapterCard = this.batch.sample();
+      image.src = chapterCard.imgPath;
       const sequenceIdx = this.randomInt(0, this.timelines.length);
       image.onload = () => {
         console.log("loaded into:", sequenceIdx);
-        this.hotSwapCard(sequenceIdx, imgPath);
+        this.hotSwapCard(sequenceIdx, chapterCard);
         this.scrollToSequence(sequenceIdx);
         this.slideTickInterval = [4, 8, 16].sample();
         // this.slideTickInterval = [4].sample();
@@ -264,26 +273,35 @@ export default {
     // console.log(this.$route);
   },
   created() {
-    this.seed();
-
     this.superList = JSON.parse(localStorage.getItem("superList") || "[]");
     this.blackList = JSON.parse(localStorage.getItem("blackList") || "[]");
     this.rated = JSON.parse(localStorage.getItem("rated") || "[]");
-    console.log("loaded rated:", this.rated.length);
+    // console.log("loaded rated:", this.rated.length);
+    // console.log("loaded rated:", this.rated);
 
-    console.log("before blacklist", this.batch.length);
-    this.batch = this.batch.filter((x) => !this.blackList.includes(x));
-    console.log("after blacklist", this.batch.length);
+    // console.log("before blacklist", this.batch.length);
+    // this.batch = this.batch.filter((x) => !this.blackList.includes(x));
+    // console.log("after blacklist", this.batch.length);
 
-    // this.batch = this.batch.map((x) => {
-    //   return {
-    //     imgPath: x,
-    //     stars: null,
-    //     blackList: false,
-    //     starList: false,
-    //     variants: 8,
-    //   };
-    // });
+    this.batch = this.batch.map((x) => {
+      const rating = this.rated.filter((r) => r.imgPath === x)[0];
+      // console.log("rating:", rating?.stars);
+      return {
+        imgPath: x,
+        stars: rating ? rating.stars : null,
+        // only stars? or keep this concept?
+        blackList: false,
+        starList: false,
+        variants: 8,
+      };
+    });
+
+    if (this.isRatingMode) {
+      this.previouslyRated = this.batch.filter((x) => x.stars !== null).length;
+      this.batch = this.batch.filter((x) => x.stars === null);
+    }
+
+    this.seed();
   },
 };
 </script>
@@ -316,6 +334,15 @@ export default {
   position: absolute;
   top: 1rem;
   left: 0;
+  /* padding: 1rem; */
+  font-size: 1rem;
+  z-index: 10000;
+}
+
+.meta-bar {
+  position: absolute;
+  bottom: 1rem;
+  right: 0;
   /* padding: 1rem; */
   font-size: 1rem;
   z-index: 10000;
