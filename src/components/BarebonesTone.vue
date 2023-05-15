@@ -20,8 +20,12 @@ export default {
       audioCtx: undefined,
       ambiancePlayer: null,
 
+      narrationPlayerDirection: true,
       narrationPlayer: null,
+      narrationPlayer1: null,
+      narrationPlayer2: null,
       narrationVolume: -9,
+      narrationVolumeMin: -32,
 
       noiseMaker: null,
       noiserMakerVolume: -32,
@@ -47,6 +51,29 @@ export default {
         console.log("new narration.");
         this.narrationPlayer.player(audioLibrary.bush.sample()).start();
       }
+      if (this.narrationPlayer1 && this.narrationPlayer1.state === "stopped") {
+        console.log("new narration.");
+        this.narrationPlayer1.player(audioLibrary.bush.sample()).start();
+      }
+    },
+    narrationSwap() {
+      console.log("narrationSwap:", this.narrationPlayerDirection);
+      // this.narrationPlayer1.volume.rampTo(12, 4);
+
+      if (!this.isPlaying) return;
+      if (this.narrationPlayerDirection) {
+        this.narrationPlayerDirection = !this.narrationPlayerDirection;
+        this.crossFadeNarrations(this.narrationPlayer, this.narrationPlayer1);
+      } else {
+        this.narrationPlayerDirection = !this.narrationPlayerDirection;
+        this.crossFadeNarrations(this.narrationPlayer1, this.narrationPlayer);
+      }
+    },
+    crossFadeNarrations(playerToFadeOut, playerToFadeIn) {
+      console.log("out:", playerToFadeOut.volume.value);
+      playerToFadeOut.volume.rampTo(this.narrationVolumeMin, 4);
+      console.log("in:", playerToFadeIn.volume.value);
+      playerToFadeIn.volume.rampTo(this.narrationVolume, 4);
     },
     muteIcon() {
       return this.isPlaying ? "🗣️" : "🕳️";
@@ -70,7 +97,7 @@ export default {
       //   console.log("ambiancePlayer stopped");
       // };
 
-      this.initAmbiance();
+      // this.initAmbiance();
 
       const narrationUrls = audioLibrary.bush.reduce((acc, curr) => ((acc[curr] = curr), acc), {});
       const narrationPlayer = new Tone.Players(narrationUrls, () => {
@@ -78,6 +105,18 @@ export default {
         this.narrationPlayer = narrationPlayer;
         this.narrationPlayer.volume.value = this.narrationVolume;
       }).toDestination();
+
+      const narrationPlayer1 = new Tone.Players(narrationUrls, () => {
+        console.log("loaded into narrationPlaye1", narrationUrls);
+        this.narrationPlayer1 = narrationPlayer1;
+        this.narrationPlayer1.volume.value = -32;
+      }).toDestination();
+
+      // const narrationPlayer2 = new Tone.Players(narrationUrls, () => {
+      //   console.log("loaded into narrationPlayer2", narrationUrls);
+      //   this.narrationPlayer2 = narrationPlayer2;
+      //   this.narrationPlayer2.volume.value = this.narrationVolume;
+      // }).toDestination();
 
       this.noiseMaker = new Tone.Noise("brown");
       const autoFilter = new Tone.AutoFilter({
@@ -90,6 +129,7 @@ export default {
       autoFilter.start();
       this.noiseMaker.start();
     },
+
     initAmbiance() {
       const def = {
         frequency: 1.5,
@@ -135,7 +175,6 @@ export default {
         this.audioCtx.resume().then(function () {});
       }
     },
-    samplerFadeTo(audioPath) {},
     isObj(variable) {
       return typeof variable === "object" && !Array.isArray(variable) && variable !== null;
     },
