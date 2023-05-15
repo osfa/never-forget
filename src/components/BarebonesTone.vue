@@ -22,8 +22,11 @@ export default {
 
       narrationPlayerDirection: true,
       narrationPlayer: null,
+
       narrationPlayer1: null,
       narrationPlayer2: null,
+
+      // narrationVolume: -9,
       narrationVolume: -9,
       narrationVolumeMin: -32,
 
@@ -56,25 +59,25 @@ export default {
       //   this.narrationPlayer1.player(audioLibrary.bush.sample()).start();
       // }
     },
-    narrationSwap() {
-      console.log("narrationSwap:", this.narrationPlayerDirection);
-      // this.narrationPlayer1.volume.rampTo(12, 4);
+    // narrationSwap() {
+    //   console.log("narrationSwap:", this.narrationPlayerDirection);
+    //   // this.narrationPlayer1.volume.rampTo(12, 4);
 
-      if (!this.isPlaying) return;
-      if (this.narrationPlayerDirection) {
-        this.narrationPlayerDirection = !this.narrationPlayerDirection;
-        this.crossFadeNarrations(this.narrationPlayer, this.narrationPlayer1);
-      } else {
-        this.narrationPlayerDirection = !this.narrationPlayerDirection;
-        this.crossFadeNarrations(this.narrationPlayer1, this.narrationPlayer);
-      }
-    },
-    crossFadeNarrations(playerToFadeOut, playerToFadeIn) {
-      console.log("out:", playerToFadeOut.volume.value);
-      playerToFadeOut.volume.rampTo(this.narrationVolumeMin, 4);
-      console.log("in:", playerToFadeIn.volume.value);
-      playerToFadeIn.volume.rampTo(this.narrationVolume, 4);
-    },
+    //   if (!this.isPlaying) return;
+    //   if (this.narrationPlayerDirection) {
+    //     this.narrationPlayerDirection = !this.narrationPlayerDirection;
+    //     this.crossFadeNarrations(this.narrationPlayer, this.narrationPlayer1);
+    //   } else {
+    //     this.narrationPlayerDirection = !this.narrationPlayerDirection;
+    //     this.crossFadeNarrations(this.narrationPlayer1, this.narrationPlayer);
+    //   }
+    // },
+    // crossFadeNarrations(playerToFadeOut, playerToFadeIn) {
+    //   console.log("out:", playerToFadeOut.volume.value);
+    //   playerToFadeOut.volume.rampTo(this.narrationVolumeMin, 4);
+    //   console.log("in:", playerToFadeIn.volume.value);
+    //   playerToFadeIn.volume.rampTo(this.narrationVolume, 4);
+    // },
     muteIcon() {
       return this.isPlaying ? "🔊" : "🕳️";
     },
@@ -97,7 +100,7 @@ export default {
       //   console.log("ambiancePlayer stopped");
       // };
 
-      // this.initAmbiance();
+      this.initAmbiance();
 
       const narrationUrls = audioLibrary.bush.reduce((acc, curr) => ((acc[curr] = curr), acc), {});
       const narrationPlayer = new Tone.Players(narrationUrls, () => {

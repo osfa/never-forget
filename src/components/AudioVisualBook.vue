@@ -4,7 +4,7 @@
     <div v-if="showControls" class="controls">
       <!-- <div>tickInterval <input v-model="tickInterval" /></div>
       <div>slideTickInterval <input v-model="slideTickInterval" /></div> -->
-      <!-- 🧙‍♀️ 🎰 🎱 🎲 🔮 ✨ ✅ 🌟 -->
+      <!-- 🧙‍♀️ 🎰 🎱 🎲 🔮 ✨ ✅ 🌟 🚪-->
       <div class="btn action" @click="showBlacklist = !showBlacklist">🎱</div>
     </div>
 
@@ -15,24 +15,24 @@
     </div>
 
     <div v-if="!showBlacklist" class="main-sequence-container">
-      <transition-group name="fade" mode="out-in">
-        <div
-          @dblclick="hotSwapCard(idx, undefined, true)"
-          @click="hotSwapCard(idx, undefined, false)"
-          class="chapter-bkg"
-          ref="sequences"
-          v-for="(chapter, idx) in timelines"
-          :key="`${chapter.imgPath}-${idx}`"
-          :style="{ backgroundImage: 'url(' + chapter.imgPath + ')' }">
-          <div v-if="showControls" class="action-bar">
-            <span @click="blackListCard(idx)" class="action">⚫</span><span @click="superStarCard(idx)" class="action">✨</span><span v-if="isRatingMode">{{ chapter.stars || "not rated" }}</span>
-          </div>
-          <div v-if="showControls" class="meta-bar">
-            <span class="action">{{ imgIdx }} / {{ batch.length }}</span>
-            <span class="action">{{ previouslyRated }}</span>
-          </div>
+      <!-- <transition-group name="fade" mode="out-in"> -->
+      <div
+        @dblclick="hotSwapCard(idx, undefined, true)"
+        @click="hotSwapCard(idx, undefined, false)"
+        class="chapter-bkg"
+        ref="sequences"
+        v-for="(chapter, idx) in timelines"
+        :key="`${chapter.imgPath}-${idx}`"
+        :style="{ backgroundImage: 'url(' + chapter.imgPath + ')' }">
+        <div v-if="showControls" class="action-bar">
+          <span @click="blackListCard(idx)" class="action">⚫</span><span @click="superStarCard(idx)" class="action">✨</span><span v-if="isRatingMode">{{ chapter.stars || "not rated" }}</span>
         </div>
-      </transition-group>
+        <div v-if="showControls" class="meta-bar">
+          <span class="action">{{ imgIdx }} / {{ batch.length }}</span>
+          <span class="action">{{ previouslyRated }}</span>
+        </div>
+      </div>
+      <!-- </transition-group> -->
     </div>
     <BarebonesTone ref="audioModule" automaticFade :debug="debug" />
     <!-- <div class="subtitles">
@@ -55,13 +55,13 @@ const batch3 = parseInputs(imgLibrary2, "911-secondlife-500k").concat(parseInput
 
 // ava frames
 const batch4 = parseInputs(imgLibrary2, "ava-anime-500k");
-const batch5 = parseInputs(imgLibrary2, "ava-caspar-500k"); // pikc out bangers
+const batch5 = []; //parseInputs(imgLibrary2, "ava-caspar-500k"); // pikc out bangers
 const batch6 = parseInputs(imgLibrary2, "ava-secondlife-500k");
 
 // vip
 const batch7 = []; //parseInputs(imgLibrary2, "vip-caspar-500k").concat(parseInputs(imgLibrary2, "vip-caspar-500k"));
 const batch8 = parseInputs(imgLibrary2, "vip-secondlife-500k").concat(parseInputs(imgLibrary2, "vip-secondlife-500k"));
-const batch9 = parseInputs(imgLibrary2, "vip-anime-500k").concat(parseInputs(imgLibrary2, "911-anime-500k"));
+const batch9 = parseInputs(imgLibrary2, "vip-anime-500k").concat(parseInputs(imgLibrary2, "911-anime-500k")).concat(parseInputs(imgLibrary2, "911-anime-500k"));
 
 // fixed, no ts:ed fried stuff
 const allVariations = imgLibrary2["vip-1997"];
@@ -406,7 +406,7 @@ body {
   margin-bottom: 1rem;
   margin-top: 1rem;
 }
-
+/* 
 .chapter-card {
   width: 30vw;
   z-index: 1000;
@@ -428,21 +428,22 @@ body {
 .chapter-card img {
   width: 100%;
   object-fit: contain;
-}
+} */
 
-.chapter {
+/* .chapter {
   width: 100vw;
   height: 100vh;
   pointer-events: none;
   position: fixed;
   top: 0;
   left: 0;
-}
+} */
 
 .chapter-bkg {
   width: 100vw;
   height: 100vh;
   position: relative;
+  cursor: pointer;
   /* opacity: 0; */
   /* pointer-events: none; */
   /* position: fixed;
