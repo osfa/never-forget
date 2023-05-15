@@ -112,6 +112,7 @@ export default {
   },
   methods: {
     rate(stars, cardIdx) {
+      if (!this.isRatingMode) return;
       console.log("rating:", stars, this.timelines[cardIdx].imgPath);
       this.timelines[cardIdx].stars = stars;
       this.rated.push(this.timelines[cardIdx]);

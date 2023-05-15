@@ -1,5 +1,5 @@
 <template>
-  <div class="btn-audio" @click="toggleAudio">{{ muteIcon() }}</div>
+  <div class="btn-audio" :class="{ hasInit: hasInit || debug }" @click="toggleAudio">{{ muteIcon() }}</div>
 </template>
 <script>
 import * as Tone from "tone";
@@ -51,10 +51,10 @@ export default {
         console.log("new narration.");
         this.narrationPlayer.player(audioLibrary.bush.sample()).start();
       }
-      if (this.narrationPlayer1 && this.narrationPlayer1.state === "stopped") {
-        console.log("new narration.");
-        this.narrationPlayer1.player(audioLibrary.bush.sample()).start();
-      }
+      // if (this.narrationPlayer1 && this.narrationPlayer1.state === "stopped") {
+      //   console.log("new narration.");
+      //   this.narrationPlayer1.player(audioLibrary.bush.sample()).start();
+      // }
     },
     narrationSwap() {
       console.log("narrationSwap:", this.narrationPlayerDirection);
@@ -76,7 +76,7 @@ export default {
       playerToFadeIn.volume.rampTo(this.narrationVolume, 4);
     },
     muteIcon() {
-      return this.isPlaying ? "🗣️" : "🕳️";
+      return this.isPlaying ? "🔊" : "🕳️";
     },
     initAudio() {
       const context = new Tone.Context();
@@ -106,11 +106,11 @@ export default {
         this.narrationPlayer.volume.value = this.narrationVolume;
       }).toDestination();
 
-      const narrationPlayer1 = new Tone.Players(narrationUrls, () => {
-        console.log("loaded into narrationPlaye1", narrationUrls);
-        this.narrationPlayer1 = narrationPlayer1;
-        this.narrationPlayer1.volume.value = -32;
-      }).toDestination();
+      // const narrationPlayer1 = new Tone.Players(narrationUrls, () => {
+      //   console.log("loaded into narrationPlaye1", narrationUrls);
+      //   this.narrationPlayer1 = narrationPlayer1;
+      //   this.narrationPlayer1.volume.value = -32;
+      // }).toDestination();
 
       // const narrationPlayer2 = new Tone.Players(narrationUrls, () => {
       //   console.log("loaded into narrationPlayer2", narrationUrls);
@@ -238,3 +238,30 @@ export default {
   },
 };
 </script>
+<style scoped>
+.btn-audio {
+  position: fixed;
+  top: 0;
+  right: 0;
+
+  background-color: rgba(0, 0, 0, 0.75);
+  font-size: 5rem;
+  z-index: 10000;
+
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  cursor: pointer;
+}
+.btn-audio.hasInit {
+  background-color: rgba(0, 0, 0, 0.25);
+  padding: 10px;
+  width: auto;
+  height: auto;
+  font-size: 2rem;
+  line-height: 2rem;
+}
+</style>
