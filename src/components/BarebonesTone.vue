@@ -213,7 +213,7 @@ export default {
       this.audioCounter2 += 1;
     },
     doCrossFade() {
-      console.log("cross fade");
+      // console.log("cross fade");
       const stepSize = this.kioskMode ? 0.1 : 0.05;
       if (this.crossFade.fade.value === 1.0 || this.crossFade.fade.value <= 0.0) {
         this.crossDirection = !this.crossDirection;
@@ -249,7 +249,7 @@ export default {
 
   background-color: rgba(0, 0, 0, 0.75);
   font-size: 5rem;
-  z-index: 10000;
+  z-index: 9000;
 
   width: 100vw;
   height: 100vh;
@@ -261,10 +261,12 @@ export default {
 }
 .btn-audio.hasInit {
   background-color: rgba(0, 0, 0, 0.25);
-  padding: 10px;
+  /* background-color: transparent; */
+  padding: 1rem;
   width: auto;
   height: auto;
-  font-size: 2rem;
-  line-height: 2rem;
+  font-size: 1.5rem;
+  /* padding-right: 20px; */
+  /* line-height: 1rem; */
 }
 </style>

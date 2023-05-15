@@ -13,13 +13,14 @@
         <div class="action-bar"><span @click="reinstate(idx)" class="action">🟢</span></div>
       </div>
     </div>
-
+    <div class="tick-info">{{ slideTickInterval }}</div>
     <div v-if="!showBlacklist" class="main-sequence-container">
       <!-- <transition-group name="fade" mode="out-in"> -->
       <div
         @dblclick="hotSwapCard(idx, undefined, true)"
         @click="hotSwapCard(idx, undefined, false)"
         class="chapter-bkg"
+        :class="{ isLoading: isLoading }"
         ref="sequences"
         v-for="(chapter, idx) in timelines"
         :key="`${chapter.imgPath}-${idx}`"
@@ -31,6 +32,7 @@
           <span class="action">{{ imgIdx }} / {{ batch.length }}</span>
           <span class="action">{{ previouslyRated }}</span>
         </div>
+        <SmallClock :offset="idx * randomInt(-25, 25)" />
       </div>
       <!-- </transition-group> -->
     </div>
@@ -43,6 +45,7 @@
 <script>
 import { imgLibrary2 } from "../imgLibrary2.js";
 import BarebonesTone from "./BarebonesTone.vue";
+import SmallClock from "./SmallClock.vue";
 
 const parseInputs = (array, subdir) => {
   return array[subdir].map((x) => "./memories/" + x.replace(subdir + "/", subdir + "/_fried-q10-sharpen0/") + "-fried.jpg");
@@ -81,6 +84,7 @@ const texts = [
 export default {
   components: {
     BarebonesTone,
+    SmallClock,
   },
   data() {
     return {
@@ -110,6 +114,8 @@ export default {
       superList: [],
       showSuperList: false,
       rated: [],
+
+      isLoading: false,
     };
   },
   methods: {
@@ -169,10 +175,12 @@ export default {
         } else {
           chapterCard = this.batch.sample();
         }
+        this.isLoading = true;
         image.src = chapterCard.imgPath;
         image.onload = () => {
           // console.log("loaded into:", imgPath, cardIdx);
           // const chapter = this.createChapter(imgPath);
+          this.isLoading = false;
           this.timelines.splice(cardIdx, 1, chapterCard);
         };
       } else {
@@ -374,6 +382,16 @@ body {
   width: 15vw;
 }
 
+.tick-info {
+  /* display: none; */
+  position: fixed;
+  z-index: 3000;
+  bottom: 0.5rem;
+  right: 2rem;
+  font-size: 3rem;
+  /* width: 15vw; */
+}
+
 .controls {
   position: fixed;
   top: 75px;
@@ -394,6 +412,7 @@ body {
   overflow-x: hidden;
   justify-content: center;
   background-color: black;
+  background-color: #0f0;
 }
 
 .sequences-container {
@@ -534,5 +553,10 @@ body {
 .btn {
   cursor: pointer;
   text-decoration: underline;
+}
+
+.isLoading {
+  opacity: 0.5;
+  background-color: #0f0;
 }
 </style>
