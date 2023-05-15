@@ -66,7 +66,7 @@ export default {
   text-shadow: 0 0 9px rgb(255, 255, 0);
 
   /* non-kiosk */
-  text-shadow: 0px 0px 3px rgb(255, 255, 0);
+  text-shadow: 0px 0px 3px rgb(0, 0, 0);
 }
 .clock-inner {
   /* background-color: rgba(00, 00, 00, 0.25); */

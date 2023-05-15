@@ -390,7 +390,7 @@ body {
   bottom: 0.5rem;
   right: 2rem;
   font-size: 3rem;
-  text-shadow: 0px 0px 3px rgb(255, 255, 0);
+  text-shadow: 0px 0px 3px rgb(0, 0, 0);
 
   /* width: 15vw; */
 }
@@ -559,7 +559,7 @@ body {
 }
 
 .isLoading {
-  opacity: 0.5;
+  opacity: 0.75;
   background-color: #0f0;
 }
 </style>
