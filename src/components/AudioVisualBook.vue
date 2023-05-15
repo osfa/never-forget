@@ -34,7 +34,7 @@
         </div>
       </transition-group>
     </div>
-    <BarebonesTone ref="audioModule" automaticFade />
+    <BarebonesTone ref="audioModule" automaticFade :debug="debug" />
     <!-- <div class="subtitles">
       <div class="sub_fb">{{ currentText }}</div>
     </div> -->
@@ -84,6 +84,8 @@ export default {
   },
   data() {
     return {
+      debug: false,
+
       timelines: [],
       batch: concatted,
       chapters: [],
