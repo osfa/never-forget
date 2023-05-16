@@ -37,7 +37,7 @@
       <!-- </transition-group> -->
     </div>
     <BarebonesTone ref="audioModule" automaticFade :debug="debug" />
-    <Subtitles :currentText="currentText" />
+    <!-- <Subtitles :currentText="currentText" /> -->
   </div>
 </template>
 <script>
