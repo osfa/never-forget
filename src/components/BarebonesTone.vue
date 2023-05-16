@@ -26,14 +26,16 @@ export default {
       narrationPlayer1: null,
       narrationPlayer2: null,
 
+      baseVolume: -9,
       // narrationVolume: -9,
-      narrationVolume: -9,
+      narrationVolume: -6,
       narrationVolumeMin: -32,
 
       noiseMaker: null,
-      noiserMakerVolume: -32,
+      noiserMakerVolume: -16,
+      // noiserMakerVolume: -32,
 
-      ambianceVolume: -6,
+      ambianceVolume: -9,
       ambianceChannel1: undefined,
       ambianceChannel2: undefined,
 
@@ -85,6 +87,7 @@ export default {
       const context = new Tone.Context();
       Tone.setContext(context);
       this.audioCtx = context.rawContext;
+      this.setVolume();
 
       // const file1 = "/audio/cabin.mp3";
       // const ambiancePlayer = new Tone.Player(file1, () => {
@@ -132,19 +135,27 @@ export default {
       autoFilter.start();
       this.noiseMaker.start();
     },
-
+    setVolume() {
+      Tone.getDestination().volume.rampTo(this.baseVolume === -100 ? -Infinity : this.baseVolume, 0);
+    },
     initAmbiance() {
       const def = {
         frequency: 1.5,
         delayTime: 2.5,
         depth: 0.75,
         spread: 180,
-        wet: this.chorusWetness,
+        wet: this.chorusWetness || 0.1, // 0.25,
       };
+
+      const autoFilter = new Tone.AutoFilter({
+        frequency: 0.01,
+        baseFrequency: 200,
+        octaves: 3,
+      }).toDestination();
 
       this.chorus = new Tone.Chorus(def).toDestination();
       // this.chorus.wet.value = this.chorusWetness
-      this.crossFade = new Tone.CrossFade().connect(this.chorus).connect(new Tone.Reverb(0.1)); // .toDestination()
+      this.crossFade = new Tone.CrossFade().connect(this.chorus).connect(new Tone.Reverb(0.1)).connect(autoFilter); // .toDestination()
       this.crossFade.fade.value = this.crossFadeVal; // 0-currently1, 1-currently2
 
       this.currently1 = audioLibrary.availableReal.sample();
@@ -162,6 +173,7 @@ export default {
       if (this.automaticFade) {
         this.crossFadeInterval = setInterval(this.doCrossFade, (this.crossFadeDuration / 5) * 1000);
       }
+      autoFilter.start();
     },
     toggleAudio() {
       this.isPlaying = !this.isPlaying;

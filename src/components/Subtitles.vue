@@ -17,7 +17,7 @@ export default {
 .sub_fb {
   font-family: sans-serif;
   font-weight: bold;
-  font-size: 2vmin;
+  font-size: 2.5vmin;
   color: rgba(255, 255, 100, 1);
   color: rgba(255, 255, 0, 1);
   text-shadow: 0 0 0.2em rgba(0, 0, 0, 0.5);

@@ -360,9 +360,9 @@ export const audioLibrary = {
     "/audio/normalized/natural/ocean.mp3",
     "/audio/normalized/natural/ocean1.mp3",
 
-    "/audio/normalized/natural/purr1-1.mp3",
-    "/audio/normalized/natural/purr1-2.mp3",
-    "/audio/normalized/natural/purr1.mp3",
+    // "/audio/normalized/natural/purr1-1.mp3",
+    // "/audio/normalized/natural/purr1-2.mp3",
+    // "/audio/normalized/natural/purr1.mp3",
 
     "/audio/normalized/natural/rain-heavy.mp3",
     "/audio/normalized/natural/rain-thunder.mp3",
