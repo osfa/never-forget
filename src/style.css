@@ -51,3 +51,119 @@ body {
     background-color: #f9f9f9;
   }
 } */
+/* 
+.chapter-card {
+  width: 30vw;
+  z-index: 1000;
+  margin: 0;
+  padding: 0;
+  margin: 10px;
+  background-color: red;
+}
+
+.chapter-card {
+  width: 48vw;
+  width: 49vw;
+  height: 49vh;
+  z-index: 2000;
+  margin: 0;
+  padding: 0;
+}
+
+.chapter-card img {
+  width: 100%;
+  object-fit: contain;
+} */
+
+/* .chapter {
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+} */
+
+/* @media (orientation: landscape) {
+  .chapter-bkg {
+    background-size: cover;
+    background-size: contain;
+  }
+}
+@media (orientation: portrait) {
+  .chapter-bkg {
+    background-size: contain;
+  }
+} */
+
+@keyframes bg-scrolling {
+  0% {
+    background-position: 50px 50px;
+  }
+}
+
+@keyframes bg-scrolling-reverse {
+  100% {
+    background-size: 40%;
+  }
+}
+
+@keyframes slidein {
+  from {
+    background-position: top;
+    background-size: 102%;
+  }
+  to {
+    background-position: top;
+    background-size: 115%;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.fade-in-image {
+  animation: fadeIn 1s;
+}
+.fade-enter {
+  opacity: 0;
+}
+.fade-enter-active {
+  animation: fadeIn 250ms;
+}
+.fade-leave {
+  opacity: 1;
+}
+.fade-leave-active {
+  animation: fadeIn 250ms reverse;
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.slide-background {
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  /* background-size: contain; */
+  /* animation: bg-scrolling-reverse 10s infinite;
+  animation-timing-function: linear; */
+
+  background-size: cover;
+  animation: slidein 30s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}

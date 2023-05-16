@@ -13,7 +13,7 @@
         <div class="action-bar"><span @click="reinstate(idx)" class="action">🟢</span></div>
       </div>
     </div>
-    <div class="tick-info">{{ slideTickInterval }}</div>
+    <div class="tick-info">{{ tickDown }}</div>
     <div v-if="!showBlacklist" class="main-sequence-container">
       <!-- <transition-group name="fade" mode="out-in"> -->
       <div
@@ -37,15 +37,15 @@
       <!-- </transition-group> -->
     </div>
     <BarebonesTone ref="audioModule" automaticFade :debug="debug" />
-    <!-- <div class="subtitles">
-      <div class="sub_fb">{{ currentText }}</div>
-    </div> -->
+    <Subtitles :currentText="currentText" />
   </div>
 </template>
 <script>
 import { imgLibrary2 } from "../imgLibrary2.js";
+import { jetee } from "../script.js";
 import BarebonesTone from "./BarebonesTone.vue";
 import SmallClock from "./SmallClock.vue";
+import Subtitles from "./Subtitles.vue";
 
 const parseInputs = (array, subdir) => {
   return array[subdir].map((x) => "./memories/" + x.replace(subdir + "/", subdir + "/_fried-q10-sharpen0/") + "-fried.jpg");
@@ -66,25 +66,27 @@ const batch7 = []; //parseInputs(imgLibrary2, "vip-caspar-500k").concat(parseInp
 const batch8 = parseInputs(imgLibrary2, "vip-secondlife-500k").concat(parseInputs(imgLibrary2, "vip-secondlife-500k"));
 const batch9 = parseInputs(imgLibrary2, "vip-anime-500k").concat(parseInputs(imgLibrary2, "911-anime-500k")).concat(parseInputs(imgLibrary2, "911-anime-500k"));
 
-// fixed, no ts:ed fried stuff
-const allVariations = imgLibrary2["vip-1997"];
-const variationFiltered = allVariations.filter(function (value, index) {
-  return index % 6 == 0;
-});
-
+// fix, no ts:ed fried stuff
+// const allVariations = imgLibrary2["vip-1997"];
+// const variationFiltered = allVariations.filter(function (value, index) {
+//   return index % 6 == 0;
+// });
 // const concatted = variationFiltered; //
 // const concatted = batch5.concat(batch7);
+
 const concatted = batch1.concat(batch2).concat(batch3).concat(batch4).concat(batch5).concat(batch6).concat(batch7).concat(batch8).concat(batch9);
 
 const texts = [
   "After the man completes his voice-over, he takes a moment to collect himself. \n He gazes about the motion capture studio, his mind struggling to comprehend the depth of the experience.",
   "He begins to remove the motion capture suit, the material peeling off his skin with a sickening squelch. \n His flesh glistens in the dim light, its color and texture altered by the eldritch power of the virtual world.",
 ];
+const script = jetee;
 
 export default {
   components: {
     BarebonesTone,
     SmallClock,
+    Subtitles,
   },
   data() {
     return {
@@ -105,8 +107,10 @@ export default {
       ticks: 0,
       tickInterval: 1000,
       slideTickInterval: 8,
+      tickDown: 8,
 
-      currentText: texts.sample(),
+      textIdx: 0,
+      currentText: jetee[0],
 
       blackList: [],
       showBlacklist: false,
@@ -163,6 +167,7 @@ export default {
     },
     hotSwapCard(cardIdx, chapterCard, doubleClick) {
       // console.log("hotSwapCard", cardIdx, imgPath);
+
       this.offsetSeed = this.randomInt(1, 5);
       if (this.isRatingMode && !doubleClick) {
         return;
@@ -179,8 +184,6 @@ export default {
         this.isLoading = true;
         image.src = chapterCard.imgPath;
         image.onload = () => {
-          // console.log("loaded into:", imgPath, cardIdx);
-          // const chapter = this.createChapter(imgPath);
           this.isLoading = false;
           this.timelines.splice(cardIdx, 1, chapterCard);
         };
@@ -241,16 +244,19 @@ export default {
         this.hotSwapCard(sequenceIdx, chapterCard);
         this.scrollToSequence(sequenceIdx);
         this.slideTickInterval = [4, 8, 16].sample();
+        this.tickDown = this.slideTickInterval;
         // this.slideTickInterval = [4].sample();
       };
       // if (this.$refs.audioModule) {
       // % 16 storytick?
       // this.$refs.audioModule.narrationSwap();
       // }
-      this.currentText = texts.sample();
+      this.textIdx += 1;
+      this.currentText = script[this.textIdx % script.length];
     },
     tick() {
       this.ticks += 1;
+      this.tickDown -= 1;
       if (this.$refs.audioModule) this.$refs.audioModule.playTick();
 
       if (this.ticks % this.slideTickInterval === 0) {
@@ -319,34 +325,10 @@ export default {
 </script>
 
 <style>
-.sub_fb {
-  font-family: sans-serif;
-  font-weight: bold;
-  font-size: 2vmin;
-  color: rgba(255, 255, 100, 1);
-  color: rgba(255, 255, 0, 1);
-  text-shadow: 0 0 0.2em rgba(0, 0, 0, 0.5);
-  white-space: pre;
-}
-
-.subtitles {
-  position: fixed;
-  bottom: 4rem;
-  width: 100vw;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-}
-
-.subtitles > div {
-  max-width: 60vw;
-}
-
 .action-bar {
   position: absolute;
   top: 1rem;
   left: 0;
-  /* padding: 1rem; */
   font-size: 1rem;
   z-index: 10000;
 }
@@ -355,7 +337,6 @@ export default {
   position: absolute;
   bottom: 1rem;
   right: 0;
-  /* padding: 1rem; */
   font-size: 1rem;
   z-index: 10000;
 }
@@ -384,15 +365,12 @@ body {
 }
 
 .tick-info {
-  /* display: none; */
   position: fixed;
   z-index: 3000;
   bottom: 0.5rem;
   right: 2rem;
-  font-size: 3rem;
+  font-size: 1.5rem;
   text-shadow: 0px 0px 3px rgb(0, 0, 0);
-
-  /* width: 15vw; */
 }
 
 .controls {
@@ -428,38 +406,6 @@ body {
   margin-bottom: 1rem;
   margin-top: 1rem;
 }
-/* 
-.chapter-card {
-  width: 30vw;
-  z-index: 1000;
-  margin: 0;
-  padding: 0;
-  margin: 10px;
-  background-color: red;
-}
-
-.chapter-card {
-  width: 48vw;
-  width: 49vw;
-  height: 49vh;
-  z-index: 2000;
-  margin: 0;
-  padding: 0;
-}
-
-.chapter-card img {
-  width: 100%;
-  object-fit: contain;
-} */
-
-/* .chapter {
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-} */
 
 .chapter-bkg {
   width: 100vw;
@@ -471,86 +417,6 @@ body {
   /* position: fixed;
   top: 0;
   left: 0; */
-}
-
-@media (orientation: landscape) {
-  .chapter-bkg {
-    background-size: cover;
-    background-size: contain;
-  }
-}
-@media (orientation: portrait) {
-  .chapter-bkg {
-    background-size: contain;
-  }
-}
-
-@keyframes bg-scrolling {
-  0% {
-    background-position: 50px 50px;
-  }
-}
-@keyframes bg-scrolling-reverse {
-  100% {
-    background-size: 40%;
-  }
-}
-@keyframes slidein {
-  from {
-    background-position: top;
-    background-size: 102%;
-  }
-  to {
-    background-position: top;
-    background-size: 115%;
-  }
-}
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-.fade-in-image {
-  animation: fadeIn 1s;
-}
-.fade-enter {
-  opacity: 0;
-}
-.fade-enter-active {
-  animation: fadeIn 250ms;
-}
-.fade-leave {
-  opacity: 1;
-}
-.fade-leave-active {
-  animation: fadeIn 250ms reverse;
-}
-
-@keyframes fadein {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-.slide-background {
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-  /* background-size: contain; */
-  /* animation: bg-scrolling-reverse 10s infinite;
-  animation-timing-function: linear; */
-
-  background-size: cover;
-  animation: slidein 30s;
-  animation-fill-mode: forwards;
-  animation-iteration-count: infinite;
-  animation-direction: alternate;
 }
 
 .btn {

@@ -3031,7 +3031,7 @@ export const imgLibrary2 = {
     "ava-secondlife-500k/00667-2563870043.jpg",
     "ava-secondlife-500k/00667-3247888829.jpg",
     "ava-secondlife-500k/00668-2563870043.jpg",
-    "ava-secondlife-500k/00668-3247888829.jpg",
+    // "ava-secondlife-500k/00668-3247888829.jpg",
     "ava-secondlife-500k/00669-2563870043.jpg",
     "ava-secondlife-500k/00669-3247888829.jpg",
     "ava-secondlife-500k/00670-2563870043.jpg",
