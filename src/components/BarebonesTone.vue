@@ -249,7 +249,7 @@ export default {
 
   background-color: rgba(0, 0, 0, 0.75);
   font-size: 5rem;
-  z-index: 9000;
+  z-index: 10000;
 
   width: 100vw;
   height: 100vh;
