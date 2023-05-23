@@ -1,6 +1,18 @@
 export const audioLibrary = {
   // bush: ["/audio/bell3.mp3", "/audio/A-sharp-4_light.mp3"],
-  bush: ["/audio/bush-1.mp3", "/audio/bush-2.mp3", "/audio/bush-interview.mp3"],
+  // bush: ["/audio/bush-1.mp3", "/audio/bush-2.mp3", "/audio/bush-interview.mp3"],
+  bush: [
+    "/audio/bush/alex-edit-part1.mp3",
+    "/audio/bush/alex-edit-part1.mp3",
+    "/audio/bush/alex-edit-part2.mp3",
+    "/audio/bush/la-jetee-intro-ny-edit.mp3",
+    // "/audio/bush/la-jetee-outro-ny-edit.mp3",
+    "/audio/bush/part-1-blend-v1.mp3",
+    // "/audio/bush/part-1-blend-v2.mp3",
+    "/audio/bush/part2-blend-v1.mp3",
+    // "/audio/bush/part2-blend-v2.mp3",
+    "/audio/bush/the-model.mp3",
+  ],
   hangDrum: [
     "/audio/hangdrum/A-sharp-4_light.wav",
     "/audio/hangdrum/A3_light.wav",

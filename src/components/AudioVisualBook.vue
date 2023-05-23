@@ -13,7 +13,7 @@
         <div class="action-bar"><span @click="reinstate(idx)" class="action">🟢</span></div>
       </div>
     </div>
-    <div class="tick-info">{{ tickDown }}</div>
+    <!-- <div class="tick-info">{{ tickDown }}</div> -->
     <div v-if="!showBlacklist" class="main-sequence-container">
       <!-- <transition-group name="fade" mode="out-in"> -->
       <div
@@ -37,11 +37,13 @@
       <!-- </transition-group> -->
     </div>
     <BarebonesTone ref="audioModule" automaticFade :debug="debug" />
-    <!-- <Subtitles :currentText="currentText" /> -->
+    <Subtitles :currentText="currentText" />
   </div>
 </template>
 <script>
 import { imgLibrary2 } from "../imgLibrary2.js";
+import { permaBlackList } from "../blacklist.js";
+
 import { jetee } from "../script.js";
 import BarebonesTone from "./BarebonesTone.vue";
 import SmallClock from "./SmallClock.vue";
@@ -52,19 +54,25 @@ const parseInputs = (array, subdir) => {
 };
 
 // 911
-const batch1 = parseInputs(imgLibrary2, "911-anime-500k").concat(parseInputs(imgLibrary2, "911-anime-500k"));
+const batch1 = parseInputs(imgLibrary2, "911-anime-500k").concat(parseInputs(imgLibrary2, "911-anime-500k")).concat(parseInputs(imgLibrary2, "911-anime-500k")); // ✅
 const batch2 = []; // parseInputs(imgLibrary2, "911-caspar-500k").concat(parseInputs(imgLibrary2, "911-caspar-500k"));
-const batch3 = parseInputs(imgLibrary2, "911-secondlife-500k").concat(parseInputs(imgLibrary2, "911-secondlife-500k"));
+const batch3 = parseInputs(imgLibrary2, "911-secondlife-500k").concat(parseInputs(imgLibrary2, "911-secondlife-500k")).concat(parseInputs(imgLibrary2, "911-secondlife-500k")); // ✅
+
+console.log("911 count", batch1.length + batch3.length);
 
 // ava frames
-const batch4 = parseInputs(imgLibrary2, "ava-anime-500k");
-const batch5 = []; //parseInputs(imgLibrary2, "ava-caspar-500k"); // pikc out bangers
-const batch6 = parseInputs(imgLibrary2, "ava-secondlife-500k");
+const batch4 = parseInputs(imgLibrary2, "ava-anime-500k"); // ✅
+const batch5 = []; //parseInputs(imgLibrary2, "ava-caspar-500k"); // pick out bangers
+const batch6 = parseInputs(imgLibrary2, "ava-secondlife-500k"); // ✅
+
+console.log("ava count", batch4.length + batch6.length);
 
 // vip
 const batch7 = []; //parseInputs(imgLibrary2, "vip-caspar-500k").concat(parseInputs(imgLibrary2, "vip-caspar-500k"));
-const batch8 = parseInputs(imgLibrary2, "vip-secondlife-500k").concat(parseInputs(imgLibrary2, "vip-secondlife-500k"));
-const batch9 = parseInputs(imgLibrary2, "vip-anime-500k").concat(parseInputs(imgLibrary2, "911-anime-500k")).concat(parseInputs(imgLibrary2, "911-anime-500k"));
+const batch8 = parseInputs(imgLibrary2, "vip-secondlife-500k").concat(parseInputs(imgLibrary2, "vip-secondlife-500k")); // ✅
+const batch9 = parseInputs(imgLibrary2, "vip-anime-500k").concat(parseInputs(imgLibrary2, "vip-anime-500k")); // ✅
+
+console.log("vip count", batch8.length + batch9.length);
 
 // fix, no ts:ed fried stuff
 // const allVariations = imgLibrary2["vip-1997"];
@@ -112,7 +120,7 @@ export default {
       textIdx: 0,
       currentText: jetee[0],
 
-      blackList: [],
+      blackList: permaBlackList,
       showBlacklist: false,
 
       superList: [],
@@ -235,24 +243,27 @@ export default {
       localStorage.setItem("rated", s);
     },
     storyTick() {
+      // console.log("storyTick");
       const image = new window.Image();
       const chapterCard = this.batch.sample();
       image.src = chapterCard.imgPath;
-      const sequenceIdx = this.randomInt(0, this.timelines.length);
       image.onload = () => {
-        console.log("loaded into:", sequenceIdx);
+        const sequenceIdx = this.randomInt(0, this.timelines.length);
+        console.log("loading and scrolling to:", sequenceIdx);
+
         this.hotSwapCard(sequenceIdx, chapterCard);
         this.scrollToSequence(sequenceIdx);
-        this.slideTickInterval = [4, 8, 16].sample();
+        // this.slideTickInterval = [2, 4, 8].sample();
+        this.slideTickInterval = this.randomInt(6, 12);
         this.tickDown = this.slideTickInterval;
-        // this.slideTickInterval = [4].sample();
+
+        this.textIdx += 1;
+        this.currentText = script[this.textIdx % script.length];
       };
       // if (this.$refs.audioModule) {
       // % 16 storytick?
       // this.$refs.audioModule.narrationSwap();
       // }
-      this.textIdx += 1;
-      this.currentText = script[this.textIdx % script.length];
     },
     tick() {
       this.ticks += 1;
@@ -292,14 +303,18 @@ export default {
   },
   created() {
     this.superList = JSON.parse(localStorage.getItem("superList") || "[]");
-    this.blackList = JSON.parse(localStorage.getItem("blackList") || "[]");
+    // this.blackList = JSON.parse(localStorage.getItem("blackList") || "[]");
     this.rated = JSON.parse(localStorage.getItem("rated") || "[]");
     // console.log("loaded rated:", this.rated.length);
     // console.log("loaded rated:", this.rated);
 
-    // console.log("before blacklist", this.batch.length);
-    // this.batch = this.batch.filter((x) => !this.blackList.includes(x));
-    // console.log("after blacklist", this.batch.length);
+    console.log(this.blackList.length);
+    console.log(this.blackList[0]);
+    console.log(this.batch[0]);
+
+    console.log("before blacklist", this.batch.length);
+    this.batch = this.batch.filter((x) => !this.blackList.includes(x));
+    console.log("after blacklist", this.batch.length);
 
     this.batch = this.batch.map((x) => {
       const rating = this.rated.filter((r) => r.imgPath === x)[0];

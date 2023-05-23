@@ -26,9 +26,9 @@ export default {
       narrationPlayer1: null,
       narrationPlayer2: null,
 
-      baseVolume: -9,
+      baseVolume: -6,
       // narrationVolume: -9,
-      narrationVolume: -6,
+      narrationVolume: -3,
       narrationVolumeMin: -32,
 
       noiseMaker: null,
@@ -47,14 +47,23 @@ export default {
       crossDirection: false,
       crossFadeInterval: undefined,
       crossFadeDuration: 10, // in seconds
+      pauseTicks: 0,
     };
   },
   methods: {
     playTick() {
       if (!this.isPlaying) return;
+
       if (this.narrationPlayer && this.narrationPlayer.state === "stopped") {
-        console.log("new narration.");
-        this.narrationPlayer.player(audioLibrary.bush.sample()).start();
+        if (this.pauseTicks === 0) {
+          const file = audioLibrary.bush.sample();
+          console.log("new narration:", file);
+          this.narrationPlayer.player(file).start();
+          this.pauseTicks = this.randomInt(10, 30);
+        } else {
+          console.log("pause", this.pauseTicks);
+          this.pauseTicks -= 1;
+        }
       }
       // if (this.narrationPlayer1 && this.narrationPlayer1.state === "stopped") {
       //   console.log("new narration.");
@@ -80,6 +89,11 @@ export default {
     //   console.log("in:", playerToFadeIn.volume.value);
     //   playerToFadeIn.volume.rampTo(this.narrationVolume, 4);
     // },
+    randomInt(min, max) {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      return Math.floor(Math.random() * (max - min)) + min;
+    },
     muteIcon() {
       return this.isPlaying ? "🔊" : "🕳️";
     },
@@ -144,7 +158,7 @@ export default {
         delayTime: 2.5,
         depth: 0.75,
         spread: 180,
-        wet: this.chorusWetness || 0.1, // 0.25,
+        wet: this.chorusWetness || 0.01, // 0.25,
       };
 
       const autoFilter = new Tone.AutoFilter({
