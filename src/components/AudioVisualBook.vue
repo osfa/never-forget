@@ -32,7 +32,8 @@
           <span class="action">{{ imgIdx }} / {{ batch.length }}</span>
           <span class="action">{{ previouslyRated }}</span>
         </div>
-        <SmallClock :offset="idx * randomInt(-25, 25) * offsetSeed" />
+        <!-- <SmallClock :offset="idx * randomInt(-25, 25) * offsetSeed" /> -->
+        <Clock :offset="idx * randomInt(-25, 25) * offsetSeed" />
       </div>
       <!-- </transition-group> -->
     </div>
@@ -47,6 +48,7 @@ import { permaBlackList } from "../blacklist.js";
 import { jetee } from "../script.js";
 import BarebonesTone from "./BarebonesTone.vue";
 import SmallClock from "./SmallClock.vue";
+import Clock from "./Clock.vue";
 import Subtitles from "./Subtitles.vue";
 
 const parseInputs = (array, subdir) => {
@@ -94,6 +96,7 @@ export default {
   components: {
     BarebonesTone,
     SmallClock,
+    Clock,
     Subtitles,
   },
   data() {
@@ -254,7 +257,7 @@ export default {
         this.hotSwapCard(sequenceIdx, chapterCard);
         this.scrollToSequence(sequenceIdx);
         // this.slideTickInterval = [2, 4, 8].sample();
-        this.slideTickInterval = this.randomInt(6, 12);
+        this.slideTickInterval = this.randomInt(6, 16);
         this.tickDown = this.slideTickInterval;
 
         this.textIdx += 1;

@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import App from "./App.vue";
+// import Landing from "./Landing.vue";
 
 // from vue3? borken?
 export default createRouter({
@@ -9,6 +10,10 @@ export default createRouter({
       path: "/",
       component: App,
     },
+    // {
+    //   path: "/about",
+    //   component: Landing,
+    // },
     // {
     //   path: "/about",
     //   component: () => import("@/views/About.vue"),

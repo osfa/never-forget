@@ -54,7 +54,7 @@ export default {
     playTick() {
       if (!this.isPlaying) return;
 
-      if (this.narrationPlayer && this.narrationPlayer.state === "stopped") {
+      if (this.narrationPlayer && this.narrationPlayer.state === "stopped" && false) {
         if (this.pauseTicks === 0) {
           const file = audioLibrary.bush.sample();
           console.log("new narration:", file);
@@ -117,11 +117,11 @@ export default {
       //   console.log("ambiancePlayer stopped");
       // };
 
-      this.initAmbiance();
+      // this.initAmbiance();
 
       const narrationUrls = audioLibrary.bush.reduce((acc, curr) => ((acc[curr] = curr), acc), {});
       const narrationPlayer = new Tone.Players(narrationUrls, () => {
-        console.log("loaded into narrationPlayer", narrationUrls);
+        // console.log("loaded into narrationPlayer", narrationUrls);
         this.narrationPlayer = narrationPlayer;
         this.narrationPlayer.volume.value = this.narrationVolume;
       }).toDestination();
@@ -140,9 +140,9 @@ export default {
 
       this.noiseMaker = new Tone.Noise("brown");
       const autoFilter = new Tone.AutoFilter({
-        frequency: 0.01,
-        baseFrequency: 200,
-        octaves: 3,
+        frequency: 0.01, // How fast the filter modulates between min and max
+        baseFrequency: 200, // The minimum value of the filter's cutoff frequency.
+        octaves: 3, // The number of octaves above the baseFrequency
       }).toDestination();
       this.noiseMaker.volume.value = this.noiserMakerVolume;
       this.noiseMaker.connect(autoFilter);

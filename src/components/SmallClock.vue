@@ -1,6 +1,6 @@
 <template>
   <div class="clock-container text-sm md:text-lg font-weight-light">
-    <div v-if="isUnixTime" class="clock-inner">
+    <div class="clock-inner">
       <div class="hour text-white">{{ unix }}</div>
     </div>
   </div>
@@ -10,7 +10,6 @@
 export default {
   name: "ClockComponent",
   props: {
-    isUnixTime: { type: Boolean, default: true },
     offset: { type: Number, default: 0 },
   },
   data() {
