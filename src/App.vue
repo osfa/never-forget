@@ -1,17 +1,17 @@
 <template>
-  <AudioVisualBook />
+  <router-view></router-view>
 </template>
 
 <script>
 Array.prototype.sample = function () {
   return this[Math.floor(Math.random() * this.length)];
 };
-import AudioVisualBook from "./components/AudioVisualBook.vue";
-export default {
-  components: {
-    AudioVisualBook,
-  },
-};
+// import AudioVisualBook from "./components/AudioVisualBook.vue";
+// export default {
+//   components: {
+//     AudioVisualBook,
+//   },
+// };
 </script>
 
 <style>

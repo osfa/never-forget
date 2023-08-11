@@ -9,6 +9,7 @@
   "dependencies": {
     "tone": "^14.7.77",
     "vue": "^2.7",
+    "vue-router": "3",
     "vue-template-compiler": "^2.7.14"
   },
   "devDependencies": {
