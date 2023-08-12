@@ -15,7 +15,7 @@ const routes = [
 
 const router = new VueRouter({
   routes,
-  mode: "history", // Use 'history' mode for clean URLs (requires server configuration)
+  // mode: "history", // Use 'history' mode for clean URLs (requires server configuration)
 });
 
 export default router;
