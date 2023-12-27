@@ -33,7 +33,7 @@
           <span class="action">{{ previouslyRated }}</span>
         </div>
         <!-- <SmallClock :offset="idx * randomInt(-25, 25) * offsetSeed" /> -->
-        <Clock :offset="idx * randomInt(-25, 25) * offsetSeed" />
+        <!-- <Clock :offset="idx * randomInt(-25, 25) * offsetSeed" /> -->
       </div>
       <!-- </transition-group> -->
     </div>
@@ -101,18 +101,18 @@ export default {
   },
   data() {
     return {
-      debug: false,
+      debug: true,
 
       timelines: [],
       batch: concatted,
       chapters: [],
 
-      isRatingMode: false,
+      isRatingMode: true,
       imgIdx: 0,
       previouslyRated: 0,
 
       isPaused: false,
-      showControls: false,
+      showControls: true,
 
       lastNow: null,
       ticks: 0,
@@ -140,6 +140,9 @@ export default {
       console.log("rating:", stars, this.timelines[cardIdx].imgPath);
       this.timelines[cardIdx].stars = stars;
       this.rated.push(this.timelines[cardIdx]);
+
+      // wtf is supposed to happen here? not workgin anyays?
+      // need pass double click?
       this.hotSwapCard(cardIdx);
       this.exportRated();
     },
@@ -319,6 +322,8 @@ export default {
     this.batch = this.batch.filter((x) => !this.blackList.includes(x));
     console.log("after blacklist", this.batch.length);
 
+    // after filtering?
+
     this.batch = this.batch.map((x) => {
       const rating = this.rated.filter((r) => r.imgPath === x)[0];
       // console.log("rating:", rating?.stars);
@@ -342,7 +347,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .action-bar {
   position: absolute;
   top: 1rem;
@@ -368,6 +373,9 @@ export default {
 
 html,
 body {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
   margin: 0;
   padding: 0;
   overflow-x: hidden;
@@ -410,8 +418,8 @@ body {
   flex-wrap: wrap;
   overflow-x: hidden;
   justify-content: center;
-  background-color: black;
-  background-color: #0f0;
+  /* background-color: black;
+  background-color: #0f0; */
 }
 
 .sequences-container {
