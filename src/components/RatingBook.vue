@@ -68,6 +68,13 @@
             <option value="2">2x2</option>
             <option value="3">3x3</option>
           </select>
+          <select required name="imgPerPage" id="imgPerPage" v-model="imgPerPage">
+            <option value="32">32</option>
+            <option value="64">64</option>
+            <option value="128">128</option>
+            <option value="256">256</option>
+            <option value="512">512</option>
+          </select>
         </div>
       </div>
     </div>
@@ -110,15 +117,8 @@
     </div>
     <footer>
       <button v-if="currentPage > 1" @click="currentPage -= 1">Previous</button>
-      <div class="cursor-label">${{ cursorPosition }} | Page {{ currentPage }} / {{ Math.round(filteredImages.length / imgPerPage) + 1 }} | {{ filteredImages.length }} images</div>
-      <button v-if="currentPage * imgPerPage < filteredImages.length" @click="currentPage += 1">Next</button>
-      <!-- <select required name="imgPerPage" id="imgPerPage" v-model="imgPerPage">
-        <option value="32">32</option>
-        <option value="64">64</option>
-        <option value="128">128</option>
-        <option value="256">256</option>
-        <option value="512">512</option>
-      </select> -->
+      <div class="cursor-label">${{ cursorPosition }} | Page {{ currentPage }} / {{ Math.round(filteredImages.length / imgPerPage) }} | {{ filteredImages.length }} images</div>
+      <button v-if="currentPage * imgPerPage <= filteredImages.length" @click="currentPage += 1">Next</button>
     </footer>
   </div>
 </template>
@@ -221,6 +221,15 @@ const parsedImgList = allImgs.default.map((imgPath) => {
   if (imgPath.includes("trackers")) {
     category = "trackers";
   }
+  if (imgPath.includes("--wow")) {
+    category = "wow";
+  }
+  if (imgPath.includes("cs-2x")) {
+    category = "cs";
+  }
+  if (imgPath.includes("fortnite")) {
+    category = "fortnite";
+  }
 
   MODELS_IN_SET.push(model);
   INPUT_IMGS_IN_SET.push(inputImage);
@@ -276,7 +285,7 @@ export default {
       availableModels: AVAILABLE_MODELS,
       availableInputs: AVAILABLE_INPUT_IMGS,
       availablePrompts: AVAILABLE_PROMPTS,
-      availableCategories: ["ava", "911", "jetee", "trackers", "cs-2x"],
+      availableCategories: ["ava", "911", "jetee", "trackers", "cs-2x", "wow", "fortnite"],
       sortDir: 1,
       MODEL_META_MAP,
       PROMPT_MAP,
