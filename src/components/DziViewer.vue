@@ -1,6 +1,8 @@
 <!-- eslint-disable no-console -->
 <template>
   <div id="viewer-image" ref="image">
+    <div id="overlay" :style="{ backgroundSize: `${Math.min(currentZoom * 25, 35)}%` }"></div>
+    <!-- <img id="overlay" src="/grid2.svg" :style="{ scale: `${currentZoom * 150}%` }" /> -->
     <div id="action-bar-top">
       <div
         id="info"
@@ -15,32 +17,30 @@
         <!-- <InformationIcon /> -->
       </div>
 
-      <!-- <AudioModule
-        v-if="!develop"
-        ref="audioModule"
-        :automatic-fade="false"
-        :debug="false"
-        :kiosk-mode="false"
-      /> -->
+      <!-- <AudioModule v-if="!develop" ref="audioModule" :automatic-fade="false" :debug="false" :kiosk-mode="false" /> -->
+      <BarebonesTone ref="audioModule" automaticFade :debug="false" />
     </div>
   </div>
 </template>
 <script>
 import OpenSeadragon from "openseadragon";
 import { availableSchemas } from "../schemas.js";
-import AudioModule from "./AudioModule.vue";
+// import AudioModule from "./AudioModule.vue";
+import BarebonesTone from "./BarebonesTone.vue";
 
 window.OpenSeadragon = OpenSeadragon;
 export default {
   name: "DziViewer",
   components: {
-    AudioModule,
+    // AudioModule,
+    BarebonesTone,
   },
   data() {
     return {
       idx: 0,
       active_schema: availableSchemas[0],
       wrap: true,
+      currentZoom: 0.2,
       startZoom: 6,
       minZoom: 6, // how far you can zoom out, the smaller the more
       // minZoom: 2, // how far you can zoom out, the smaller the more
@@ -56,6 +56,13 @@ export default {
       devMode: true,
       infoOpen: false,
       develop: false,
+
+      // tick stuff
+      lastNow: null,
+      ticks: 0,
+      tickInterval: 1000,
+      slideTickInterval: 8,
+      tickDown: 8,
     };
   },
   computed: {
@@ -69,8 +76,18 @@ export default {
   },
   mounted() {
     this.initViewer();
+    this.frame();
   },
   methods: {
+    tick() {
+      this.ticks += 1;
+      this.tickDown -= 1;
+      if (this.$refs.audioModule) this.$refs.audioModule.playTick();
+
+      // if (this.ticks % this.slideTickInterval === 0) {
+      //   this.storyTick();
+      // }
+    },
     isTouchDevice() {
       return "ontouchstart" in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
     },
@@ -124,7 +141,7 @@ export default {
         maxImageCacheCount: 10000,
         // tileSources: ts,
         tileSources: [availableSchemas[0], availableSchemas[1], availableSchemas[2]],
-        sequenceMode: true,
+        sequenceMode: false,
         // imageSmoothingEnabled???
         showNavigator: false,
         showRotationControl: false,
@@ -152,6 +169,7 @@ export default {
         this.currentCenter = this.viewer.viewport.getCenter();
         this.viewer.addHandler("zoom", () => {
           console.log("zoom", this.viewer.viewport.getZoom());
+          this.currentZoom = this.viewer.viewport.getZoom();
         });
       });
 
@@ -200,5 +218,23 @@ body,
 #viewer-image {
   height: 100%;
   width: 100%;
+}
+#overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-image: url("/grid2.svg");
+  pointer-events: none;
+  z-index: 2000;
+  object-fit: contain;
+  background-size: 15%;
+  background-position: center;
+  /* box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; */
+  /* filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4)); */
+  opacity: 25%;
+  /* mix-blend-mode: difference; */
+  /* background-color: transparent; */
 }
 </style>

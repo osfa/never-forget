@@ -27,8 +27,8 @@ export default {
       narrationPlayer2: null,
 
       baseVolume: -6,
-      // narrationVolume: -9,
-      narrationVolume: -3,
+      narrationVolume: -9,
+      // narrationVolume: -3,
       narrationVolumeMin: -32,
 
       noiseMaker: null,
@@ -54,7 +54,7 @@ export default {
     playTick() {
       if (!this.isPlaying) return;
 
-      if (this.narrationPlayer && this.narrationPlayer.state === "stopped" && false) {
+      if (this.narrationPlayer && this.narrationPlayer.state === "stopped") {
         if (this.pauseTicks === 0) {
           const file = audioLibrary.bush.sample();
           console.log("new narration:", file);
@@ -103,21 +103,21 @@ export default {
       this.audioCtx = context.rawContext;
       this.setVolume();
 
-      // const file1 = "/audio/cabin.mp3";
-      // const ambiancePlayer = new Tone.Player(file1, () => {
-      //   console.log("loaded into ambiancePlayer", file1);
-      //   this.ambiancePlayer = ambiancePlayer;
-      //   // this.sampler1.playbackRate = 0.9
-      //   this.ambiancePlayer.autostart = true;
-      //   this.ambiancePlayer.loop = true;
-      //   this.ambiancePlayer.volume.value = -9;
-      // }).toDestination();
+      const file1 = "/audio/cabin.mp3";
+      const ambiancePlayer = new Tone.Player(file1, () => {
+        console.log("loaded into ambiancePlayer", file1);
+        this.ambiancePlayer = ambiancePlayer;
+        // this.sampler1.playbackRate = 0.9
+        this.ambiancePlayer.autostart = true;
+        this.ambiancePlayer.loop = true;
+        this.ambiancePlayer.volume.value = -9;
+      }).toDestination();
 
-      // ambiancePlayer.onstop = () => {
-      //   console.log("ambiancePlayer stopped");
-      // };
+      ambiancePlayer.onstop = () => {
+        console.log("ambiancePlayer stopped");
+      };
 
-      // this.initAmbiance();
+      this.initAmbiance();
 
       const narrationUrls = audioLibrary.bush.reduce((acc, curr) => ((acc[curr] = curr), acc), {});
       const narrationPlayer = new Tone.Players(narrationUrls, () => {

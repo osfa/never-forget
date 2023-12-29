@@ -4,7 +4,7 @@ ln -s DROPBOX_PATH/\_NF-03-5 /whereverdularepot/never-forget-vite-vue2/public/NF
 
 A simple start for using vue2 with vite, using [underfin's vite-plugin-vue2](https://github.com/underfin/vite-plugin-vue2).
 
-({{ batch.filter((img) => img.model === selectedModel).filter((img) => img.inputImage.includes(input)).length }}) ({{ batch.filter((img) => img.model === model).length }})
+({{ batch.filter((img) => img.model === selectedModel).filter((img) => img.inputImage.includes(input)).length }}) ({{ batch.filter((img) => img.model === model).length }}) RGB = 1, 0, 1) hsla(0, 0%, 100%, 1.00)
 
 - blacklist
 - save filters to storage

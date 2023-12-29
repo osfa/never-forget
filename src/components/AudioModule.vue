@@ -80,7 +80,7 @@ export default {
       this.noiseMaker.volume.value = this.noiseVolume;
 
       // this.setVolume();
-      this.setFrequencies();
+      // this.setFrequencies();
 
       this.noiseMaker.start();
     },
