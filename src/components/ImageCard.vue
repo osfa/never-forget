@@ -1,5 +1,5 @@
 <template>
-  <div class="chapter-card" :class="{ 'full-size': fullSize }">
+  <div class="chapter-card" :class="{ 'full-size': fullSize, third: cardSize === '3', single: cardSize === '1' }">
     <img :src="showFried ? image.srcFried : show1pass ? image.src1pass : image.src" :alt="`Image ${image.id}`" />
     <div class="meta-bar">
       <div class="badge">{{ image.id }}</div>
@@ -16,6 +16,7 @@ export default {
     showFried: Boolean,
     show1pass: Boolean,
     fullSize: Boolean,
+    cardSize: Number,
   },
   methods: {
     rate(rating) {
@@ -27,9 +28,18 @@ export default {
 
 <style scoped>
 .chapter-card.full-size {
-  width: 100vw;
+  width: 100vw !important;
   height: auto;
 }
+.chapter-card.single {
+  width: 98vw;
+  height: auto;
+}
+.chapter-card.third {
+  width: 32vw;
+  height: auto;
+}
+
 .chapter-card {
   width: 49vw;
   height: 50vh;

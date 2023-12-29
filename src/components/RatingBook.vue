@@ -63,6 +63,11 @@
             <option value="ipa_only">ipa_only</option>
             <option value="no_ipa">no_ipa</option>
           </select>
+          <select required name="cardSize" id="cardSize" v-model="cardSize">
+            <option value="1">1x1</option>
+            <option value="2">2x2</option>
+            <option value="3">3x3</option>
+          </select>
         </div>
       </div>
     </div>
@@ -97,6 +102,7 @@
               @rate="rateImage"
               :showFried="imageQuality === 'fried'"
               :show1pass="imageQuality === '1pass'"
+              :card-size="cardSize"
               :full-size="lightBoxed && lightBoxed.id === image.id" />
           </div>
         </div>
@@ -248,6 +254,7 @@ export default {
   },
   data() {
     return {
+      cardSize: 2,
       lightBoxed: null,
       imageQuality: "fried",
       ipaFilter: "no_ipa",
