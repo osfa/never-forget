@@ -492,8 +492,12 @@ export default {
   },
 };
 </script>
-
 <style>
+.selected .meta-bar {
+  visibility: visible;
+}
+</style>
+<style scoped>
 .left {
   display: flex;
   flex-direction: row;

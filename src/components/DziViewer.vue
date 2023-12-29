@@ -195,6 +195,8 @@ export default {
 .hidden {
   display: none !important;
 }
+html,
+body,
 #viewer-image {
   height: 100%;
   width: 100%;
