@@ -13,6 +13,7 @@ export const audioLibrary = {
     // "/audio/bush/part2-blend-v2.mp3",
     "/audio/bush/the-model.mp3",
   ],
+  asmr: ["/audio/asmr/asmr2-m2-concat-2s.mp3"],
   hangDrum: [
     "/audio/hangdrum/A-sharp-4_light.wav",
     "/audio/hangdrum/A3_light.wav",

@@ -27,8 +27,9 @@ export default {
       narrationPlayer2: null,
 
       baseVolume: -6,
-      narrationVolume: -9,
+      // narrationVolume: -9,
       // narrationVolume: -3,
+      narrationVolume: 3,
       narrationVolumeMin: -32,
 
       noiseMaker: null,
@@ -56,7 +57,7 @@ export default {
 
       if (this.narrationPlayer && this.narrationPlayer.state === "stopped") {
         if (this.pauseTicks === 0) {
-          const file = audioLibrary.bush.sample();
+          const file = audioLibrary.asmr.sample();
           console.log("new narration:", file);
           this.narrationPlayer.player(file).start();
           this.pauseTicks = this.randomInt(10, 30);
@@ -119,7 +120,7 @@ export default {
 
       this.initAmbiance();
 
-      const narrationUrls = audioLibrary.bush.reduce((acc, curr) => ((acc[curr] = curr), acc), {});
+      const narrationUrls = audioLibrary.asmr.reduce((acc, curr) => ((acc[curr] = curr), acc), {});
       const narrationPlayer = new Tone.Players(narrationUrls, () => {
         // console.log("loaded into narrationPlayer", narrationUrls);
         this.narrationPlayer = narrationPlayer;
