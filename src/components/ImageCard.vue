@@ -1,15 +1,8 @@
 <template>
-  <div class="chapter-card">
+  <div class="chapter-card" :class="{ 'full-size': fullSize }">
     <img :src="showFried ? image.srcFried : show1pass ? image.src1pass : image.src" :alt="`Image ${image.id}`" />
     <div class="meta-bar">
-      <!-- <div>
-        <button v-for="n in 5" :key="n" @click="rate(n)">
-          {{ n }}
-        </button>
-      </div> -->
-      <div class="badge">{{ image.model }}</div>
-      <!-- <div>{{ image.inputImage }}</div> -->
-      <div class="badge">{{ image.promptUsed }}</div>
+      <div class="badge">{{ image.id }}</div>
     </div>
     <div v-if="rating" class="rating">{{ rating }}</div>
   </div>
@@ -22,6 +15,7 @@ export default {
     rating: Number,
     showFried: Boolean,
     show1pass: Boolean,
+    fullSize: Boolean,
   },
   methods: {
     rate(rating) {
@@ -31,7 +25,11 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+.chapter-card.full-size {
+  width: 100vw;
+  height: auto;
+}
 .chapter-card {
   width: 49vw;
   height: 50vh;
@@ -46,20 +44,6 @@ export default {
   object-fit: contain;
 }
 
-.selected .meta-bar {
-  /* box-sizing: border-box; */
-  /* border: 0.25rem solid yellow; */
-  visibility: visible;
-
-  /* text-shadow: white 1px 0 5px; */
-}
-.selected {
-  box-sizing: border-box;
-  /* border: 0.25rem solid white; */
-  padding: 0.25rem;
-  background-color: white;
-}
-
 .meta-bar {
   position: absolute;
   top: 0.25rem;
@@ -70,13 +54,14 @@ export default {
   pointer-events: none;
   display: flex;
   flex-direction: row;
-  /* justify-content: space-between; */
-  /* visibility: hidden; */
+  visibility: hidden;
+}
+
+.meta-bar .badge {
+  background-color: transparent;
 }
 
 .meta-bar div {
-  /* margin-top: 0.25rem;
-  margin-left: 0.75rem; */
   text-shadow: black 1px 0 5px;
   text-shadow: black 1px 2px 5px;
 }
@@ -99,6 +84,7 @@ export default {
   border-radius: 0.5rem;
   margin-right: 4px;
 }
+
 .rating {
   padding: 0.25rem 0.75rem;
   background-color: yellow;

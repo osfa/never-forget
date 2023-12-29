@@ -4,24 +4,26 @@ A simple start for using vue2 with vite, using [underfin's vite-plugin-vue2](htt
 
 ({{ batch.filter((img) => img.model === selectedModel).filter((img) => img.inputImage.includes(input)).length }}) ({{ batch.filter((img) => img.model === model).length }})
 
+- blacklist
+- save filters to storage
+- pill/prompt/model colors
+
+- have top bar where you can save model prompt combos?
+- clicking pills filters?
+
 - dbl click lightbox
 - support prompt prop…
 - all meta on hover
-- cfg/ss filter
 
-- paging? filters?
-- have image count beside dropdown
+- scroll to bottom button
 
 - tag cloud func? allow filtering out input images
 - step through inputs, prune inptus
 
 - comic mode
 - sequence mode
+- cfg/ss filter
 
-- input img step
-- prompt step?
-- paging info in footer? next page there
-- meta info
 - rate input?
 - only need model prompt badges? on imgs..page per input
   - emojis?

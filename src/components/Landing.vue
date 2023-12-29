@@ -134,7 +134,6 @@ export default {
   background-color: blue;
   background-color: #00b140;
   background-color: #00ff00; */
-
   /* background-color: #009933; */
 
   font-synthesis: none;
