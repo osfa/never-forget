@@ -4,12 +4,12 @@
       <div class="controls-inner">
         <div class="left">
           <div class="pills">
-            <div @click="setSortOrder('model')" class="label">Model</div>
+            <div @click="setSortOrder('model')" class="label" :class="{ active: selectedSorting === 'model' }">Model</div>
             <select required name="selectedModel" id="selectedModel" v-model="selectedModel">
               <option value="">All Models</option>
               <option v-for="model in availableModels" :key="model" :value="model">{{ model }}</option>
             </select>
-            <div @click="setSortOrder('promptUsed')" class="label">Prompt</div>
+            <div @click="setSortOrder('promptUsed')" class="label" :class="{ active: selectedSorting === 'promptUsed' }">Prompt</div>
             <select required name="selectedPrompt" id="selectedPrompt" v-model="selectedPrompt">
               <option value="">All Prompts</option>
               <option v-for="prompt in availablePrompts" :key="prompt" :value="prompt">
@@ -27,13 +27,13 @@
             </option>
           </select>
 
-          <div @click="setSortOrder('inputImage')" class="label">Input Img</div>
+          <div @click="setSortOrder('inputImage')" class="label" :class="{ active: selectedSorting === 'inputImage' }">Input Img</div>
           <select required name="selectedInputImage" id="selectedInputImage" v-model="selectedInputImage">
             <option value="">All</option>
             <option v-for="input in inputImgs" :key="input" :value="input">{{ input }}</option>
           </select>
 
-          <div @click="setSortOrder('rating')" class="label">Rating</div>
+          <div @click="setSortOrder('rating')" class="label" :class="{ active: selectedSorting === 'rating' }">Rating</div>
           <select required name="selectedRating" id="selectedRating" v-model="selectedRating" :class="{ active: selectedSorting === 'rating' }">
             <option value="">All Ratings</option>
             <option value="rated">Rated</option>
@@ -123,7 +123,7 @@
   </div>
 </template>
 <script>
-import * as allImgs from "../pics.json";
+import * as allImgs from "../pics-v2.json";
 
 let MODELS_IN_SET = [];
 let INPUT_IMGS_IN_SET = [];
@@ -221,6 +221,13 @@ const parsedImgList = allImgs.default.map((imgPath) => {
   if (imgPath.includes("trackers")) {
     category = "trackers";
   }
+  if (imgPath.includes("--bts")) {
+    category = "bts";
+  }
+  if (imgPath.includes("--hack")) {
+    // console.log("setting category: hackers", inputImage);
+    category = "hack";
+  }
   if (imgPath.includes("--wow")) {
     category = "wow";
   }
@@ -276,7 +283,7 @@ export default {
       currentPage: 1,
       imgPerPage: 128,
       isLoading: false,
-      selectedSorting: "category",
+      selectedSorting: "inputImage",
       selectedRating: "",
       selectedModel: "",
       selectedInputImage: "",
@@ -285,7 +292,7 @@ export default {
       availableModels: AVAILABLE_MODELS,
       availableInputs: AVAILABLE_INPUT_IMGS,
       availablePrompts: AVAILABLE_PROMPTS,
-      availableCategories: ["ava", "911", "jetee", "trackers", "cs-2x", "wow", "fortnite"],
+      availableCategories: ["ava", "911", "jetee", "trackers", "hack", "bts", "cs-2x", "wow", "fortnite"],
       sortDir: 1,
       MODEL_META_MAP,
       PROMPT_MAP,
@@ -304,12 +311,6 @@ export default {
     },
     filteredImages() {
       let images = this.batch;
-
-      if (this.selectedSorting !== "") {
-        images = this.batch.sort((a, b) => (a[this.selectedSorting] > b[this.selectedSorting] ? -this.sortDir : this.sortDir));
-      } else {
-        images = this.batch.sort((a, b) => (a.id > b.id ? -this.sortDir : this.sortDir));
-      }
 
       if (this.selectedRating !== "") {
         if (this.selectedRating === "rated") {
@@ -343,7 +344,7 @@ export default {
         images = images.filter((image) => image.promptUsed == this.selectedPrompt);
       }
 
-      return images.filter((x) => !this.blackList.includes(x.id));
+      return images.filter((x) => !this.blackList.includes(x.id)).sort((a, b) => (a[this.selectedSorting] > b[this.selectedSorting] ? -this.sortDir : this.sortDir));
     },
   },
   methods: {
@@ -574,6 +575,7 @@ export default {
   display: flex;
   flex-direction: row;
   font-size: 10px;
+  font-size: 8px;
   padding: 1%;
   justify-content: space-between;
 }
@@ -602,7 +604,7 @@ export default {
   justify-content: center;
   align-items: center;
   background-color: #333;
-  padding: 0 10px;
+  padding: 0 5px;
   border-radius: 10px;
   margin-right: 4px;
   cursor: pointer;
