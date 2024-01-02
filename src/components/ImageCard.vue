@@ -16,7 +16,7 @@ export default {
     showFried: Boolean,
     show1pass: Boolean,
     fullSize: Boolean,
-    cardSize: Number,
+    cardSize: String,
   },
   methods: {
     rate(rating) {
@@ -38,6 +38,7 @@ export default {
 .chapter-card.third {
   width: 32vw;
   height: auto;
+  height: 50vh;
 }
 
 .chapter-card {

@@ -63,7 +63,7 @@
             <option value="ipa_only">ipa_only</option>
             <option value="no_ipa">no_ipa</option>
           </select>
-          <select required name="cardSize" id="cardSize" v-model="cardSize">
+          <select required name="cardSize" id="cardSize" v-model="gridSize">
             <option value="1">1x1</option>
             <option value="2">2x2</option>
             <option value="3">3x3</option>
@@ -75,6 +75,10 @@
             <option value="256">256</option>
             <option value="512">512</option>
           </select>
+          <select required name="currentMode" id="currentMode" v-model="currentMode">
+            <option value="sequence">sequence</option>
+            <option value="random">random</option>
+          </select>
         </div>
       </div>
     </div>
@@ -85,7 +89,7 @@
       </div>
     </div> -->
     <div v-if="!showBlacklist" class="main-sequence-container">
-      <div v-for="image in filteredImages.slice((currentPage - 1) * imgPerPage, (currentPage - 1) * imgPerPage + imgPerPage)" :key="image.id" :class="{ selected: selectedImages.includes(image) }">
+      <div v-for="image in filteredImages" :key="image.id" :class="{ selected: selectedImages.includes(image) }">
         <div class="card-container">
           <div class="card-header">
             <div class="left">
@@ -109,7 +113,7 @@
               @rate="rateImage"
               :showFried="imageQuality === 'fried'"
               :show1pass="imageQuality === '1pass'"
-              :card-size="cardSize"
+              :card-size="gridSize"
               :full-size="lightBoxed && lightBoxed.id === image.id" />
           </div>
         </div>
@@ -118,7 +122,7 @@
     <footer>
       <button v-if="currentPage > 1" @click="currentPage -= 1">Previous</button>
       <div class="cursor-label">${{ cursorPosition }} | Page {{ currentPage }} / {{ Math.round(filteredImages.length / imgPerPage) }} | {{ filteredImages.length }} images</div>
-      <button v-if="currentPage * imgPerPage <= filteredImages.length" @click="currentPage += 1">Next</button>
+      <button v-if="currentPage * imgPerPage <= filteredImages.length && currentMode !== 'random'" @click="currentPage += 1">Next</button>
     </footer>
   </div>
 </template>
@@ -270,7 +274,9 @@ export default {
   },
   data() {
     return {
-      cardSize: 2,
+      currentMode: "sequence",
+      modes: ["sequence", "random"],
+      gridSize: "3",
       lightBoxed: null,
       imageQuality: "fried",
       ipaFilter: "no_ipa",
@@ -327,7 +333,6 @@ export default {
       }
 
       if (this.ipaFilter === "no_ipa") {
-        console.log("no_ipa filter");
         images = images.filter((image) => !image.isIpa);
       }
 
@@ -343,11 +348,32 @@ export default {
       if (this.selectedPrompt !== "") {
         images = images.filter((image) => image.promptUsed == this.selectedPrompt);
       }
-
-      return images.filter((x) => !this.blackList.includes(x.id)).sort((a, b) => (a[this.selectedSorting] > b[this.selectedSorting] ? -this.sortDir : this.sortDir));
+      const sorted = images.filter((x) => !this.blackList.includes(x.id)).sort((a, b) => (a[this.selectedSorting] > b[this.selectedSorting] ? -this.sortDir : this.sortDir));
+      if (this.currentMode === "random") {
+        // Math.random() - 0.5
+        // const shuffled = sorted.sort(() => 0.5 - Math.random());
+        // return shuffled.slice(0, this.imgPerPage);
+        console.log("huh?");
+        return this.getRandomElements(sorted, this.imgPerPage);
+      }
+      return sorted.slice((this.currentPage - 1) * this.imgPerPage, (this.currentPage - 1) * this.imgPerPage + this.imgPerPage);
     },
   },
   methods: {
+    getRandomElements(arr, n) {
+      let result = new Array(n),
+        len = arr.length,
+        taken = new Array(len);
+
+      if (n > len) throw new RangeError("getRandomElements: more elements taken than available");
+
+      while (n--) {
+        let x = Math.floor(Math.random() * len);
+        result[n] = arr[x in taken ? taken[x] : x];
+        taken[x] = --len in taken ? taken[len] : len;
+      }
+      return result;
+    },
     toggleLightBox(img) {
       console.log("toggleLightBox", img.id);
       if (this.lightBoxed && this.lightBoxed.id === img.id) {
@@ -558,7 +584,12 @@ export default {
   z-index: 1000;
 }
 .card-container {
-  background-color: #0f0;
+  /* background-color: #0f0; */
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 .selected .meta-bar {
   visibility: visible;
