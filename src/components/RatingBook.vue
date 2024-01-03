@@ -4,13 +4,20 @@
       <div class="controls-inner">
         <div class="left">
           <div class="pills">
-            <div @click="setSortOrder('model')" class="label" :class="{ active: selectedSorting === 'model' }">Model</div>
-            <select required name="selectedModel" id="selectedModel" v-model="selectedModel">
+            <!-- <div @click="setSortOrder('model')" class="label" :class="{ active: selectedSorting === 'model' }">Model</div> -->
+            <select
+              @click.shift="setSortOrder('model')"
+              required
+              name="selectedModel"
+              id="selectedModel"
+              v-model="selectedModel"
+              :class="{ active: selectedSorting === 'model' }"
+              :style="{ backgroundColor: MODEL_META_MAP[selectedModel]?.hexColor }">
               <option value="">All Models</option>
               <option v-for="model in availableModels" :key="model" :value="model">{{ model }}</option>
             </select>
-            <div @click="setSortOrder('promptUsed')" class="label" :class="{ active: selectedSorting === 'promptUsed' }">Prompt</div>
-            <select required name="selectedPrompt" id="selectedPrompt" v-model="selectedPrompt">
+            <!-- <div @click="setSortOrder('promptUsed')" class="label" :class="{ active: selectedSorting === 'promptUsed' }">Prompt</div> -->
+            <select required name="selectedPrompt" id="selectedPrompt" v-model="selectedPrompt" :style="{ backgroundColor: PROMPT_MAP[selectedPrompt]?.hexColor }">
               <option value="">All Prompts</option>
               <option v-for="prompt in availablePrompts" :key="prompt" :value="prompt">
                 {{ prompt }}
@@ -19,7 +26,7 @@
           </div>
         </div>
         <div class="center">
-          <div @click="setSortOrder('category')" class="label" :class="{ active: selectedSorting === 'category' }">Category</div>
+          <!-- <div @click="setSortOrder('category')" class="label" :class="{ active: selectedSorting === 'category' }">Category</div> -->
           <select required name="selectedInputCategory" id="selectedInputCategory" v-model="selectedInputCategory">
             <option value="">All Categories</option>
             <option v-for="input in availableCategories" :key="input" :value="input">
@@ -27,13 +34,13 @@
             </option>
           </select>
 
-          <div @click="setSortOrder('inputImage')" class="label" :class="{ active: selectedSorting === 'inputImage' }">Input Img</div>
+          <!-- <div @click="setSortOrder('inputImage')" class="label" :class="{ active: selectedSorting === 'inputImage' }">Input Img</div> -->
           <select required name="selectedInputImage" id="selectedInputImage" v-model="selectedInputImage">
-            <option value="">All</option>
+            <option value="">All Input Images</option>
             <option v-for="input in inputImgs" :key="input" :value="input">{{ input }}</option>
           </select>
 
-          <div @click="setSortOrder('rating')" class="label" :class="{ active: selectedSorting === 'rating' }">Rating</div>
+          <!-- <div @click="setSortOrder('rating')" class="label" :class="{ active: selectedSorting === 'rating' }">Rating</div> -->
           <select required name="selectedRating" id="selectedRating" v-model="selectedRating" :class="{ active: selectedSorting === 'rating' }">
             <option value="">All Ratings</option>
             <option value="rated">Rated</option>
@@ -43,16 +50,19 @@
             </option>
           </select>
 
-          <button @click="goTop">Scroll Top</button>
+          <!-- <button @click="goTop">Scroll Top</button> -->
         </div>
         <div>
-          <!-- <select required name="selectedSorting" id="selectedSorting" v-model="selectedSorting">
-            <option value="">Path</option>
-            <option value="rating">rating</option>
-            <option value="inputImage">inputImage</option>
-            <option value="model">model</option>
-            <option value="promptUsed">promptUsed</option>
-          </select> -->
+          <select required name="sortDirection" id="sortDirection" v-model="sortDir">
+            <option value="-1">Sort Down</option>
+            <option value="1">Sort Up</option>
+          </select>
+          <select required name="selectedSort" id="selectedSort" v-model="selectedSorting">
+            <option value="inputImage">Input Image</option>
+            <option value="model">Model</option>
+            <option value="prompt">Prompt</option>
+            <option value="rating">Rating</option>
+          </select>
           <select required name="imageQuality" id="imageQuality" v-model="imageQuality">
             <option value="1pass">1pass</option>
             <option value="2pass">2pass</option>
@@ -62,22 +72,6 @@
             <option value="all">all</option>
             <option value="ipa_only">ipa_only</option>
             <option value="no_ipa">no_ipa</option>
-          </select>
-          <select required name="cardSize" id="cardSize" v-model="gridSize">
-            <option value="1">1x1</option>
-            <option value="2">2x2</option>
-            <option value="3">3x3</option>
-          </select>
-          <select required name="imgPerPage" id="imgPerPage" v-model="imgPerPage">
-            <option value="32">32</option>
-            <option value="64">64</option>
-            <option value="128">128</option>
-            <option value="256">256</option>
-            <option value="512">512</option>
-          </select>
-          <select required name="currentMode" id="currentMode" v-model="currentMode">
-            <option value="sequence">sequence</option>
-            <option value="random">random</option>
           </select>
         </div>
       </div>
@@ -89,16 +83,15 @@
       </div>
     </div> -->
     <div v-if="!showBlacklist" class="main-sequence-container">
-      <div v-for="image in filteredImages" :key="image.id" :class="{ selected: selectedImages.includes(image) }">
+      <div v-for="image in filteredImages.slice((currentPage - 1) * imgPerPage, (currentPage - 1) * imgPerPage + imgPerPage)" :key="image.id" :class="{ selected: selectedImages.includes(image) }">
         <div class="card-container">
-          <div class="card-header">
+          <div v-show="showMeta" class="card-header">
             <div class="left">
               <div class="badge" @click="filterModel(image.model)" :style="{ backgroundColor: MODEL_META_MAP[image.model].hexColor }">{{ MODEL_META_MAP[image.model].friendlyName }}</div>
               <div class="badge" @click="filterPrompt(image.promptUsed)" :style="{ backgroundColor: PROMPT_MAP[image.promptUsed].hexColor }">{{ image.promptUsed }}</div>
               <div class="badge static">{{ image.supportPrompt }}</div>
               <div class="badge static">{{ image.cfg }} CFG : {{ image.ss }} SS</div>
               <div class="badge" @click="filterInput(image.inputImage)" :style="{ backgroundColor: CATEGORY_MAP[image.category]?.hexColor }">{{ image.inputImage }}</div>
-              <!-- <div class="badge">{{ image.isIpa }}</div> -->
             </div>
             <div class="right">
               <a href="#" @click="blackListAction(image, 'pair')">👯</a>
@@ -120,9 +113,31 @@
       </div>
     </div>
     <footer>
-      <button v-if="currentPage > 1" @click="currentPage -= 1">Previous</button>
-      <div class="cursor-label">${{ cursorPosition }} | Page {{ currentPage }} / {{ Math.round(filteredImages.length / imgPerPage) }} | {{ filteredImages.length }} images</div>
-      <button v-if="currentPage * imgPerPage <= filteredImages.length && currentMode !== 'random'" @click="currentPage += 1">Next</button>
+      <div class="grid-settings"></div>
+      <div class="paging">
+        <button v-if="currentPage > 1" @click="currentPage -= 1">Previous</button>
+        <div class="cursor-label">${{ cursorPosition }} | Page {{ currentPage }} / {{ Math.round(filteredImages.length / imgPerPage) }} | {{ filteredImages.length }} images</div>
+        <button v-if="currentPage * imgPerPage <= filteredImages.length && currentMode !== 'random'" @click="currentPage += 1">Next</button>
+      </div>
+      <div class="grid-settings">
+        <select required name="gridSize" id="gridSize" v-model="gridSize">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+        </select>
+        <select required name="imgPerPage" id="imgPerPage" v-model="imgPerPage">
+          <option value="32">32</option>
+          <option value="64">64</option>
+          <option value="128">128</option>
+          <option value="256">256</option>
+          <option value="512">512</option>
+        </select>
+        <select required name="currentMode" id="currentMode" v-model="currentMode">
+          <option value="sequence">sequence</option>
+          <option value="random">random</option>
+        </select>
+        <button @click="showMeta = !showMeta">Show Meta</button>
+      </div>
     </footer>
   </div>
 </template>
@@ -274,6 +289,10 @@ export default {
   },
   data() {
     return {
+      modelCursor: 0,
+      promptCursor: 0,
+      inputCursor: 0,
+      showMeta: true,
       currentMode: "sequence",
       modes: ["sequence", "random"],
       gridSize: "3",
@@ -315,6 +334,9 @@ export default {
       }
       return this.availableInputs.sort();
     },
+    // filteredSliced() {
+    //   return this.
+    // },
     filteredImages() {
       let images = this.batch;
 
@@ -353,10 +375,9 @@ export default {
         // Math.random() - 0.5
         // const shuffled = sorted.sort(() => 0.5 - Math.random());
         // return shuffled.slice(0, this.imgPerPage);
-        console.log("huh?");
         return this.getRandomElements(sorted, this.imgPerPage);
       }
-      return sorted.slice((this.currentPage - 1) * this.imgPerPage, (this.currentPage - 1) * this.imgPerPage + this.imgPerPage);
+      return sorted;
     },
   },
   methods: {
@@ -459,11 +480,29 @@ export default {
       } else if (e.key === "5") {
         this.rateSelected(5);
         return;
+      } else if (e.shiftKey === true && e.key === "ArrowLeft") {
+        this.promptCursor -= 1;
+        this.selectedPrompt = this.availablePrompts[(this.promptCursor + this.availablePrompts.length) % this.availablePrompts.length];
+        return;
+      } else if (e.shiftKey === true && e.key === "ArrowRight") {
+        this.promptCursor += 1;
+        this.selectedPrompt = this.availablePrompts[(this.promptCursor + this.availablePrompts.length) % this.availablePrompts.length];
+        return;
+      } else if (e.altKey === true && e.key === "ArrowLeft") {
+        this.inputCursor -= 1;
+        this.selectedInputImage = this.availableInputs[(this.inputCursor + this.availableInputs.length) % this.availableInputs.length];
+        return;
+      } else if (e.altKey === true && e.key === "ArrowRight") {
+        this.inputCursor += 1;
+        this.selectedInputImage = this.inputImgs[(this.inputCursor + this.inputImgs.length) % this.inputImgs.length];
+        return;
       } else if (e.key === "ArrowLeft") {
-        this.moveCursor(0, -1);
+        this.modelCursor -= 1;
+        this.selectedModel = this.availableModels[(this.modelCursor + this.availableModels.length) % this.availableModels.length];
         return;
       } else if (e.key === "ArrowRight") {
-        this.moveCursor(0, 1);
+        this.modelCursor += 1;
+        this.selectedModel = this.availableModels[(this.modelCursor + this.availableModels.length) % this.availableModels.length];
         return;
       }
     },
@@ -473,10 +512,11 @@ export default {
     },
     moveCursor(cardIdx, direction) {
       console.log("moveCursor", cardIdx, direction);
-      if (this.selectedInputImage === "") {
-        this.currentPage += direction;
-      }
+      // if (this.selectedInputImage === "") {
+      //   this.currentPage += direction;
+      // }
       // this.cursorPosition = (this.currentPage - 1) * this.imgPerPage;
+      // this.modelCursor += direction;
     },
     randomInt(min, max) {
       min = Math.ceil(min);
@@ -496,6 +536,15 @@ export default {
     },
   },
   watch: {
+    // modelCursor() {
+
+    // },
+    // promptCursor() {
+    //   this.selectedPrompt = this.availablePrompts[this.promptCursor];
+    // },
+    // inputCursor() {
+    //   this.selectedInputImage = this.availableInputs[this.inputCursor];
+    // },
     selectedModel() {
       this.currentPage = 1;
       localStorage.setItem("selectedModel", JSON.stringify(this.selectedModel));
@@ -510,6 +559,9 @@ export default {
       localStorage.setItem("selectedInputCategory", JSON.stringify(this.selectedInputCategory));
     },
     selectedInputImage() {
+      if (this.currentMode === "random") {
+        this.currentMode = "sequence";
+      }
       this.currentPage = 1;
     },
     selectedRating() {
@@ -541,6 +593,21 @@ export default {
 }
 </style>
 <style scoped>
+select {
+  padding: 8px;
+  border: none;
+  background-color: white;
+  color: black;
+}
+button {
+  padding: 8px;
+  border: none;
+  background-color: white;
+  color: black;
+}
+.controls-inner {
+  background-color: white;
+}
 .left {
   display: flex;
   flex-direction: row;
@@ -555,8 +622,8 @@ export default {
   margin-right: 0.5rem;
 }
 .label {
-  text-decoration: underline;
   color: white;
+  color: black;
   margin: 0 0.5rem;
   cursor: pointer;
   font-size: 0.5rem;
@@ -568,6 +635,7 @@ export default {
 
 .label.active {
   font-weight: bold;
+  text-decoration: underline;
 }
 
 .center {
@@ -677,10 +745,24 @@ footer {
   color: white;
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   padding: 0.5rem 0;
   z-index: 999;
+}
+
+.paging {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-right: 1rem;
+}
+.grid-settings {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-left: 1rem;
+  width: 24vw;
 }
 
 html,
