@@ -49,8 +49,6 @@
               {{ n }}
             </option>
           </select>
-
-          <!-- <button @click="goTop">Scroll Top</button> -->
         </div>
         <div>
           <select required name="sortDirection" id="sortDirection" v-model="sortDir">
@@ -77,12 +75,7 @@
       </div>
     </div>
 
-    <!-- <div v-if="showBlacklist" class="main-sequence-container">
-      <div class="fade-in-image chapter-bkg" v-for="(imgPath, idx) in blackList" :style="{ backgroundImage: 'url(' + imgPath + ')' }">
-        <div class="action-bar"><span @click="reinstate(idx)" class="action">🟢</span></div>
-      </div>
-    </div> -->
-    <div v-if="!showBlacklist" class="main-sequence-container">
+    <div class="main-sequence-container">
       <div v-for="image in filteredImages.slice((currentPage - 1) * imgPerPage, (currentPage - 1) * imgPerPage + imgPerPage)" :key="image.id" :class="{ selected: selectedImages.includes(image) }">
         <div class="card-container">
           <div v-show="showMeta" class="card-header">
@@ -135,6 +128,8 @@
         <select required name="currentMode" id="currentMode" v-model="currentMode">
           <option value="sequence">sequence</option>
           <option value="random">random</option>
+          <option value="weighted">weighted</option>
+          <option value="blacklist">blacklist</option>
         </select>
         <button @click="showMeta = !showMeta">Show Meta</button>
       </div>
@@ -142,7 +137,7 @@
   </div>
 </template>
 <script>
-import * as allImgs from "../pics-v2.json";
+import * as allImgs from "../pics-v3.json";
 
 let MODELS_IN_SET = [];
 let INPUT_IMGS_IN_SET = [];
@@ -244,7 +239,6 @@ const parsedImgList = allImgs.default.map((imgPath) => {
     category = "bts";
   }
   if (imgPath.includes("--hack")) {
-    // console.log("setting category: hackers", inputImage);
     category = "hack";
   }
   if (imgPath.includes("--wow")) {
@@ -304,7 +298,6 @@ export default {
       cursorPosition: 0,
       selectedImages: [],
       blackList: [],
-      showBlacklist: false,
       currentPage: 1,
       imgPerPage: 128,
       isLoading: false,
@@ -334,11 +327,14 @@ export default {
       }
       return this.availableInputs.sort();
     },
-    // filteredSliced() {
-    //   return this.
-    // },
     filteredImages() {
+      console.log("filteredImagesFire");
       let images = this.batch;
+      if (this.currentMode !== "blacklist") {
+        images = images.filter((image) => !this.blackList.includes(image.id));
+      } else {
+        images = images.filter((image) => this.blackList.includes(image.id));
+      }
 
       if (this.selectedRating !== "") {
         if (this.selectedRating === "rated") {
@@ -370,11 +366,9 @@ export default {
       if (this.selectedPrompt !== "") {
         images = images.filter((image) => image.promptUsed == this.selectedPrompt);
       }
-      const sorted = images.filter((x) => !this.blackList.includes(x.id)).sort((a, b) => (a[this.selectedSorting] > b[this.selectedSorting] ? -this.sortDir : this.sortDir));
+
+      const sorted = images.sort((a, b) => (a[this.selectedSorting] > b[this.selectedSorting] ? -this.sortDir : this.sortDir));
       if (this.currentMode === "random") {
-        // Math.random() - 0.5
-        // const shuffled = sorted.sort(() => 0.5 - Math.random());
-        // return shuffled.slice(0, this.imgPerPage);
         return this.getRandomElements(sorted, this.imgPerPage);
       }
       return sorted;
@@ -536,15 +530,9 @@ export default {
     },
   },
   watch: {
-    // modelCursor() {
-
-    // },
-    // promptCursor() {
-    //   this.selectedPrompt = this.availablePrompts[this.promptCursor];
-    // },
-    // inputCursor() {
-    //   this.selectedInputImage = this.availableInputs[this.inputCursor];
-    // },
+    currentMode() {
+      this.currentPage = 1;
+    },
     selectedModel() {
       this.currentPage = 1;
       localStorage.setItem("selectedModel", JSON.stringify(this.selectedModel));
@@ -570,7 +558,7 @@ export default {
     },
   },
   created() {
-    this.blackList = JSON.parse(localStorage.getItem("blackList") || "[]");
+    this.blackList = JSON.parse(localStorage.getItem("blackList") || "[]").filter((n) => n);
     const ratedImages = JSON.parse(localStorage.getItem("imageRatings") || "[]");
     console.log("loaded rated:", ratedImages.length);
     console.log("blacklist length", this.blackList.length);

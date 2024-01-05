@@ -12,7 +12,7 @@ const routes = [
   { path: "/", component: AudioVisualBook },
   { path: "/landing", component: Landing },
   { path: "/dzi", component: DziViewer },
-  { path: "/rating", component: RatingBook },
+  { path: "/console", component: RatingBook },
 ];
 
 const router = new VueRouter({
