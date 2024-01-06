@@ -1,10 +1,10 @@
 <template>
-  <div class="chapter-card" :class="{ 'full-size': fullSize, third: cardSize === '3', single: cardSize === '1' }">
+  <div class="chapter-card" :class="{ 'full-size': fullSize, third: cardSize === '3', single: cardSize === '1', fourth: cardSize === '4', vertical: isVertical }">
     <img :src="showFried ? image.srcFried : show1pass ? image.src1pass : image.src" :alt="`Image ${image.id}`" />
     <div class="meta-bar">
       <div class="badge">{{ image.id }}</div>
     </div>
-    <div v-if="rating" class="rating">{{ rating }}</div>
+    <div v-if="rating" class="rating-container"><div v-for="n in parseInt(rating)" class="rating"></div></div>
   </div>
 </template>
 
@@ -17,6 +17,7 @@ export default {
     show1pass: Boolean,
     fullSize: Boolean,
     cardSize: String,
+    isVertical: Boolean,
   },
   methods: {
     rate(rating) {
@@ -34,16 +35,28 @@ export default {
 .chapter-card.single {
   width: 98vw;
   height: auto;
+  aspect-ratio: 16/9;
 }
 .chapter-card.third {
   width: 32vw;
   height: auto;
-  height: 50vh;
+  aspect-ratio: 16/9;
+  /* height: 50vh; */
+}
+.chapter-card.fourth {
+  width: 24vw;
+  height: auto;
+  aspect-ratio: 16/9;
+}
+
+.chapter-card.vertical {
+  aspect-ratio: 9/16;
 }
 
 .chapter-card {
   width: 49vw;
-  height: 50vh;
+  aspect-ratio: 16/9;
+
   position: relative;
   cursor: pointer;
   background-color: #000;
@@ -53,6 +66,7 @@ export default {
   width: 100%;
   height: 100%;
   object-fit: contain;
+  object-fit: cover;
 }
 
 .meta-bar {
@@ -77,14 +91,6 @@ export default {
   text-shadow: black 1px 2px 5px;
 }
 
-.rating {
-  position: absolute;
-  top: 0.25rem;
-  right: 0.75rem;
-  font-size: 0.75rem;
-  font-weight: bold;
-}
-
 .chapter-card:hover .meta-bar {
   visibility: visible;
 }
@@ -97,9 +103,20 @@ export default {
 }
 
 .rating {
-  padding: 0.25rem 0.75rem;
+  padding: 0.25rem;
   background-color: yellow;
   border-radius: 1rem;
-  color: black;
+  box-shadow: #fff 1px 1px 5px;
+  /* margin-bottom: 0.1rem; */
+}
+
+.rating-container {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  font-size: 0.5rem;
+  font-weight: bold;
+  display: flex;
+  flex-direction: row;
 }
 </style>
