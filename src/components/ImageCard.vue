@@ -1,6 +1,6 @@
 <template>
   <div class="chapter-card" :class="{ 'full-size': fullSize, third: cardSize === '3', single: cardSize === '1', fourth: cardSize === '4', vertical: isVertical }">
-    <img :src="showFried ? image.srcFried : show1pass ? image.src1pass : image.src" :alt="`Image ${image.id}`" />
+    <img :src="showFried ? image.srcFried : show1pass ? image.src1pass : image.src" :alt="`Image ${image.id}`" :class="{ cover: imageDisplay === 'cover' }" />
     <div class="meta-bar">
       <div class="badge">{{ image.id }}</div>
     </div>
@@ -18,6 +18,7 @@ export default {
     fullSize: Boolean,
     cardSize: String,
     isVertical: Boolean,
+    imageDisplay: String,
   },
   methods: {
     rate(rating) {
@@ -51,6 +52,7 @@ export default {
 
 .chapter-card.vertical {
   aspect-ratio: 9/16;
+  max-width: 540px;
 }
 
 .chapter-card {
@@ -66,6 +68,8 @@ export default {
   width: 100%;
   height: 100%;
   object-fit: contain;
+}
+.chapter-card img.cover {
   object-fit: cover;
 }
 

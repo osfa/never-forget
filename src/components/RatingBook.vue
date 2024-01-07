@@ -1,5 +1,6 @@
 <template>
   <div tabindex="-1" @keyup="keyListener">
+    <WeightingBar :available-categories="availableCategories" />
     <div v-show="showControls" class="controls">
       <div class="controls-inner">
         <div class="left">
@@ -54,10 +55,8 @@
           </select>
         </div>
         <div>
-          <select required name="sortDirection" id="sortDirection" v-model="sortDir">
-            <option value="-1">Sort Down</option>
-            <option value="1">Sort Up</option>
-          </select>
+          <button @click="sortDir = sortDir === -1 ? 1 : -1">{{ sortDir === -1 ? "sort down" : "sort up" }}</button>
+
           <select required name="selectedSort" id="selectedSort" v-model="selectedSorting">
             <option value="inputImage">Input Image</option>
             <option value="model">Model</option>
@@ -79,26 +78,32 @@
     </div>
 
     <div class="main-sequence-container">
-      <div v-for="image in filteredImages.slice((currentPage - 1) * imgPerPage, (currentPage - 1) * imgPerPage + imgPerPage)" :key="image.id" :class="{ selected: selectedImages.includes(image) }">
+      <div v-for="image in viewportImages" :key="image.id" :class="{ selected: selectedImages.includes(image) }">
         <div class="card-container">
+          <div v-show="showMeta" class="right">
+            <a href="#" class="triple card-action" @click="tripleSave(image)"></a>
+            <a href="#" class="blacklist-triple card-action" @click="blackListAction(image, 'inputImage')"></a>
+            <a href="#" class="blacklist-card card-action" @click="blackListAction(image, 'id')"></a>
+          </div>
           <div v-show="showMeta" class="card-header">
             <div class="left">
               <div class="badge" @click="filterModel(image.model)" :style="{ backgroundColor: MODEL_META_MAP[image.model].hexColor }">{{ MODEL_META_MAP[image.model].friendlyName }}</div>
-              <div class="badge" @click="filterPrompt(image.promptUsed)" :style="{ backgroundColor: PROMPT_MAP[image.promptUsed].hexColor }">{{ image.promptUsed }}</div>
+              <div class="badge" @click="filterPrompt(image.prompt)" :style="{ backgroundColor: PROMPT_MAP[image.prompt].hexColor }">{{ image.prompt }}</div>
               <div class="badge static">{{ image.supportPrompt }}</div>
               <div class="badge static">{{ image.cfg }} CFG : {{ image.ss }} SS</div>
               <div class="badge" @click="filterInput(image.inputImage)" :style="{ backgroundColor: CATEGORY_MAP[image.category]?.hexColor }">{{ image.inputImage }}</div>
             </div>
-            <div class="right">
-              <a href="#" @click="tripleSave(image)">⚂</a>
-              <a href="#" @click="blackListAction(image, 'inputImage')">💤</a>
-              <a href="#" @click="blackListAction(image, 'id')">⚫</a>
-            </div>
           </div>
-          <div @dblclick="toggleLightBox(image)" @click.shift="selectImage(image.id, true)" @click.exact="selectImage(image.id)" :class="{ lightBoxed: lightBoxed?.id === image.id }">
+          <div
+            @dblclick="toggleLightBox(image)"
+            @click.shift="selectImage(image.id, true)"
+            @click.middle="selectImage(image.id, false, true)"
+            @click.exact="selectImage(image.id)"
+            :class="{ lightBoxed: lightBoxed?.id === image.id }">
             <ImageCard
               :rating="image.rating"
               :image="image"
+              :image-display="imageCover ? 'cover' : 'contain'"
               @rate="rateImage"
               :showFried="imageQuality === 'fried'"
               :show1pass="imageQuality === '1pass'"
@@ -110,17 +115,19 @@
       </div>
     </div>
     <div class="triples-bar">
-      <div class="triple" v-for="triple in includedTriples">
-        <div class="badge left" :style="{ backgroundColor: PROMPT_MAP[triple.promptUsed].hexColor }">{{ triple.promptUsed }}</div>
+      <div @dblclick="tripleDelete(idx)" class="triple" v-for="(triple, idx) in includedTriples">
+        <div class="badge first" :style="{ backgroundColor: PROMPT_MAP[triple.prompt]?.hexColor }">{{ triple.prompt }}</div>
         <div class="badge center" :style="{ backgroundColor: MODEL_META_MAP[triple.model].hexColor }">{{ MODEL_META_MAP[triple.model].friendlyName }}</div>
-        <div class="badge right" :style="{ backgroundColor: CATEGORY_MAP[triple.category]?.hexColor }">{{ triple.category }}</div>
+        <div class="badge last" :style="{ backgroundColor: CATEGORY_MAP[triple.category]?.hexColor }">{{ triple.category }}</div>
       </div>
     </div>
     <footer>
-      <div class="grid-settings"></div>
+      <div class="grid-settings">
+        <!-- <div @click="addStuff">SANEKSSS</div> -->
+      </div>
       <div class="paging">
         <button v-if="currentPage > 1" @click="currentPage -= 1">Previous</button>
-        <div class="cursor-label">${{ cursorPosition }} | Page {{ currentPage }} / {{ Math.round(filteredImages.length / imgPerPage) }} | {{ filteredImages.length }} images</div>
+        <div class="cursor-label">${{ cursorPosition }} | Page {{ currentPage }} / {{ Math.ceil(filteredImages.length / imgPerPage) }} | {{ filteredImages.length }} images</div>
         <button v-if="currentPage * imgPerPage <= filteredImages.length && currentMode !== 'random'" @click="currentPage += 1">Next</button>
       </div>
       <div class="grid-settings">
@@ -145,94 +152,37 @@
           <option value="blacklist">blacklist</option>
         </select>
         <button @click="isVertical = !isVertical">{{ isVertical ? "portrait" : "landscape" }}</button>
-        <button @click="showMeta = !showMeta">{{ showMeta ? "Hide Meta" : "Show Meta" }}</button>
+        <button @click="showMeta = !showMeta">{{ showMeta ? "meta" : "no meta" }}</button>
+        <button @click="imageCover = !imageCover">{{ imageCover ? "cover" : "contain" }}</button>
       </div>
     </footer>
   </div>
 </template>
 <script>
-import * as allImgs from "../pics-v3.json";
+import * as allImgs from "../pics-v4.json";
+import { CATEGORY_MAP, MODEL_META_MAP, PROMPT_MAP } from "../maps";
 
+const DB_NAME = "never-forget";
+const DB_VERSION = 3;
+
+/* BREAK OUT */
 let MODELS_IN_SET = [];
 let INPUT_IMGS_IN_SET = [];
 let PROMPTS_IN_SET = [];
 function onlyUnique(value, index, array) {
   return array.indexOf(value) === index;
 }
+const BASE_POOL = allImgs.default;
+// BASE_POOL = BASE_POOL.slice(0, 2000);
 
-const MODEL_META_MAP = {
-  "3dAnimationDiffusion_v10": { friendlyName: "3D Anim", hexColor: "#DA70D6" }, // Orchid
-  aniverse_v15Pruned: { friendlyName: "Aniverse", hexColor: "#FFD700" }, // Gold
-  counterfeitV30_v30: { friendlyName: "Counterfeit", hexColor: "#FF4500" }, // Orange Red
-  divineanimemix_V2: { friendlyName: "Divine Anime", hexColor: "#BA55D3" }, // Medium Orchid
-  divineelegancemix_V9: { friendlyName: "Divine Elegance", hexColor: "#DB7093" }, // Pale Violet Red
-  "dreamlike-photoreal-2.0": { friendlyName: "Dreamlike", hexColor: "#ADD8E6" }, // Light Blue
-  dreamshaper_8: { friendlyName: "Dreamshaper", hexColor: "#20B2AA" }, // Light Sea Green
-  epicrealism_naturalSinRC1VAE: { friendlyName: "Epic Realism", hexColor: "#778899" }, // Light Slate Gray
-  indigoComic_v10withvae: { friendlyName: "Indigo Comic", hexColor: "#4B0082" }, // Indigo
-  meinamix_meinaV11: { friendlyName: "Meinamix", hexColor: "#FF69B4" }, // Hot Pink
-  realisticVisionV51_v51VAE: { friendlyName: "Realistic Vision", hexColor: "#2E8B57" }, // Sea Green
-  revAnimated_v122EOL: { friendlyName: "Rev Animated", hexColor: "#FF6347" }, // Tomato
-  toonyou_beta6: { friendlyName: "Toonyou", hexColor: "#FFA07A" }, // Light Salmon
-  "v1-5-pruned-emaonly": { friendlyName: "1.5", hexColor: "#B0C4DE" }, // Light Steel Blue
-};
-
-const PROMPT_MAP = {
-  2001: { hexColor: "#FFD700" }, // Gold
-  2154: { hexColor: "#C0C0C0" }, // Silver
-  anime: { hexColor: "#FFB6C1" }, // Light Pink
-  candlelit: { hexColor: "#FFDAB9" }, // Peach Puff
-  cottage: { hexColor: "#8FBC8F" }, // Dark Sea Green
-  deviant: { hexColor: "#8B0000" }, // Dark Red
-  "digital-disease": { hexColor: "#00FF00" }, // Lime
-  fractal: { hexColor: "#9400D3" }, // Dark Violet
-  frutiger: { hexColor: "#FFA500" }, // Orange
-  "makeup-mukbang": { hexColor: "#FFC0CB" }, // Pink
-  minecraft: { hexColor: "#008000" }, // Green
-  mutation: { hexColor: "#B22222" }, // Firebrick
-  "p-dim": { hexColor: "#808080" }, // Gray
-  "ray-traced": { hexColor: "#4682B4" }, // Steel Blue
-  roblox: { hexColor: "#FF4500" }, // Orange Red
-  "second-life": { hexColor: "#DA70D6" }, // Orchid
-  server: { hexColor: "#0000CD" }, // Medium Blue
-  "trailcam-style": { hexColor: "#A52A2A" }, // Brown
-  "uncanny-valley": { hexColor: "#778899" }, // Light Slate Gray
-  unheimlich: { hexColor: "#708090" }, // Slate Gray
-  xeno: { hexColor: "#556B2F" }, // Dark Olive Green
-  xray: { hexColor: "#ADD8E6" }, // Light Blue
-  candycrush: { hexColor: "#FF69B4" }, // Hot Pink
-  ghibli: { hexColor: "#FFD700" }, // Gold
-  vr: { hexColor: "#7B68EE" }, // Medium Slate Blue
-  trailcam: { hexColor: "#8B4513" }, // Saddle Brown
-  cyborg: { hexColor: "#A9A9A9" }, // Dark Gray
-  doppel: { hexColor: "#696969" }, // Dim Gray
-  ritual: { hexColor: "#4B0082" }, // Indigo
-  "npc-magic": { hexColor: "#FF6347" }, // Tomato
-  schematics: { hexColor: "#4682B4" }, // Steel Blue
-  "server hall": { hexColor: "#20B2AA" }, // Light Sea Green
-};
-
-const CATEGORY_MAP = {
-  ava: { hexColor: "#2df1b5" },
-  911: { hexColor: "#b8b1a6" },
-  jetee: { hexColor: "#890add" },
-  trackers: { hexColor: "#9e0912" },
-  hack: { hexColor: "#cf6d73" },
-  bts: { hexColor: "#e238f2" },
-  "cs-2x": { hexColor: "#b751b1" },
-  wow: { hexColor: "#424f9e" },
-  fortnite: { hexColor: "#ba98a0" },
-  otg: { hexColor: "#176017" },
-};
-
-const parsedImgList = allImgs.default.map((imgPath) => {
+const parsedImgList = BASE_POOL.map((imgPath) => {
   const srcFried = imgPath.replace("/Users/jbe/Dropbox/stabdiff-ui-v2/comfyui-outs/_NF/", "");
   imgPath = imgPath.replace("/Users/jbe/Dropbox/stabdiff-ui-v2/comfyui-outs/_NF/", "").replace("/fried/", "/2pass/");
   imgPath = imgPath.split("-fried_")[0] + "_00001_.png";
 
   const model = imgPath.split("--")[1];
   let inputImage;
-  let promptUsed;
+  let prompt;
   let category = "?";
   const fna = imgPath.split("/");
   const fn = fna[fna.length - 1];
@@ -243,10 +193,10 @@ const parsedImgList = allImgs.default.map((imgPath) => {
   if (imgPath.includes("avatar1") || imgPath.includes("avatar2")) {
     category = "ava";
     inputImage = fn.split("--")[2].split(".jpg")[0] + ".jpg";
-    promptUsed = fn.split("--")[2].split(".jpg")[1].split("_")[1].replace("prompt-", "");
+    prompt = fn.split("--")[2].split(".jpg")[1].split("_")[1].replace("prompt-", "");
   } else {
     inputImage = imgPath.split("--")[2].split("_")[0];
-    promptUsed = imgPath.split("--")[2].split("_")[1].replace("prompt-", "");
+    prompt = imgPath.split("--")[2].split("_")[1].replace("prompt-", "");
   }
 
   if (imgPath.includes("911")) {
@@ -273,10 +223,13 @@ const parsedImgList = allImgs.default.map((imgPath) => {
   if (imgPath.includes("fortnite")) {
     category = "fortnite";
   }
+  if (imgPath.includes("starcraft")) {
+    category = "starcraft";
+  }
 
   MODELS_IN_SET.push(model);
   INPUT_IMGS_IN_SET.push(inputImage);
-  PROMPTS_IN_SET.push(promptUsed);
+  PROMPTS_IN_SET.push(prompt);
   return {
     fn,
     id: imgPath,
@@ -290,7 +243,7 @@ const parsedImgList = allImgs.default.map((imgPath) => {
     ss,
     isIpa: imgPath.includes("_ipa"),
     inputImage,
-    promptUsed,
+    prompt,
     rating: null,
   };
 });
@@ -300,12 +253,17 @@ const AVAILABLE_INPUT_IMGS = INPUT_IMGS_IN_SET.filter(onlyUnique).sort();
 const AVAILABLE_PROMPTS = PROMPTS_IN_SET.filter(onlyUnique).sort();
 console.log(AVAILABLE_MODELS, AVAILABLE_INPUT_IMGS, AVAILABLE_PROMPTS);
 
+/* BREAK OUT */
+
 export default {
   components: {
     ImageCard: () => import("./ImageCard.vue"),
+    WeightingBar: () => import("./WeightingBar.vue"),
   },
   data() {
     return {
+      db: null,
+      imageCover: true,
       modelCursor: 0,
       promptCursor: 0,
       inputCursor: 0,
@@ -320,7 +278,10 @@ export default {
       batch: parsedImgList,
       cursorPosition: 0,
       selectedImages: [],
+      viewportImages: [],
+      filteredImages: [],
       blackList: [],
+      ratedImages: [],
       includedTriples: [],
       currentPage: 1,
       imgPerPage: 128,
@@ -334,7 +295,7 @@ export default {
       availableModels: AVAILABLE_MODELS,
       availableInputs: AVAILABLE_INPUT_IMGS,
       availablePrompts: AVAILABLE_PROMPTS,
-      availableCategories: ["ava", "911", "jetee", "trackers", "hack", "bts", "cs-2x", "wow", "fortnite", "otg"],
+      availableCategories: ["ava", "911", "jetee", "trackers", "hack", "bts", "cs-2x", "wow", "fortnite", "otg", "starcraft"],
       sortDir: 1,
       MODEL_META_MAP,
       PROMPT_MAP,
@@ -351,21 +312,96 @@ export default {
       }
       return this.availableInputs.sort();
     },
-    filteredImages() {
-      console.log("filteredImagesFire");
+    filterOpts() {
+      return `${this.currentPage}|${this.selectedSorting}|${this.selectedRating}|${this.selectedModel}|${this.selectedInputImage}|${this.selectedPrompt}|${this.selectedInputCategory}|${this.sortDir}|${this.ipaFilter}|${this.currentMode}|${this.imgPerPage}`;
+    },
+    // filteredImages() {
+    //   console.log("filteredImagesFire");
+    //   let images = this.batch;
+
+    //   if (this.currentMode === "triples") {
+    //     images = [];
+    //     this.includedTriples.forEach((triple) => {
+    //       const filteredTriple = this.batch.filter((image) => image.category === triple.category && image.promptUsed === triple.promptUsed && image.model === triple.model);
+    //       images = images.concat(filteredTriple);
+    //     });
+    //   }
+
+    //   if (this.selectedRating !== "") {
+    //     if (this.selectedRating === "rated") {
+    //       images = images.filter((image) => image.rating !== null);
+    //     } else if (this.selectedRating === "unrated") {
+    //       images = images.filter((image) => image.rating == null);
+    //     } else if (this.selectedRating === "bad") {
+    //       images = images.filter((image) => image.rating <= 3);
+    //     } else if (this.selectedRating === "good") {
+    //       images = images.filter((image) => image.rating === null || image.rating > 3);
+    //     } else {
+    //       images = images.filter((image) => image.rating == this.selectedRating);
+    //     }
+    //   }
+
+    //   if (this.currentMode !== "blacklist") {
+    //     console.log("filtering no blackList:", this.blackList.length);
+    //     images = images.filter((image) => !this.blackList.includes(image.id));
+    //   } else {
+    //     console.log("filtering only blackList");
+    //     images = images.filter((image) => this.blackList.includes(image.id));
+    //   }
+
+    //   if (this.ipaFilter === "ipa_only") {
+    //     images = images.filter((image) => image.isIpa);
+    //   }
+
+    //   if (this.ipaFilter === "no_ipa") {
+    //     images = images.filter((image) => !image.isIpa);
+    //   }
+
+    //   if (this.selectedInputCategory !== "") {
+    //     images = images.filter((image) => image.inputImage.includes(this.selectedInputCategory));
+    //   }
+    //   if (this.selectedModel !== "") {
+    //     images = images.filter((image) => image.model == this.selectedModel);
+    //   }
+    //   if (this.selectedInputImage !== "") {
+    //     images = images.filter((image) => image.inputImage == this.selectedInputImage);
+    //   }
+    //   if (this.selectedPrompt !== "") {
+    //     images = images.filter((image) => image.promptUsed == this.selectedPrompt);
+    //   }
+
+    //   let sorted = images.sort((a, b) => (a[this.selectedSorting] > b[this.selectedSorting] ? -this.sortDir : this.sortDir));
+    //   if (this.currentMode === "random" || this.currentMode === "triples") {
+    //     sorted = this.getRandomElements(sorted, Math.min(sorted.length, this.imgPerPage));
+    //   }
+    //   this.viewportImages = sorted.slice((this.currentPage - 1) * this.imgPerPage, (this.currentPage - 1) * this.imgPerPage + this.imgPerPage);
+    //   return sorted;
+    // },
+  },
+  methods: {
+    filterImages() {
+      console.log("filterImagesFire");
       let images = this.batch;
+
+      if (this.currentMode === "triples") {
+        images = [];
+        this.includedTriples.forEach((triple) => {
+          const filteredTriple = this.batch.filter((image) => image.category === triple.category && image.prompt === triple.prompt && image.model === triple.model);
+          images = images.concat(filteredTriple);
+        });
+      }
 
       if (this.selectedRating !== "") {
         if (this.selectedRating === "rated") {
-          images = this.batch.filter((image) => image.rating !== null);
+          images = images.filter((image) => image.rating !== null);
         } else if (this.selectedRating === "unrated") {
-          images = this.batch.filter((image) => image.rating == null);
+          images = images.filter((image) => image.rating == null);
         } else if (this.selectedRating === "bad") {
-          images = this.batch.filter((image) => image.rating <= 3);
+          images = images.filter((image) => image.rating <= 3);
         } else if (this.selectedRating === "good") {
-          images = this.batch.filter((image) => image.rating === null || image.rating > 3);
+          images = images.filter((image) => image.rating === null || image.rating > 3);
         } else {
-          images = this.batch.filter((image) => image.rating == this.selectedRating);
+          images = images.filter((image) => image.rating == this.selectedRating);
         }
       }
 
@@ -395,17 +431,16 @@ export default {
         images = images.filter((image) => image.inputImage == this.selectedInputImage);
       }
       if (this.selectedPrompt !== "") {
-        images = images.filter((image) => image.promptUsed == this.selectedPrompt);
+        images = images.filter((image) => image.prompt == this.selectedPrompt);
       }
 
-      const sorted = images.sort((a, b) => (a[this.selectedSorting] > b[this.selectedSorting] ? -this.sortDir : this.sortDir));
-      if (this.currentMode === "random") {
-        return this.getRandomElements(sorted, Math.min(sorted.length, this.imgPerPage));
+      let sorted = images.sort((a, b) => (a[this.selectedSorting] > b[this.selectedSorting] ? -this.sortDir : this.sortDir));
+      if (this.currentMode === "random" || this.currentMode === "triples") {
+        sorted = this.getRandomElements(sorted, Math.min(sorted.length, this.imgPerPage));
       }
+      this.viewportImages = sorted.slice((this.currentPage - 1) * this.imgPerPage, (this.currentPage - 1) * this.imgPerPage + this.imgPerPage);
       return sorted;
     },
-  },
-  methods: {
     getRandomElements(arr, n) {
       let result = new Array(n),
         len = arr.length,
@@ -452,38 +487,70 @@ export default {
         const isSelectedImg = (img) => img.id === id;
         const idx = this.batch.findIndex(isSelectedImg);
         this.batch.splice(idx, 1, image);
-        localStorage.setItem("imageRatings", JSON.stringify(this.batch.filter((image) => image.rating !== null)));
+        // viewport splice as well?
+
+        // const rated = this.batch
+        //   .filter((image) => image.rating !== null)
+        //   .map((image) => {
+        //     return { id: image.id, rating: image.rating };
+        //   });
+        // this.ratedImages.push(this.batch[idx]);
+        // const rated = this.ratedImages.map((image) => {
+        //   return { id: image.id, rating: image.rating };
+        // });
+        // console.log("dumping out:", rated);
+
+        // push image here instead to save a filter?
+        this.ratedImages = this.batch
+          .filter((image) => image.rating !== null)
+          .map((image) => {
+            return { id: image.id, rating: image.rating };
+          });
+        localStorage.setItem("imageRatings", JSON.stringify(this.ratedImages));
       }
     },
-    selectImage(id, shiftClick = false) {
+    selectImage(id, shiftClick = false, ctrlClick = false) {
       console.log("selectImage", id, shiftClick);
       if (shiftClick && this.selectedImages.length > 0) {
-        console.log("shiftClick, add multiple");
-        const clickedImage = this.batch.find((img) => img.id === id);
-        const indexStart = this.batch.indexOf(this.selectedImages[0]);
-        const indexEnd = this.batch.indexOf(clickedImage);
-        this.selectedImages = this.batch.slice(indexStart, indexEnd + 1);
+        const clickedImage = this.viewportImages.find((img) => img.id === id);
+        const indexStart = this.viewportImages.indexOf(this.selectedImages[0]);
+        const indexEnd = this.viewportImages.indexOf(clickedImage);
+
+        // todo: if indexStart or indexEnd for previous? save idx pos on click?
+        if (indexStart > indexEnd) {
+          this.selectedImages = this.viewportImages.slice(indexEnd, indexStart + 1);
+        } else {
+          this.selectedImages = this.viewportImages.slice(indexStart, indexEnd + 1);
+        }
+      } else if (ctrlClick && this.selectedImages.length > 0) {
+        this.selectedImages.push(this.viewportImages.find((img) => img.id === id));
       } else {
         this.selectedImages = [];
-        this.selectedImages.push(this.batch.find((img) => img.id === id));
-        console.log("selected:", this.selectedImages);
+        this.selectedImages.push(this.viewportImages.find((img) => img.id === id));
       }
     },
     tripleSave(image) {
+      console.log(image.category);
       this.includedTriples.push({
         category: image.category,
         model: image.model,
-        promptUsed: image.promptUsed,
+        prompt: image.prompt,
       });
+      localStorage.setItem("triples", JSON.stringify(this.includedTriples));
+    },
+    tripleDelete(idx) {
+      // this.includedTriples.splice(idx, 1);
+      this.$delete(this.includedTriples, idx);
+      localStorage.setItem("triples", JSON.stringify(this.includedTriples));
     },
     blackListAction(image, type) {
       if (type === "pair") {
         if (confirm("Ban Model/Prompt Pair?")) {
-          this.batch.filter((img) => img.model === image.model && img.promptUsed === image.promptUsed).forEach((img) => this.blackList.push(img.id));
+          this.batch.filter((img) => img.model === image.model && img.prompt === image.prompt).forEach((img) => this.blackList.push(img.id));
         }
       } else if (type === "triple") {
         if (confirm("Ban Triple?")) {
-          this.batch.filter((img) => img.category === image.category && img.model === image.model && img.promptUsed === image.promptUsed).forEach((img) => this.blackList.push(img.id));
+          this.batch.filter((img) => img.category === image.category && img.model === image.model && img.prompt === image.prompt).forEach((img) => this.blackList.push(img.id));
         }
       } else if (type === "inputImage") {
         if (confirm("Ban Input?")) {
@@ -558,6 +625,13 @@ export default {
       const r = Math.random() * (max - min) + min;
       return r;
     },
+    dumpFiles() {
+      // this.viewportImages
+      // console.log('in view:', this.filteredImages.slice((currentPage - 1) * imgPerPage, (currentPage - 1) * imgPerPage + imgPerPage))
+      // .slice((currentPage - 1) * imgPerPage, (currentPage - 1) * imgPerPage + imgPerPage)"
+      // this.blackList
+      // this.ratedImages
+    },
     goTop() {
       window.scroll({
         top: 0,
@@ -565,8 +639,96 @@ export default {
         behavior: "smooth",
       });
     },
+    // async addCat() {
+    //   this.addDisabled = true;
+    //   let cat = {
+    //     name: "Cat" + Math.floor(Math.random() * 100),
+    //     age: Math.floor(Math.random() * 10) + 1,
+    //   };
+    //   console.log("about to add " + JSON.stringify(cat));
+    //   await this.addCatToDb(cat);
+    //   this.cats = await this.getCatsFromDb();
+    //   this.addDisabled = false;
+    // },
+    // async deleteCat(id) {
+    //   await this.deleteCatFromDb(id);
+    //   this.cats = await this.getCatsFromDb();
+    // },
+    // addStuff() {
+    //   const stuff = JSON.parse(localStorage.getItem("imageRatings") || "[]");
+    //   this.addImagesToDb(stuff);
+    // },
+    // async addImagesToDb(images) {
+    //   return new Promise((resolve, reject) => {
+    //     let trans = this.db.transaction(["ratings"], "readwrite");
+    //     trans.oncomplete = (e) => {
+    //       resolve();
+    //     };
+
+    //     let store = trans.objectStore("ratings");
+    //     for (image in images) {
+    //       store.add(image);
+    //     }
+    //   });
+    // },
+    // async deleteCatFromDb(id) {
+    //   return new Promise((resolve, reject) => {
+    //     let trans = this.db.transaction(["ratings"], "readwrite");
+    //     trans.oncomplete = (e) => {
+    //       resolve();
+    //     };
+
+    //     let store = trans.objectStore("ratings");
+    //     store.delete(id);
+    //   });
+    // },
+    // async getImagesFromDb() {
+    //   return new Promise((resolve, reject) => {
+    //     let trans = this.db.transaction(["ratings"], "readonly");
+    //     trans.oncomplete = (e) => {
+    //       resolve(cats);
+    //     };
+
+    //     let store = trans.objectStore("ratings");
+    //     let cats = [];
+
+    //     store.openCursor().onsuccess = (e) => {
+    //       let cursor = e.target.result;
+    //       if (cursor) {
+    //         cats.push(cursor.value);
+    //         cursor.continue();
+    //       }
+    //     };
+    //   });
+    // },
+    // async getDb() {
+    //   console.log("getDb");
+    //   return new Promise((resolve, reject) => {
+    //     let request = window.indexedDB.open(DB_NAME, DB_VERSION);
+
+    //     request.onerror = (e) => {
+    //       console.log("Error opening db", e);
+    //       reject("Error");
+    //     };
+
+    //     request.onsuccess = (e) => {
+    //       console.log("db success");
+    //       resolve(e.target.result);
+    //     };
+
+    //     request.onupgradeneeded = (e) => {
+    //       console.log("onupgradeneeded");
+    //       let db = e.target.result;
+    //       let objectStore = db.createObjectStore("ratings", { autoIncrement: true, keyPath: "id" });
+    //     };
+    //   });
+    // },
   },
   watch: {
+    filterOpts() {
+      console.log("filterOpts");
+      this.filteredImages = this.filterImages();
+    },
     gridSize() {
       if (this.gridSize === "4") {
         this.showMeta = false;
@@ -574,6 +736,7 @@ export default {
     },
     currentMode() {
       this.currentPage = 1;
+      localStorage.setItem("currentMode", JSON.stringify(this.currentMode));
     },
     selectedModel() {
       this.currentPage = 1;
@@ -592,6 +755,7 @@ export default {
       if (this.currentMode === "random") {
         this.currentMode = "sequence";
       }
+      localStorage.setItem("selectedInputImage", JSON.stringify(this.selectedInputImage));
       this.currentPage = 1;
     },
     selectedRating() {
@@ -599,13 +763,18 @@ export default {
       localStorage.setItem("selectedRating", JSON.stringify(this.selectedRating));
     },
   },
-  created() {
+
+  async created() {
+    console.log("created fire.");
     this.blackList = JSON.parse(localStorage.getItem("blackList") || "[]").filter((n) => n);
-    const ratedImages = JSON.parse(localStorage.getItem("imageRatings") || "[]");
-    console.log("loaded rated:", ratedImages.length);
+    this.ratedImages = JSON.parse(localStorage.getItem("imageRatings") || "[]");
+    this.includedTriples = JSON.parse(localStorage.getItem("triples") || "[]");
+    console.log("loaded rated:", this.ratedImages.length);
     console.log("blacklist length", this.blackList.length);
+    console.log("triples", this.includedTriples);
+
     this.batch = this.batch.map((img) => {
-      const ratedImage = ratedImages.find((i) => i.id === img.id);
+      const ratedImage = this.ratedImages.find((i) => i.id === img.id);
       img.rating = ratedImage?.rating || null;
       return img;
     });
@@ -614,6 +783,12 @@ export default {
     this.selectedPrompt = localStorage.getItem("selectedPrompt") ? JSON.parse(localStorage.getItem("selectedPrompt")) : "";
     this.selectedRating = localStorage.getItem("selectedRating") ? JSON.parse(localStorage.getItem("selectedRating")) : "";
     this.selectedInputCategory = localStorage.getItem("selectedInputCategory") ? JSON.parse(localStorage.getItem("selectedInputCategory")) : "";
+    this.currentMode = localStorage.getItem("currentMode") ? JSON.parse(localStorage.getItem("currentMode")) : "sequence";
+    this.selectedInputImage = localStorage.getItem("selectedInputImage") ? JSON.parse(localStorage.getItem("selectedInputImage")) : "";
+
+    // this.viewportImages = this.filterImages();
+    // this.db = await this.getDb();
+    // this.cats = await this.getImagesFromDb();
   },
 };
 </script>
@@ -706,12 +881,12 @@ button {
 }
 .card-header {
   width: 98%;
-  height: 1.25rem;
+  height: 0.75rem;
   background-color: black;
   display: flex;
   flex-direction: row;
-  font-size: 10px;
-  font-size: 8px;
+  /* font-size: 10px;
+  font-size: 8px; */
   padding: 1%;
   justify-content: space-between;
 }
@@ -719,19 +894,45 @@ button {
   display: flex;
   flex-direction: row;
 }
-.card-header .right {
+.card-container {
+  position: relative;
+}
+.right {
   display: flex;
   flex-direction: row;
   color: black;
   justify-content: center;
   align-items: center;
-  /* padding-right: 1rem; */
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 4000;
+}
+.card-container:hover .right a {
+  visibility: visible;
 }
 .right a {
-  margin-left: 1rem;
+  padding-left: 1rem;
+  margin-left: 0.25rem;
   text-decoration: none;
   font-size: 1rem;
+  visibility: hidden;
+  box-shadow: #fff 0 0 3px;
 }
+.card-action {
+  padding: 0.4rem;
+  border-radius: 0.5rem;
+}
+.blacklist-card {
+  background-color: #000;
+}
+.blacklist-triple {
+  background-color: #f00;
+}
+.card-action.triple {
+  background-color: #0f0;
+}
+
 .right a:hover {
   opacity: 0.75;
 }
@@ -795,11 +996,11 @@ button {
 .triples-bar .badge.center {
   border-radius: 0;
 }
-.triples-bar .badge.left {
+.triples-bar .badge.first {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
 }
-.triples-bar .badge.right {
+.triples-bar .badge.last {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
 }
@@ -834,7 +1035,7 @@ footer {
   justify-content: center;
   align-items: center;
   padding-left: 1rem;
-  width: 26vw;
+  width: 28vw;
 }
 
 html,
@@ -884,6 +1085,7 @@ body {
 }
 .main-sequence-container {
   width: 100%;
+  /* width: 100vw; */
   /* height: 100vh; */
   display: flex;
   flex-direction: row;
@@ -893,6 +1095,7 @@ body {
   background-color: black;
   /* background-color: #0f0; */
   margin-top: 2rem;
+  margin-top: 3rem;
 }
 .sequences-container {
   width: 100vw;
