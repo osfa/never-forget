@@ -57,9 +57,11 @@ export const CATEGORY_MAP = {
   trackers: { hexColor: "#9e0912", weight: 0.2 },
   hack: { hexColor: "#cf6d73", weight: 0.2 },
   bts: { hexColor: "#e238f2", weight: 0.2 },
-  "cs-2x": { hexColor: "#b751b1", weight: 0.2 },
+  cs: { hexColor: "#b751b1", weight: 0.2 },
   wow: { hexColor: "#424f9e", weight: 0.2 },
   fortnite: { hexColor: "#ba98a0", weight: 0.1 },
   otg: { hexColor: "#176017", weight: 0.2 },
   starcraft: { hexColor: "#88409C", weight: 0.1 },
+  diablo: { hexColor: "#ff0000", weight: 0.1 },
+  "ava-game": { hexColor: "#0000ff", weight: 0.1 },
 };

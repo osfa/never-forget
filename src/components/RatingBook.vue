@@ -167,7 +167,7 @@
   </div>
 </template>
 <script>
-import * as allImgs from "../pics-v4.json";
+import * as allImgs from "../pics-v5.json";
 import { CATEGORY_MAP, MODEL_META_MAP, PROMPT_MAP } from "../maps";
 
 const DB_NAME = "never-forget";
@@ -313,7 +313,7 @@ export default {
       availableModels: AVAILABLE_MODELS,
       availableInputs: AVAILABLE_INPUT_IMGS,
       availablePrompts: AVAILABLE_PROMPTS,
-      availableCategories: ["ava", "911", "jetee", "trackers", "hack", "bts", "cs", "wow", "fortnite", "otg", "starcraft"],
+      availableCategories: ["ava", "911", "jetee", "trackers", "hack", "bts", "cs", "wow", "fortnite", "otg", "starcraft", "diablo", "ava-game"],
       sortDir: 1,
       MODEL_META_MAP,
       PROMPT_MAP,
@@ -331,7 +331,7 @@ export default {
       return this.availableInputs.sort();
     },
     filterOpts() {
-      return `${this.currentPage}|${this.selectedSorting}|${this.selectedRating}|${this.selectedModel}|${this.selectedInputImage}|${this.selectedPrompt}|${this.selectedInputCategory}|${this.sortDir}|${this.ipaFilter}|${this.currentMode}|${this.imgPerPage}`;
+      return `${this.currentPage}|${this.selectedSorting}|${this.selectedRating}|${this.selectedModel}|${this.selectedInputImage}|${this.selectedPrompt}|${this.selectedInputCategory}|${this.sortDir}|${this.ipaFilter}|${this.currentMode}|${this.imgPerPage}|${this.isWeighted}`;
     },
   },
   methods: {
