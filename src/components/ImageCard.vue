@@ -71,6 +71,7 @@ export default {
 }
 .chapter-card img.cover {
   object-fit: cover;
+  /* object-position: left; */
 }
 
 .meta-bar {

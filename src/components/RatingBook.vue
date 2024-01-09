@@ -73,6 +73,9 @@
             <option value="ipa_only">ipa_only</option>
             <option value="no_ipa">no_ipa</option>
           </select>
+          <button @click="isWeighted = !isWeighted">{{ isWeighted ? "weighted" : "linear" }}</button>
+
+          <button @click="dumpFiles">DUMP</button>
         </div>
       </div>
     </div>
@@ -80,10 +83,16 @@
     <div class="main-sequence-container">
       <div v-for="image in viewportImages" :key="image.id" :class="{ selected: selectedImages.includes(image) }">
         <div class="card-container">
-          <div v-show="showMeta" class="right">
-            <a href="#" class="triple card-action" @click="tripleSave(image)"></a>
-            <a href="#" class="blacklist-triple card-action" @click="blackListAction(image, 'inputImage')"></a>
-            <a href="#" class="blacklist-card card-action" @click="blackListAction(image, 'id')"></a>
+          <div v-show="showMeta && currentMode !== 'blacklist'" class="card-actions">
+            <a href="#" class="blacklist-triple card-action" @click="blackListAction(image, 'triple')">•••</a>
+            <a href="#" class="blacklist-input card-action" @click="blackListAction(image, 'inputImage')">••</a>
+            <a href="#" class="blacklist-card card-action" @click="blackListAction(image, 'id')">•</a>
+            <a href="#" class="save-triple card-action" @click="tripleSave(image)">•••</a>
+          </div>
+          <div v-show="showMeta && currentMode === 'blacklist'" class="card-actions">
+            <a href="#" class="blacklist-triple greeen card-action" @click="reinstateAction(image, 'triple')">•••</a>
+            <a href="#" class="blacklist-input green card-action" @click="reinstateAction(image, 'inputImage')">••</a>
+            <a href="#" class="blacklist-card green card-action" @click="reinstateAction(image, 'id')">•</a>
           </div>
           <div v-show="showMeta" class="card-header">
             <div class="left">
@@ -147,7 +156,6 @@
         <select required name="currentMode" id="currentMode" v-model="currentMode">
           <option value="sequence">sequence</option>
           <option value="random">random</option>
-          <option value="weighted">weighted</option>
           <option value="triples">triples</option>
           <option value="blacklist">blacklist</option>
         </select>
@@ -226,6 +234,15 @@ const parsedImgList = BASE_POOL.map((imgPath) => {
   if (imgPath.includes("starcraft")) {
     category = "starcraft";
   }
+  if (imgPath.includes("diablo")) {
+    category = "diablo";
+  }
+  if (imgPath.includes("ava-game")) {
+    category = "ava-game";
+  }
+  if (imgPath.includes("--otg")) {
+    category = "otg";
+  }
 
   MODELS_IN_SET.push(model);
   INPUT_IMGS_IN_SET.push(inputImage);
@@ -270,6 +287,7 @@ export default {
       showMeta: true,
       isVertical: false,
       currentMode: "sequence",
+      isWeighted: true,
       gridSize: "3",
       lightBoxed: null,
       imageQuality: "fried",
@@ -295,7 +313,7 @@ export default {
       availableModels: AVAILABLE_MODELS,
       availableInputs: AVAILABLE_INPUT_IMGS,
       availablePrompts: AVAILABLE_PROMPTS,
-      availableCategories: ["ava", "911", "jetee", "trackers", "hack", "bts", "cs-2x", "wow", "fortnite", "otg", "starcraft"],
+      availableCategories: ["ava", "911", "jetee", "trackers", "hack", "bts", "cs", "wow", "fortnite", "otg", "starcraft"],
       sortDir: 1,
       MODEL_META_MAP,
       PROMPT_MAP,
@@ -315,68 +333,6 @@ export default {
     filterOpts() {
       return `${this.currentPage}|${this.selectedSorting}|${this.selectedRating}|${this.selectedModel}|${this.selectedInputImage}|${this.selectedPrompt}|${this.selectedInputCategory}|${this.sortDir}|${this.ipaFilter}|${this.currentMode}|${this.imgPerPage}`;
     },
-    // filteredImages() {
-    //   console.log("filteredImagesFire");
-    //   let images = this.batch;
-
-    //   if (this.currentMode === "triples") {
-    //     images = [];
-    //     this.includedTriples.forEach((triple) => {
-    //       const filteredTriple = this.batch.filter((image) => image.category === triple.category && image.promptUsed === triple.promptUsed && image.model === triple.model);
-    //       images = images.concat(filteredTriple);
-    //     });
-    //   }
-
-    //   if (this.selectedRating !== "") {
-    //     if (this.selectedRating === "rated") {
-    //       images = images.filter((image) => image.rating !== null);
-    //     } else if (this.selectedRating === "unrated") {
-    //       images = images.filter((image) => image.rating == null);
-    //     } else if (this.selectedRating === "bad") {
-    //       images = images.filter((image) => image.rating <= 3);
-    //     } else if (this.selectedRating === "good") {
-    //       images = images.filter((image) => image.rating === null || image.rating > 3);
-    //     } else {
-    //       images = images.filter((image) => image.rating == this.selectedRating);
-    //     }
-    //   }
-
-    //   if (this.currentMode !== "blacklist") {
-    //     console.log("filtering no blackList:", this.blackList.length);
-    //     images = images.filter((image) => !this.blackList.includes(image.id));
-    //   } else {
-    //     console.log("filtering only blackList");
-    //     images = images.filter((image) => this.blackList.includes(image.id));
-    //   }
-
-    //   if (this.ipaFilter === "ipa_only") {
-    //     images = images.filter((image) => image.isIpa);
-    //   }
-
-    //   if (this.ipaFilter === "no_ipa") {
-    //     images = images.filter((image) => !image.isIpa);
-    //   }
-
-    //   if (this.selectedInputCategory !== "") {
-    //     images = images.filter((image) => image.inputImage.includes(this.selectedInputCategory));
-    //   }
-    //   if (this.selectedModel !== "") {
-    //     images = images.filter((image) => image.model == this.selectedModel);
-    //   }
-    //   if (this.selectedInputImage !== "") {
-    //     images = images.filter((image) => image.inputImage == this.selectedInputImage);
-    //   }
-    //   if (this.selectedPrompt !== "") {
-    //     images = images.filter((image) => image.promptUsed == this.selectedPrompt);
-    //   }
-
-    //   let sorted = images.sort((a, b) => (a[this.selectedSorting] > b[this.selectedSorting] ? -this.sortDir : this.sortDir));
-    //   if (this.currentMode === "random" || this.currentMode === "triples") {
-    //     sorted = this.getRandomElements(sorted, Math.min(sorted.length, this.imgPerPage));
-    //   }
-    //   this.viewportImages = sorted.slice((this.currentPage - 1) * this.imgPerPage, (this.currentPage - 1) * this.imgPerPage + this.imgPerPage);
-    //   return sorted;
-    // },
   },
   methods: {
     filterImages() {
@@ -436,7 +392,11 @@ export default {
 
       let sorted = images.sort((a, b) => (a[this.selectedSorting] > b[this.selectedSorting] ? -this.sortDir : this.sortDir));
       if (this.currentMode === "random" || this.currentMode === "triples") {
-        sorted = this.getRandomElements(sorted, Math.min(sorted.length, this.imgPerPage));
+        if (this.isWeighted) {
+          sorted = this.getRandomWeightedElements(sorted, Math.min(sorted.length, this.imgPerPage));
+        } else {
+          sorted = this.getRandomElements(sorted, Math.min(sorted.length, this.imgPerPage));
+        }
       }
       this.viewportImages = sorted.slice((this.currentPage - 1) * this.imgPerPage, (this.currentPage - 1) * this.imgPerPage + this.imgPerPage);
       return sorted;
@@ -454,6 +414,45 @@ export default {
         taken[x] = --len in taken ? taken[len] : len;
       }
       return result;
+    },
+    shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    },
+    getRandomWeightedElements(arr, n) {
+      let selection = [];
+      for (const category in CATEGORY_MAP) {
+        console.log(`${category}: ${CATEGORY_MAP[category].weight}`);
+        const cat = CATEGORY_MAP[category];
+        const categoryImageCount = Math.floor(n * cat.weight);
+        console.log("trying to get:", categoryImageCount);
+        const pool = arr.filter((image) => image.category === category);
+        if (pool.length < 1) {
+          console.log("no images for:", category);
+          continue;
+        }
+        // need like repeating here to fill up?
+        const pulledImages = this.getRandomElements(pool, Math.min(pool.length, categoryImageCount));
+        console.log("got:", pulledImages.length);
+        selection = selection.concat(pulledImages);
+      }
+      console.log("done:", selection.length);
+      return this.shuffle(selection);
+    },
+    weightedRandom(options) {
+      var i;
+      var weights = [options[0].weight];
+      for (i = 1; i < options.length; i++) {
+        weights[i] = options[i].weight + weights[i - 1];
+      }
+      var random = Math.random() * weights[weights.length - 1];
+      for (i = 0; i < weights.length; i++) {
+        if (weights[i] > random) break;
+      }
+      return options[i].name;
     },
     toggleLightBox(img) {
       console.log("toggleLightBox", img.id);
@@ -488,17 +487,6 @@ export default {
         const idx = this.batch.findIndex(isSelectedImg);
         this.batch.splice(idx, 1, image);
         // viewport splice as well?
-
-        // const rated = this.batch
-        //   .filter((image) => image.rating !== null)
-        //   .map((image) => {
-        //     return { id: image.id, rating: image.rating };
-        //   });
-        // this.ratedImages.push(this.batch[idx]);
-        // const rated = this.ratedImages.map((image) => {
-        //   return { id: image.id, rating: image.rating };
-        // });
-        // console.log("dumping out:", rated);
 
         // push image here instead to save a filter?
         this.ratedImages = this.batch
@@ -561,6 +549,28 @@ export default {
       }
       localStorage.setItem("blackList", JSON.stringify(this.blackList));
     },
+    reinstateAction(image, type) {
+      if (type === "pair") {
+        if (confirm("Reinstate Model/Prompt Pair?")) {
+          // this.batch.filter((img) => img.model === image.model && img.prompt === image.prompt).forEach((img) => this.blackList.push(img.id));
+          alert("borken");
+        }
+      } else if (type === "triple") {
+        if (confirm("Reinstate Triple?")) {
+          // this.batch.filter((img) => img.category === image.category && img.model === image.model && img.prompt === image.prompt).forEach((img) => this.blackList.push(img.id));
+          alert("borken");
+        }
+      } else if (type === "inputImage") {
+        if (confirm("Reinstate Input?")) {
+          const existingForInput = this.batch.filter((img) => img.inputImage === image.inputImage).map((img) => img.id);
+          this.blackList = this.blackList.filter((id) => !existingForInput.includes(id));
+        }
+      } else if (type === "id") {
+        // this.blackList = this.blackList.slice(this.blackList.indexOf(image), 1);
+        this.blackList = this.blackList.filter((id) => id !== image.id);
+      }
+      localStorage.setItem("blackList", JSON.stringify(this.blackList));
+    },
     keyListener(e) {
       console.log("keyListener", e);
       if (e.key === "1") {
@@ -604,18 +614,6 @@ export default {
         return;
       }
     },
-    toggleControls() {
-      console.log("toggleControls");
-      this.showControls = !this.showControls;
-    },
-    moveCursor(cardIdx, direction) {
-      console.log("moveCursor", cardIdx, direction);
-      // if (this.selectedInputImage === "") {
-      //   this.currentPage += direction;
-      // }
-      // this.cursorPosition = (this.currentPage - 1) * this.imgPerPage;
-      // this.modelCursor += direction;
-    },
     randomInt(min, max) {
       min = Math.ceil(min);
       max = Math.floor(max);
@@ -626,11 +624,8 @@ export default {
       return r;
     },
     dumpFiles() {
-      // this.viewportImages
+      console.log(this.filteredImages.map((x) => x.id));
       // console.log('in view:', this.filteredImages.slice((currentPage - 1) * imgPerPage, (currentPage - 1) * imgPerPage + imgPerPage))
-      // .slice((currentPage - 1) * imgPerPage, (currentPage - 1) * imgPerPage + imgPerPage)"
-      // this.blackList
-      // this.ratedImages
     },
     goTop() {
       window.scroll({
@@ -639,90 +634,6 @@ export default {
         behavior: "smooth",
       });
     },
-    // async addCat() {
-    //   this.addDisabled = true;
-    //   let cat = {
-    //     name: "Cat" + Math.floor(Math.random() * 100),
-    //     age: Math.floor(Math.random() * 10) + 1,
-    //   };
-    //   console.log("about to add " + JSON.stringify(cat));
-    //   await this.addCatToDb(cat);
-    //   this.cats = await this.getCatsFromDb();
-    //   this.addDisabled = false;
-    // },
-    // async deleteCat(id) {
-    //   await this.deleteCatFromDb(id);
-    //   this.cats = await this.getCatsFromDb();
-    // },
-    // addStuff() {
-    //   const stuff = JSON.parse(localStorage.getItem("imageRatings") || "[]");
-    //   this.addImagesToDb(stuff);
-    // },
-    // async addImagesToDb(images) {
-    //   return new Promise((resolve, reject) => {
-    //     let trans = this.db.transaction(["ratings"], "readwrite");
-    //     trans.oncomplete = (e) => {
-    //       resolve();
-    //     };
-
-    //     let store = trans.objectStore("ratings");
-    //     for (image in images) {
-    //       store.add(image);
-    //     }
-    //   });
-    // },
-    // async deleteCatFromDb(id) {
-    //   return new Promise((resolve, reject) => {
-    //     let trans = this.db.transaction(["ratings"], "readwrite");
-    //     trans.oncomplete = (e) => {
-    //       resolve();
-    //     };
-
-    //     let store = trans.objectStore("ratings");
-    //     store.delete(id);
-    //   });
-    // },
-    // async getImagesFromDb() {
-    //   return new Promise((resolve, reject) => {
-    //     let trans = this.db.transaction(["ratings"], "readonly");
-    //     trans.oncomplete = (e) => {
-    //       resolve(cats);
-    //     };
-
-    //     let store = trans.objectStore("ratings");
-    //     let cats = [];
-
-    //     store.openCursor().onsuccess = (e) => {
-    //       let cursor = e.target.result;
-    //       if (cursor) {
-    //         cats.push(cursor.value);
-    //         cursor.continue();
-    //       }
-    //     };
-    //   });
-    // },
-    // async getDb() {
-    //   console.log("getDb");
-    //   return new Promise((resolve, reject) => {
-    //     let request = window.indexedDB.open(DB_NAME, DB_VERSION);
-
-    //     request.onerror = (e) => {
-    //       console.log("Error opening db", e);
-    //       reject("Error");
-    //     };
-
-    //     request.onsuccess = (e) => {
-    //       console.log("db success");
-    //       resolve(e.target.result);
-    //     };
-
-    //     request.onupgradeneeded = (e) => {
-    //       console.log("onupgradeneeded");
-    //       let db = e.target.result;
-    //       let objectStore = db.createObjectStore("ratings", { autoIncrement: true, keyPath: "id" });
-    //     };
-    //   });
-    // },
   },
   watch: {
     filterOpts() {
@@ -758,9 +669,15 @@ export default {
       localStorage.setItem("selectedInputImage", JSON.stringify(this.selectedInputImage));
       this.currentPage = 1;
     },
-    selectedRating() {
+    sortDir() {
+      localStorage.setItem("sortDir", JSON.stringify(this.sortDir));
+    },
+    imgPerPage() {
+      localStorage.setItem("imgPerPage", JSON.stringify(this.imgPerPage));
+    },
+    selectedSorting() {
       this.currentPage = 1;
-      localStorage.setItem("selectedRating", JSON.stringify(this.selectedRating));
+      localStorage.setItem("selectedSorting", JSON.stringify(this.selectedSorting));
     },
   },
 
@@ -784,11 +701,9 @@ export default {
     this.selectedRating = localStorage.getItem("selectedRating") ? JSON.parse(localStorage.getItem("selectedRating")) : "";
     this.selectedInputCategory = localStorage.getItem("selectedInputCategory") ? JSON.parse(localStorage.getItem("selectedInputCategory")) : "";
     this.currentMode = localStorage.getItem("currentMode") ? JSON.parse(localStorage.getItem("currentMode")) : "sequence";
-    this.selectedInputImage = localStorage.getItem("selectedInputImage") ? JSON.parse(localStorage.getItem("selectedInputImage")) : "";
-
-    // this.viewportImages = this.filterImages();
-    // this.db = await this.getDb();
-    // this.cats = await this.getImagesFromDb();
+    this.sortDir = localStorage.getItem("sortDir") ? JSON.parse(localStorage.getItem("sortDir")) : 1;
+    this.imgPerPage = localStorage.getItem("imgPerPage") ? JSON.parse(localStorage.getItem("imgPerPage")) : 128;
+    this.selectedSorting = localStorage.getItem("selectedSorting") ? JSON.parse(localStorage.getItem("selectedSorting")) : "inputImage";
   },
 };
 </script>
@@ -897,7 +812,7 @@ button {
 .card-container {
   position: relative;
 }
-.right {
+.card-actions {
   display: flex;
   flex-direction: row;
   color: black;
@@ -908,32 +823,40 @@ button {
   right: 1rem;
   z-index: 4000;
 }
-.card-container:hover .right a {
+.card-container:hover .card-action {
   visibility: visible;
 }
-.right a {
-  padding-left: 1rem;
+.card-action {
+  border-radius: 0.5rem;
   margin-left: 0.25rem;
   text-decoration: none;
-  font-size: 1rem;
-  visibility: hidden;
+  font-size: 0.5rem;
   box-shadow: #fff 0 0 3px;
-}
-.card-action {
-  padding: 0.4rem;
-  border-radius: 0.5rem;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  visibility: hidden;
+  padding: 0.25rem;
 }
 .blacklist-card {
   background-color: #000;
 }
 .blacklist-triple {
-  background-color: #f00;
+  background-color: #000;
 }
-.card-action.triple {
+.blacklist-input {
+  background-color: #000;
+}
+.card-action.save-triple {
   background-color: #0f0;
 }
 
-.right a:hover {
+.card-action.green {
+  background-color: #0f0;
+}
+
+.card-action:hover {
   opacity: 0.75;
 }
 .card-header .badge,
