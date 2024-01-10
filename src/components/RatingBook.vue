@@ -131,9 +131,7 @@
       </div>
     </div>
     <footer>
-      <div class="grid-settings">
-        <!-- <div @click="addStuff">SANEKSSS</div> -->
-      </div>
+      <div class="grid-settings"></div>
       <div class="paging">
         <button v-if="currentPage > 1" @click="currentPage -= 1">Previous</button>
         <div class="cursor-label">${{ cursorPosition }} | Page {{ currentPage }} / {{ Math.ceil(filteredImages.length / imgPerPage) }} | {{ filteredImages.length }} images</div>
@@ -152,6 +150,7 @@
           <option value="128">128</option>
           <option value="256">256</option>
           <option value="512">512</option>
+          <option value="1024">1024</option>
         </select>
         <select required name="currentMode" id="currentMode" v-model="currentMode">
           <option value="sequence">sequence</option>
@@ -167,7 +166,7 @@
   </div>
 </template>
 <script>
-import * as allImgs from "../pics-v5.json";
+import * as allImgs from "../pics-v6.json";
 import { CATEGORY_MAP, MODEL_META_MAP, PROMPT_MAP } from "../maps";
 
 const DB_NAME = "never-forget";
@@ -243,8 +242,8 @@ const parsedImgList = BASE_POOL.map((imgPath) => {
   if (imgPath.includes("--otg")) {
     category = "otg";
   }
+  if (model !== "divineelegancemix_V9") MODELS_IN_SET.push(model);
 
-  MODELS_IN_SET.push(model);
   INPUT_IMGS_IN_SET.push(inputImage);
   PROMPTS_IN_SET.push(prompt);
   return {
@@ -675,6 +674,9 @@ export default {
     imgPerPage() {
       localStorage.setItem("imgPerPage", JSON.stringify(this.imgPerPage));
     },
+    isWeighted() {
+      localStorage.setItem("isWeighted", JSON.stringify(this.isWeighted));
+    },
     selectedSorting() {
       this.currentPage = 1;
       localStorage.setItem("selectedSorting", JSON.stringify(this.selectedSorting));
@@ -704,6 +706,7 @@ export default {
     this.sortDir = localStorage.getItem("sortDir") ? JSON.parse(localStorage.getItem("sortDir")) : 1;
     this.imgPerPage = localStorage.getItem("imgPerPage") ? JSON.parse(localStorage.getItem("imgPerPage")) : 128;
     this.selectedSorting = localStorage.getItem("selectedSorting") ? JSON.parse(localStorage.getItem("selectedSorting")) : "inputImage";
+    this.isWeighted = localStorage.getItem("isWeighted") ? JSON.parse(localStorage.getItem("isWeighted")) : false;
   },
 };
 </script>
