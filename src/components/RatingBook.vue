@@ -151,6 +151,7 @@
           <option value="256">256</option>
           <option value="512">512</option>
           <option value="1024">1024</option>
+          <option value="2048">2048</option>
         </select>
         <select required name="currentMode" id="currentMode" v-model="currentMode">
           <option value="sequence">sequence</option>
@@ -166,7 +167,7 @@
   </div>
 </template>
 <script>
-import * as allImgs from "../pics-v6.json";
+import * as allImgs from "../pics-v7.json";
 import { CATEGORY_MAP, MODEL_META_MAP, PROMPT_MAP } from "../maps";
 
 const DB_NAME = "never-forget";
@@ -198,7 +199,7 @@ const parsedImgList = BASE_POOL.map((imgPath) => {
   const supportPrompt = fn.split("_support_prompt-")[1].split("_")[0];
 
   if (imgPath.includes("avatar1") || imgPath.includes("avatar2")) {
-    category = "ava";
+    category = "avatar";
     inputImage = fn.split("--")[2].split(".jpg")[0] + ".jpg";
     prompt = fn.split("--")[2].split(".jpg")[1].split("_")[1].replace("prompt-", "");
   } else {
@@ -270,7 +271,7 @@ const AVAILABLE_PROMPTS = PROMPTS_IN_SET.filter(onlyUnique).sort();
 console.log(AVAILABLE_MODELS, AVAILABLE_INPUT_IMGS, AVAILABLE_PROMPTS);
 
 /* BREAK OUT */
-
+// function sortFloat(a,b) { return a - b; }
 export default {
   components: {
     ImageCard: () => import("./ImageCard.vue"),
@@ -312,7 +313,7 @@ export default {
       availableModels: AVAILABLE_MODELS,
       availableInputs: AVAILABLE_INPUT_IMGS,
       availablePrompts: AVAILABLE_PROMPTS,
-      availableCategories: ["ava", "911", "jetee", "trackers", "hack", "bts", "cs", "wow", "fortnite", "otg", "starcraft", "diablo", "ava-game"],
+      availableCategories: Object.keys(CATEGORY_MAP),
       sortDir: 1,
       MODEL_META_MAP,
       PROMPT_MAP,
