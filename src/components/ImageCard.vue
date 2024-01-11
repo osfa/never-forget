@@ -1,5 +1,7 @@
 <template>
-  <div class="chapter-card" :class="{ 'full-size': fullSize, third: cardSize === '3', single: cardSize === '1', fourth: cardSize === '4', vertical: isVertical }">
+  <div
+    class="chapter-card"
+    :class="{ 'full-size': fullSize, third: cardSize === '3', single: cardSize === '1', fourth: cardSize === '4', fifth: cardSize === '5', sixth: cardSize === '6', vertical: isVertical }">
     <img :src="showFried ? image.srcFried : show1pass ? image.src1pass : image.src" :alt="`Image ${image.id}`" :class="{ cover: imageDisplay === 'cover' }" />
     <div class="meta-bar">
       <div class="badge">{{ image.id }}</div>
@@ -46,6 +48,16 @@ export default {
 }
 .chapter-card.fourth {
   width: 24vw;
+  height: auto;
+  aspect-ratio: 16/9;
+}
+.chapter-card.fifth {
+  width: 19vw;
+  height: auto;
+  aspect-ratio: 16/9;
+}
+.chapter-card.sixth {
+  width: 15vw;
   height: auto;
   aspect-ratio: 16/9;
 }

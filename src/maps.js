@@ -54,7 +54,7 @@ export const CATEGORY_MAP = {
   avatar: { hexColor: "#2df1b5", weight: 0.3 },
   jetee: { hexColor: "#890add", weight: 0.3 },
   hack: { hexColor: "#cf6d73", weight: 0.2 },
-  otg: { hexColor: "#176017", weight: 0.2 },
+  otg: { hexColor: "#176017", weight: 0.1 },
   911: { hexColor: "#b8b1a6", weight: 0.1 },
   bts: { hexColor: "#e238f2", weight: 0.1 },
   "ava-game": { hexColor: "#0000ff", weight: 0.2 },

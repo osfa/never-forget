@@ -83,16 +83,16 @@
     <div class="main-sequence-container">
       <div v-for="image in viewportImages" :key="image.id" :class="{ selected: selectedImages.includes(image) }">
         <div class="card-container">
-          <div v-show="showMeta && currentMode !== 'blacklist'" class="card-actions">
-            <a href="#" class="blacklist-triple card-action" @click="blackListAction(image, 'triple')">•••</a>
-            <a href="#" class="blacklist-input card-action" @click="blackListAction(image, 'inputImage')">••</a>
-            <a href="#" class="blacklist-card card-action" @click="blackListAction(image, 'id')">•</a>
-            <a href="#" class="save-triple card-action" @click="tripleSave(image)">•••</a>
+          <div v-show="currentMode !== 'blacklist'" class="card-actions">
+            <button class="blacklist-triple card-action" @click="blackListAction(image, 'triple')">•••</button>
+            <button class="blacklist-input card-action" @click="blackListAction(image, 'inputImage')">••</button>
+            <button class="blacklist-card card-action" @click="blackListAction(image, 'id')">•</button>
+            <button class="save-triple card-action" @click="tripleSave(image)">•••</button>
           </div>
           <div v-show="showMeta && currentMode === 'blacklist'" class="card-actions">
-            <a href="#" class="blacklist-triple greeen card-action" @click="reinstateAction(image, 'triple')">•••</a>
-            <a href="#" class="blacklist-input green card-action" @click="reinstateAction(image, 'inputImage')">••</a>
-            <a href="#" class="blacklist-card green card-action" @click="reinstateAction(image, 'id')">•</a>
+            <button class="blacklist-triple greeen card-action" @click="reinstateAction(image, 'triple')">•••</button>
+            <button class="blacklist-input green card-action" @click="reinstateAction(image, 'inputImage')">••</button>
+            <button class="blacklist-card green card-action" @click="reinstateAction(image, 'id')">•</button>
           </div>
           <div v-show="showMeta" class="card-header">
             <div class="left">
@@ -143,6 +143,8 @@
           <option value="2">2</option>
           <option value="3">3</option>
           <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
         </select>
         <select required name="imgPerPage" id="imgPerPage" v-model="imgPerPage">
           <option value="32">32</option>
@@ -167,7 +169,7 @@
   </div>
 </template>
 <script>
-import * as allImgs from "../pics-v7.json";
+import * as allImgs from "../pics-v8.json";
 import { CATEGORY_MAP, MODEL_META_MAP, PROMPT_MAP } from "../maps";
 
 const DB_NAME = "never-forget";
@@ -532,6 +534,7 @@ export default {
       localStorage.setItem("triples", JSON.stringify(this.includedTriples));
     },
     blackListAction(image, type) {
+      console.log("blacklist", image, type);
       if (type === "pair") {
         if (confirm("Ban Model/Prompt Pair?")) {
           this.batch.filter((img) => img.model === image.model && img.prompt === image.prompt).forEach((img) => this.blackList.push(img.id));
@@ -546,6 +549,8 @@ export default {
         }
       } else if (type === "id") {
         this.blackList.push(image.id);
+        this.$delete(this.viewportImages, this.viewportImages.indexOf(image));
+        // this.blackList = this.blackList.slice(this.blackList.indexOf(image), 1);
       }
       localStorage.setItem("blackList", JSON.stringify(this.blackList));
     },
