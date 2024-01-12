@@ -169,7 +169,7 @@
   </div>
 </template>
 <script>
-import * as allImgs from "../pics-v8.json";
+import * as allImgs from "../pics-v9.json";
 import { CATEGORY_MAP, MODEL_META_MAP, PROMPT_MAP } from "../maps";
 
 const DB_NAME = "never-forget";
