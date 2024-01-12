@@ -88,7 +88,7 @@ export default {
 
 .meta-bar {
   position: absolute;
-  top: 0.25rem;
+  top: 1.5rem;
   left: 0.75rem;
   font-size: 0.5rem;
   z-index: 1000;

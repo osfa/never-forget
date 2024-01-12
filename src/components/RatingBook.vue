@@ -162,14 +162,14 @@
           <option value="blacklist">blacklist</option>
         </select>
         <button @click="isVertical = !isVertical">{{ isVertical ? "portrait" : "landscape" }}</button>
-        <button @click="showMeta = !showMeta">{{ showMeta ? "meta" : "no meta" }}</button>
+        <!-- <button @click="showMeta = !showMeta">{{ showMeta ? "meta" : "no meta" }}</button> -->
         <button @click="imageCover = !imageCover">{{ imageCover ? "cover" : "contain" }}</button>
       </div>
     </footer>
   </div>
 </template>
 <script>
-import * as allImgs from "../pics-v9.json";
+import * as allImgs from "../pics-v10.json";
 import { CATEGORY_MAP, MODEL_META_MAP, PROMPT_MAP } from "../maps";
 
 const DB_NAME = "never-forget";
@@ -646,9 +646,9 @@ export default {
       this.filteredImages = this.filterImages();
     },
     gridSize() {
-      if (this.gridSize === "4") {
-        this.showMeta = false;
-      }
+      // if (this.gridSize === "4") {
+      //   this.showMeta = false;
+      // }
     },
     currentMode() {
       this.currentPage = 1;
@@ -806,13 +806,20 @@ button {
 .card-header {
   width: 98%;
   height: 0.75rem;
-  background-color: black;
+  position: absolute;
+  left: 0;
+  top: 0;
   display: flex;
   flex-direction: row;
   /* font-size: 10px;
   font-size: 8px; */
   padding: 1%;
   justify-content: space-between;
+  z-index: 100;
+  visibility: hidden;
+}
+.card-container:hover .card-header {
+  visibility: visible;
 }
 .card-header .left {
   display: flex;
