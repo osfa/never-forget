@@ -171,7 +171,7 @@
   </div>
 </template>
 <script>
-import * as allImgs from "../data/pics-v10.json";
+import * as allImgs from "../data/pics-versioned.json";
 import { CATEGORY_MAP, MODEL_META_MAP, PROMPT_MAP } from "../maps";
 
 /* BREAK OUT */
