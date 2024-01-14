@@ -373,10 +373,10 @@ export default {
       }
 
       if (this.currentMode !== "blacklist") {
-        console.log("filtering no blackList:", this.blackList.length);
+        console.log("filtering: excluding blackList:", this.blackList.length);
         images = images.filter((image) => !this.blackList.includes(image.id));
       } else {
-        console.log("filtering only blackList");
+        console.log("filtering: showing only blackList");
         images = images.filter((image) => this.blackList.includes(image.id));
       }
 
@@ -511,7 +511,8 @@ export default {
         this.batch.splice(idx, 1, image);
 
         if (rating < 4) {
-          this.$delete(this.viewportImages, this.viewportImages.indexOf(image));
+          // this.$delete(this.viewportImages, this.viewportImages.indexOf(image));
+          this.reRoll(this.viewportImages.indexOf(image));
         }
 
         this.ratedImages = this.batch
