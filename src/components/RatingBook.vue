@@ -44,10 +44,11 @@
 
           <!-- <div @click="setSortOrder('rating')" class="label" :class="{ active: selectedSorting === 'rating' }">Rating</div> -->
           <select required name="selectedRating" id="selectedRating" v-model="selectedRating" :class="{ active: selectedSorting === 'rating' }">
-            <option value="">All Ratings</option>
-            <option value="rated">All Rated</option>
-            <option value="unrated">All Unrated</option>
-            <option value="good">>3</option>
+            <option value="">All</option>
+            <option value="rated">Rated</option>
+            <option value="unrated">Unrated</option>
+            <option value="good">Unrated and 4-5</option>
+            <option value="excellent">4-5</option>
             <option value="bad">{{ "=< 3" }}</option>
             <option v-for="n in 5" :key="n" :value="n">
               {{ n }}
@@ -81,13 +82,14 @@
     </div>
 
     <div class="main-sequence-container">
-      <div v-for="image in viewportImages" :key="image.id" :class="{ selected: selectedImages.includes(image) }">
+      <div v-for="(image, idx) in viewportImages" :key="image.id" :class="{ selected: selectedImages.includes(image) }">
         <div class="card-container">
           <div v-show="currentMode !== 'blacklist'" class="card-actions">
             <button class="blacklist-triple card-action" @click="blackListAction(image, 'triple')">•••</button>
             <button class="blacklist-input card-action" @click="blackListAction(image, 'inputImage')">••</button>
             <button class="blacklist-card card-action" @click="blackListAction(image, 'id')">•</button>
             <button class="save-triple card-action" @click="tripleSave(image)">•••</button>
+            <button class="save-triple card-action" @click="reRoll(idx)">Reroll</button>
           </div>
           <div v-show="showMeta && currentMode === 'blacklist'" class="card-actions">
             <button class="blacklist-triple greeen card-action" @click="reinstateAction(image, 'triple')">•••</button>
@@ -154,6 +156,7 @@
           <option value="512">512</option>
           <option value="1024">1024</option>
           <option value="2048">2048</option>
+          <option value="4096">4096</option>
         </select>
         <select required name="currentMode" id="currentMode" v-model="currentMode">
           <option value="sequence">sequence</option>
@@ -303,6 +306,7 @@ export default {
       selectedImages: [],
       viewportImages: [],
       filteredImages: [],
+      filteredImagesPool: [],
       blackList: [],
       ratedImages: [],
       includedTriples: [],
@@ -361,6 +365,8 @@ export default {
           images = images.filter((image) => image.rating <= 3);
         } else if (this.selectedRating === "good") {
           images = images.filter((image) => image.rating === null || image.rating > 3);
+        } else if (this.selectedRating === "excellent") {
+          images = images.filter((image) => image.rating > 3);
         } else {
           images = images.filter((image) => image.rating == this.selectedRating);
         }
@@ -394,7 +400,7 @@ export default {
       if (this.selectedPrompt !== "") {
         images = images.filter((image) => image.prompt == this.selectedPrompt);
       }
-
+      this.filteredImagesPool = images;
       let sorted = images.sort((a, b) => (a[this.selectedSorting] > b[this.selectedSorting] ? -this.sortDir : this.sortDir));
       if (this.currentMode === "random" || this.currentMode === "triples") {
         if (this.isWeighted) {
@@ -434,14 +440,26 @@ export default {
         const cat = CATEGORY_MAP[category];
         const categoryImageCount = Math.floor(n * cat.weight);
         console.log("trying to get:", categoryImageCount);
+
         const pool = arr.filter((image) => image.category === category);
         if (pool.length < 1) {
           console.log("no images for:", category);
           continue;
         }
+
+        // let usedInputs = []
+        // const singleInputPool = pool.filter((image) => {
+        //   image.inputImage === image.inputImage
+        //   if (usedInputs.includes(image.inputImage)) {
+        //     return false
+        //   }
+        // });
+
         // need like repeating here to fill up?
         const pulledImages = this.getRandomElements(pool, Math.min(pool.length, categoryImageCount));
+
         console.log("got:", pulledImages.length);
+
         selection = selection.concat(pulledImages);
       }
       console.log("done:", selection.length);
@@ -491,9 +509,11 @@ export default {
         const isSelectedImg = (img) => img.id === id;
         const idx = this.batch.findIndex(isSelectedImg);
         this.batch.splice(idx, 1, image);
-        // viewport splice as well?
 
-        // push image here instead to save a filter?
+        if (rating < 4) {
+          this.$delete(this.viewportImages, this.viewportImages.indexOf(image));
+        }
+
         this.ratedImages = this.batch
           .filter((image) => image.rating !== null)
           .map((image) => {
@@ -532,9 +552,12 @@ export default {
       localStorage.setItem("triples", JSON.stringify(this.includedTriples));
     },
     tripleDelete(idx) {
-      // this.includedTriples.splice(idx, 1);
       this.$delete(this.includedTriples, idx);
       localStorage.setItem("triples", JSON.stringify(this.includedTriples));
+    },
+    reRoll(idx) {
+      const newImage = this.getRandomElements(this.filteredImagesPool, 1)[0];
+      this.viewportImages.splice(idx, 1, newImage);
     },
     blackListAction(image, type) {
       console.log("blacklist", image, type);
@@ -632,8 +655,16 @@ export default {
       return r;
     },
     dumpFiles() {
+      // console.log("filteredImagesPool:");
+      // console.log(this.filteredImagesPool.map((x) => x.id));
+      console.log("filteredImages:");
       console.log(this.filteredImages.map((x) => x.id));
-      // console.log('in view:', this.filteredImages.slice((currentPage - 1) * imgPerPage, (currentPage - 1) * imgPerPage + imgPerPage))
+      console.log("viewportImages:");
+      console.log(this.viewportImages.map((x) => x.id));
+      console.log("rated images 4 and above:");
+      console.log(this.ratedImages.filter((image) => image.rating > 3).map((x) => x.id)); // base on selected rating?
+      // console.log("blacklist:");
+      // console.log(this.blackList);
     },
     goTop() {
       window.scroll({
@@ -878,6 +909,10 @@ button {
 .card-action:hover {
   opacity: 0.75;
 }
+.triples-bar {
+  visibility: hidden;
+}
+
 .card-header .badge,
 .triples-bar .badge {
   display: flex;
