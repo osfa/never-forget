@@ -169,8 +169,11 @@
   </div>
 </template>
 <script>
-import * as allImgs from "../pics-v10.json";
+import * as allImgs from "../data/pics-v10.json";
 import { CATEGORY_MAP, MODEL_META_MAP, PROMPT_MAP } from "../maps";
+
+// /Users/jbe/static-sites/never-forget-vite-vue2/src/data/selections/aex/ dump_5star_390.json
+// /Users/jbe/static-sites/never-forget-vite-vue2/src/data/selections/aex/blacklist_1.json
 
 const DB_NAME = "never-forget";
 const DB_VERSION = 3;

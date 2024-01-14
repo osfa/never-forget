@@ -42,8 +42,8 @@
   </div>
 </template>
 <script>
-import { imgLibrary2 } from "../imgLibrary2.js";
-import { permaBlackList } from "../blacklist.js";
+import { imgLibrary2 } from "../data/imgLibrary2.js";
+import { permaBlackList } from "../data/selections/blacklist-v0.js";
 
 import { jetee } from "../script.js";
 import BarebonesTone from "./BarebonesTone.vue";
