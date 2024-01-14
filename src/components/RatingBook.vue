@@ -31,9 +31,7 @@
           <select required name="selectedInputCategory" id="selectedInputCategory" v-model="selectedInputCategory" :style="{ backgroundColor: CATEGORY_MAP[selectedInputCategory]?.hexColor }">
             >
             <option value="">All Categories</option>
-            <option v-for="input in availableCategories" :key="input" :value="input">
-              {{ input }}
-            </option>
+            <option v-for="input in availableCategories" :key="input" :value="input">{{ input }} ({{ CATEGORY_MAP[input][selectedModel]?.count }})</option>
           </select>
 
           <!-- <div @click="setSortOrder('inputImage')" class="label" :class="{ active: selectedSorting === 'inputImage' }">Input Img</div> -->
@@ -86,7 +84,8 @@
         <div class="card-container">
           <div v-show="currentMode !== 'blacklist'" class="card-actions">
             <button class="blacklist-triple card-action" @click="blackListAction(image, 'triple')">•••</button>
-            <button class="blacklist-input card-action" @click="blackListAction(image, 'inputImage')">••</button>
+            <button class="blacklist-input card-action" @click="blackListAction(image, 'inputImage')">inp</button>
+            <button class="blacklist-input card-action" @click="blackListAction(image, 'inputImageModel')">inp/model</button>
             <button class="blacklist-card card-action" @click="blackListAction(image, 'id')">•</button>
             <button class="save-triple card-action" @click="tripleSave(image)">•••</button>
             <button class="save-triple card-action" @click="reRoll(idx)">Reroll</button>
@@ -175,12 +174,6 @@
 import * as allImgs from "../data/pics-v10.json";
 import { CATEGORY_MAP, MODEL_META_MAP, PROMPT_MAP } from "../maps";
 
-// /Users/jbe/static-sites/never-forget-vite-vue2/src/data/selections/aex/ dump_5star_390.json
-// /Users/jbe/static-sites/never-forget-vite-vue2/src/data/selections/aex/blacklist_1.json
-
-const DB_NAME = "never-forget";
-const DB_VERSION = 3;
-
 /* BREAK OUT */
 let MODELS_IN_SET = [];
 let INPUT_IMGS_IN_SET = [];
@@ -188,9 +181,10 @@ let PROMPTS_IN_SET = [];
 function onlyUnique(value, index, array) {
   return array.indexOf(value) === index;
 }
-const BASE_POOL = allImgs.default;
+let BASE_POOL = allImgs.default;
 // BASE_POOL = BASE_POOL.slice(0, 2000);
 
+// do in created?
 const parsedImgList = BASE_POOL.map((imgPath) => {
   const srcFried = imgPath.replace("/Users/jbe/Dropbox/stabdiff-ui-v2/comfyui-outs/_NF/", "");
   imgPath = imgPath.replace("/Users/jbe/Dropbox/stabdiff-ui-v2/comfyui-outs/_NF/", "").replace("/fried/", "/2pass/");
@@ -251,6 +245,14 @@ const parsedImgList = BASE_POOL.map((imgPath) => {
   if (imgPath.includes("--otg")) {
     category = "otg";
   }
+
+  if (CATEGORY_MAP[category][model] === undefined) {
+    CATEGORY_MAP[category][model] = {};
+    CATEGORY_MAP[category][model]["count"] = 1;
+  } else {
+    CATEGORY_MAP[category][model]["count"] += 1;
+  }
+
   if (model !== "divineelegancemix_V9") MODELS_IN_SET.push(model);
 
   INPUT_IMGS_IN_SET.push(inputImage);
@@ -455,6 +457,8 @@ export default {
         //   }
         // });
 
+        // need to check if input is already used?
+        // or check if max 3?
         // need like repeating here to fill up?
         const pulledImages = this.getRandomElements(pool, Math.min(pool.length, categoryImageCount));
 
@@ -510,7 +514,7 @@ export default {
         const idx = this.batch.findIndex(isSelectedImg);
         this.batch.splice(idx, 1, image);
 
-        if (rating < 4) {
+        if (rating < 4 && this.currentMode === "random") {
           // this.$delete(this.viewportImages, this.viewportImages.indexOf(image));
           this.reRoll(this.viewportImages.indexOf(image));
         }
@@ -569,6 +573,10 @@ export default {
       } else if (type === "triple") {
         if (confirm("Ban Triple?")) {
           this.batch.filter((img) => img.category === image.category && img.model === image.model && img.prompt === image.prompt).forEach((img) => this.blackList.push(img.id));
+        }
+      } else if (type === "inputImageModel") {
+        if (confirm("Ban Input for model?")) {
+          this.batch.filter((img) => img.model === image.model && img.inputImage === image.inputImage).forEach((img) => this.blackList.push(img.id));
         }
       } else if (type === "inputImage") {
         if (confirm("Ban Input?")) {
@@ -726,6 +734,8 @@ export default {
 
   async created() {
     console.log("created fire.");
+    console.log("CATEGORY_MAP", CATEGORY_MAP["911"]);
+
     this.blackList = JSON.parse(localStorage.getItem("blackList") || "[]").filter((n) => n);
     this.ratedImages = JSON.parse(localStorage.getItem("imageRatings") || "[]");
     this.includedTriples = JSON.parse(localStorage.getItem("triples") || "[]");
@@ -872,7 +882,7 @@ button {
   position: absolute;
   bottom: 1rem;
   right: 1rem;
-  z-index: 4000;
+  z-index: 500;
 }
 .card-container:hover .card-action {
   visibility: visible;
