@@ -449,18 +449,21 @@ export default {
           continue;
         }
 
-        // let usedInputs = []
-        // const singleInputPool = pool.filter((image) => {
-        //   image.inputImage === image.inputImage
-        //   if (usedInputs.includes(image.inputImage)) {
-        //     return false
-        //   }
-        // });
+        let usedInputs = [];
+        // shuffle first?
+        // or check if max 3?
+        const singleInputPool = pool.filter((image) => {
+          if (usedInputs.includes(image.inputImage)) {
+            return false;
+          } else {
+            usedInputs.push(image.inputImage);
+            return true;
+          }
+        });
 
         // need to check if input is already used?
-        // or check if max 3?
         // need like repeating here to fill up?
-        const pulledImages = this.getRandomElements(pool, Math.min(pool.length, categoryImageCount));
+        const pulledImages = this.getRandomElements(singleInputPool, Math.min(singleInputPool.length, categoryImageCount));
 
         console.log("got:", pulledImages.length);
 

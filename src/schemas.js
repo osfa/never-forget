@@ -55,4 +55,4 @@ const ANIVERSE = {
   },
 };
 // export const availableSchemas = [ANIVERSE, ANIME, y1997, SECOND_LIFE];
-export const availableSchemas = [ANIVERSE];
+export const availableSchemas = [ANIVERSE, ANIME, y1997, SECOND_LIFE];

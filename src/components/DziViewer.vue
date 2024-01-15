@@ -1,4 +1,3 @@
-<!-- eslint-disable no-console -->
 <template>
   <div id="viewer-image" ref="image">
     <div id="overlay" :style="{ backgroundSize: `${Math.min(currentZoom * 25, 35)}%` }"></div>
@@ -17,22 +16,42 @@
         <!-- <InformationIcon /> -->
       </div>
 
-      <!-- <AudioModule v-if="!develop" ref="audioModule" :automatic-fade="false" :debug="false" :kiosk-mode="false" /> -->
-      <BarebonesTone ref="audioModule" automaticFade :debug="true" />
+      <BarebonesTone ref="audioModule" automaticFade :debug="false" />
+    </div>
+    <div id="social-media-bar">
+      <a href="https://www.youtube.com/@NeverForgetNow" class="btn-platform youtube">YouTube</a>
+      <a href="https://www.tiktok.com/@neverforgetnow" class="btn-platform tiktok">TikTok</a>
+      <a href="https://www.instagram.com/neverforgetnow1" class="btn-platform instagram">Instagram</a>
+    </div>
+    <div id="filter-bar">
+      <div
+        v-for="(model, idx) in Object.keys(MODEL_META_MAP).slice(0, 7)"
+        class="btn-layer"
+        :class="{ active: model === selectedModel }"
+        :style="{ backgroundColor: MODEL_META_MAP[model]?.hexColor }"
+        @click="setPlateFilter(model)"></div>
+    </div>
+    <div id="zoom-bar">
+      <div
+        v-for="zoom in [1, 2, 3, 4, 5, 6, 7]"
+        class="btn-zoom"
+        :class="{ active: zoom === selectedZoomLevel }"
+        @click="selectedZoomLevel = zoom"
+        :style="{ backgroundColor: ZOOM_COLORS[zoom - 1] }"></div>
     </div>
   </div>
 </template>
 <script>
 import OpenSeadragon from "openseadragon";
 import { availableSchemas } from "../schemas.js";
-// import AudioModule from "./AudioModule.vue";
 import BarebonesTone from "./BarebonesTone.vue";
+import { MODEL_META_MAP } from "../maps";
 
+const ZOOM_COLORS = ["#000", "#111", "#222", "#333", "#666", "#999", "#ccc", "#fff"];
 window.OpenSeadragon = OpenSeadragon;
 export default {
   name: "DziViewer",
   components: {
-    // AudioModule,
     BarebonesTone,
   },
   data() {
@@ -43,6 +62,7 @@ export default {
 
       // zoom hell
       currentZoom: 0.2,
+      selectedZoomLevel: 1,
       startZoom: 6,
       minZoom: 6, // how far you can zoom out, the smaller the more
       // minZoom: 2, // how far you can zoom out, the smaller the more
@@ -67,7 +87,15 @@ export default {
       tickInterval: 1000,
       slideTickInterval: 8,
       tickDown: 8,
+      selectedModel: "aniverse_v15Pruned",
+      MODEL_META_MAP,
+      ZOOM_COLORS,
     };
+  },
+  watch: {
+    selectedZoomLevel() {
+      this.viewer.viewport.zoomTo(this.selectedZoomLevel);
+    },
   },
   computed: {
     positionDisplay() {
@@ -120,6 +148,19 @@ export default {
         this.frame();
       });
     },
+    switchSchema() {
+      this.idx += 1;
+      const z = this.viewer.viewport.getZoom();
+      this.viewer.viewport.defaultZoomLevel = z;
+      this.viewer.goToPage(this.idx % this.viewer.tileSources.length);
+    },
+    setPlateFilter(model) {
+      this.selectedModel = model;
+      this.idx += 1;
+      const z = this.viewer.viewport.getZoom();
+      this.viewer.viewport.defaultZoomLevel = z;
+      this.viewer.goToPage(this.idx % this.viewer.tileSources.length);
+    },
     initViewer() {
       // const ts = this.active_schema
 
@@ -143,14 +184,15 @@ export default {
         // this.maxZoom = 24; // decrease with viewport width
         this.maxZoom = 9; // decrease with viewport width
       }
-      console.log("init viewer:", window.innerWidth, this.startZoom, this.minZoom, this.maxZoom);
+      console.log("init viewer:", window.innerWidth, this.startZoom, this.minZoom, this.maxZoom, availableSchemas);
       // smaller width => higher zoom?
       this.viewer = OpenSeadragon({
         id: "viewer-image",
         maxImageCacheCount: 10000,
         // tileSources: ts,
-        tileSources: [availableSchemas[0], availableSchemas[1], availableSchemas[2]],
-        sequenceMode: false,
+        tileSources: availableSchemas, //[availableSchemas[0], availableSchemas[1], availableSchemas[2]],
+        sequenceMode: true,
+        showSequenceControl: false,
         // imageSmoothingEnabled???
         showNavigator: false,
         showRotationControl: false,
@@ -214,11 +256,11 @@ export default {
         //   width: 1.92,
         // })
 
-        this.idx += 1;
-        const z = this.viewer.viewport.getZoom();
-        this.viewer.viewport.defaultZoomLevel = z;
-
-        this.viewer.goToPage(this.idx % this.viewer.tileSources.length);
+        // this.idx += 1;
+        // const z = this.viewer.viewport.getZoom();
+        // this.viewer.viewport.defaultZoomLevel = z;
+        // this.viewer.goToPage(this.idx % this.viewer.tileSources.length);
+        // this.switchSchema();
         // this.viewer.viewport.zoomTo(z)
       });
     },
@@ -235,6 +277,7 @@ body,
   height: 100%;
   width: 100%;
 }
+
 #overlay {
   position: fixed;
   top: 0;
@@ -253,4 +296,121 @@ body,
   /* mix-blend-mode: difference; */
   /* background-color: transparent; */
 }
+
+#zoom-bar {
+  position: fixed;
+  left: 2rem;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  flex-direction: column;
+}
+.btn-zoom {
+  padding: 2rem;
+  background-color: #333;
+  opacity: 0.75;
+  cursor: pointer;
+}
+.btn-zoom.active {
+  opacity: 1;
+}
+
+#filter-bar {
+  position: fixed;
+  right: 2rem;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  flex-direction: column;
+}
+
+.btn-layer {
+  padding: 2rem;
+  background-color: #333;
+  opacity: 0.75;
+  cursor: pointer;
+}
+
+.btn-layer.active {
+  opacity: 1;
+}
+.layer-1 {
+  background-color: #ffd700;
+}
+.layer-2 {
+  background-color: #ff4500;
+}
+.layer-3 {
+  background-color: #778899;
+}
+
+@media (orientation: portrait) {
+  .btn-layer,
+  .btn-zoom {
+    padding: 1.5rem;
+  }
+}
+#social-media-bar {
+  width: 100vw;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 2000;
+  display: flex;
+  justify-content: space-evenly;
+  font-family: Papyrus, fantasy;
+  font-size: 0.8rem;
+}
+
+#social-media-bar a {
+  display: block;
+  padding: 0.5rem 2rem;
+  text-decoration: none;
+  flex: 1;
+  text-align: center;
+}
+
+.youtube {
+  background-color: rgba(255, 0, 0, 0.3);
+  color: white;
+}
+.youtube:hover {
+  background-color: rgba(255, 0, 0, 0.8);
+}
+.instagram {
+  background-color: rgba(193, 53, 132, 0.3);
+  color: white;
+}
+.instagram:hover {
+  background-color: rgba(193, 53, 132, 0.8);
+}
+.tiktok {
+  background-color: rgba(255, 0, 80, 0.3);
+  color: black;
+}
+.tiktok:hover {
+  background-color: rgba(255, 0, 80, 0.8);
+  color: black;
+}
 </style>
+
+<!-- "3dAnimationDiffusion_v10": { friendlyName: "3D Anim", hexColor: "#DA70D6" }, // Orchid
+aniverse_v15Pruned: { friendlyName: "Aniverse", hexColor: "#FFD700" }, // Gold
+counterfeitV30_v30: { friendlyName: "Counterfeit", hexColor: "#FF4500" }, // Orange Red
+divineanimemix_V2: { friendlyName: "Divine Anime", hexColor: "#BA55D3" }, // Medium Orchid
+divineelegancemix_V9: { friendlyName: "Divine Elegance", hexColor: "#DB7093" }, // Pale Violet Red
+"dreamlike-photoreal-2.0": { friendlyName: "Dreamlike", hexColor: "#ADD8E6" }, // Light Blue
+dreamshaper_8: { friendlyName: "Dreamshaper", hexColor: "#20B2AA" }, // Light Sea Green
+epicrealism_naturalSinRC1VAE: { friendlyName: "Epic Realism", hexColor: "#778899" }, // Light Slate Gray
+indigoComic_v10withvae: { friendlyName: "Indigo Comic", hexColor: "#4B0082" }, // Indigo
+meinamix_meinaV11: { friendlyName: "Meinamix", hexColor: "#FF69B4" }, // Hot Pink
+realisticVisionV51_v51VAE: { friendlyName: "Realistic Vision", hexColor: "#2E8B57" }, // Sea Green
+revAnimated_v122EOL: { friendlyName: "Rev Animated", hexColor: "#FF6347" }, // Tomato
+toonyou_beta6: { friendlyName: "Toonyou", hexColor: "#FFA07A" }, // Light Salmon
+"v1-5-pruned-emaonly": { friendlyName: "1.5", hexColor: "#B0C4DE" }, // Light Steel Blue -->

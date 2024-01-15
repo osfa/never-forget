@@ -1,18 +1,35 @@
-- layers toggle
-  - org models according to that?
 - more plates
+
   - gridded plate test?
+  - layers how?
+  - weird sigils?
+  - symlink?
+
 - subs
+- loader?
+
+- landing page / info for poem
+
+- scroll and scrbolling and zoom logics
+
+  - scroll smoothness
+  - zoom min max per viewport
+  - zoom from center
+
 - audio pick how?
-- soc med header
 
-- zoom from center
+- favicon
+- share stuff / meta
+- profile headers and imgs
 
-- scroll smoothness
-- zoom min max per viewport
-
-- fauviocn
 - TiledImage.viewportToImageCoordinates
+
+- animations
+
+  - hide bar etc..
+  - change zoom scroll correctly
+
+- cloud front?
 
 # vite-vue2-starter
 

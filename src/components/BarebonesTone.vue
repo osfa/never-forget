@@ -1,5 +1,5 @@
 <template>
-  <div class="btn-audio" :class="{ hasInit: hasInit || debug }" @click="toggleAudio">{{ muteIcon() }}</div>
+  <div class="btn-audio" :class="{ hasInit: hasInit || debug, isPlaying }" @click="toggleAudio">{{ muteIcon() }}</div>
 </template>
 <script>
 import * as Tone from "tone";
@@ -272,9 +272,12 @@ export default {
 .btn-audio {
   position: fixed;
   top: 0;
-  right: 0;
+  left: 0%;
+  margin-right: 2.5rem;
 
-  background-color: rgba(0, 0, 0, 0.75);
+  background-color: rgba(255, 255, 255, 0.75);
+  /* background-color: white; */
+
   font-size: 5rem;
   z-index: 10000;
 
@@ -288,12 +291,21 @@ export default {
 }
 .btn-audio.hasInit {
   background-color: rgba(0, 0, 0, 0.25);
+  background-color: black;
+  background-color: rgba(0, 0, 0, 0.75);
+
   /* background-color: transparent; */
   padding: 1rem;
   width: auto;
   height: auto;
   font-size: 1.5rem;
+
+  left: 50%;
+  margin-right: 2.5rem;
   /* padding-right: 20px; */
   /* line-height: 1rem; */
+}
+.btn-audio.isPlaying {
+  background-color: rgba(255, 255, 255, 0.75);
 }
 </style>
