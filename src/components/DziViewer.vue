@@ -18,7 +18,7 @@
       </div>
 
       <!-- <AudioModule v-if="!develop" ref="audioModule" :automatic-fade="false" :debug="false" :kiosk-mode="false" /> -->
-      <BarebonesTone ref="audioModule" automaticFade :debug="false" />
+      <BarebonesTone ref="audioModule" automaticFade :debug="true" />
     </div>
   </div>
 </template>
@@ -40,16 +40,19 @@ export default {
       idx: 0,
       active_schema: availableSchemas[0],
       wrap: true,
+
+      // zoom hell
       currentZoom: 0.2,
       startZoom: 6,
       minZoom: 6, // how far you can zoom out, the smaller the more
       // minZoom: 2, // how far you can zoom out, the smaller the more
       maxZoom: 28,
+
+      // not used?
       selectMode: false,
       selected: null,
       cull: [],
       cursorHistory: [],
-      ticks: 0,
 
       // dev mode
       favorites: [],
@@ -58,6 +61,7 @@ export default {
       develop: false,
 
       // tick stuff
+      ticks: 0,
       lastNow: null,
       ticks: 0,
       tickInterval: 1000,
@@ -83,7 +87,6 @@ export default {
       this.ticks += 1;
       this.tickDown -= 1;
       if (this.$refs.audioModule) this.$refs.audioModule.playTick();
-
       // if (this.ticks % this.slideTickInterval === 0) {
       //   this.storyTick();
       // }
@@ -121,18 +124,24 @@ export default {
       // const ts = this.active_schema
 
       if (window.innerWidth < 640) {
+        console.log("ZOOM MOBILE");
         this.startZoom = 24;
         this.minZoom = 2;
         this.maxZoom = 75;
       } else if (window.innerWidth < 889) {
+        console.log("ZOOM TABLET");
         this.startZoom = 18;
         this.minZoom = 2;
         this.maxZoom = 50;
       } else {
+        console.log("ZOOM DESKTOP");
         this.startZoom = 8; // decrease with viewport width
-        this.startZoom = 0.2; // decrease with viewport width
-        this.minZoom = 0.01; // decrease with viewport width
-        this.maxZoom = 24; // decrease with viewport width
+        // this.startZoom = 0.2; // decrease with viewport width
+        this.startZoom = 2; // decrease with viewport width
+        // this.minZoom = 0.01; // decrease with viewport width
+        this.minZoom = 2; // decrease with viewport width
+        // this.maxZoom = 24; // decrease with viewport width
+        this.maxZoom = 9; // decrease with viewport width
       }
       console.log("init viewer:", window.innerWidth, this.startZoom, this.minZoom, this.maxZoom);
       // smaller width => higher zoom?
@@ -187,6 +196,13 @@ export default {
 
         console.log("ip:", ip);
         const viewportPoint = this.viewer.viewport.pointFromPixel(webPoint);
+
+        // https://github.com/openseadragon/openseadragon/issues/1360
+        // TiledImage.viewportToImageCoordinate
+        // var tiledImage = viewer.world.getItemAt(3);
+        // var pointOnImage = tiledImage.viewportToImageCoordinates(viewportPoint.x, viewportPoint.y, true);
+        // var dx = pointOnImage.x;
+        // need to get item at someho?
         const imagePoint = this.viewer.viewport.viewportToImageCoordinates(viewportPoint);
 
         console.log(webPoint.toString(), viewportPoint.toString(), imagePoint.toString());

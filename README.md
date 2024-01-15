@@ -1,3 +1,19 @@
+- layers toggle
+  - org models according to that?
+- more plates
+  - gridded plate test?
+- subs
+- audio pick how?
+- soc med header
+
+- zoom from center
+
+- scroll smoothness
+- zoom min max per viewport
+
+- fauviocn
+- TiledImage.viewportToImageCoordinates
+
 # vite-vue2-starter
 
 ln -s DROPBOX_PATH/\_NF-03-5 /whereverdularepot/never-forget-vite-vue2/public/NF-03-5

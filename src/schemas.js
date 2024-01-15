@@ -40,4 +40,19 @@ const SECOND_LIFE = {
     },
   },
 };
-export const availableSchemas = [ANIME, y1997, SECOND_LIFE];
+const ANIVERSE = {
+  Image: {
+    xmlns: "http://schemas.microsoft.com/deepzoom/2008",
+    Url: "/dzi/aniverse-v0_files/",
+    Format: "jpeg",
+    Overlap: "1",
+    TileSize: "254",
+    ServerFormat: "Default",
+    Size: {
+      Height: "28800",
+      Width: "51200",
+    },
+  },
+};
+// export const availableSchemas = [ANIVERSE, ANIME, y1997, SECOND_LIFE];
+export const availableSchemas = [ANIVERSE];

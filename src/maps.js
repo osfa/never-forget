@@ -53,11 +53,11 @@ export const PROMPT_MAP = {
 export const CATEGORY_MAP = {
   avatar: { hexColor: "#2df1b5", weight: 0.3 },
   jetee: { hexColor: "#890add", weight: 0.2 },
-  hack: { hexColor: "#cf6d73", weight: 0.05 },
+  hack: { hexColor: "#cf6d73", weight: 0.1 },
   otg: { hexColor: "#176017", weight: 0.05 },
   911: { hexColor: "#b8b1a6", weight: 0.05 },
   bts: { hexColor: "#e238f2", weight: 0.05 },
-  "ava-game": { hexColor: "#0000ff", weight: 0.1 },
+  "ava-game": { hexColor: "#0000ff", weight: 0.05 },
   trackers: { hexColor: "#9e0912", weight: 0.05 },
   wow: { hexColor: "#424f9e", weight: 0.025 },
   fortnite: { hexColor: "#ba98a0", weight: 0.025 },

@@ -278,7 +278,7 @@ const parsedImgList = BASE_POOL.map((imgPath) => {
 const AVAILABLE_MODELS = MODELS_IN_SET.filter(onlyUnique).sort();
 const AVAILABLE_INPUT_IMGS = INPUT_IMGS_IN_SET.filter(onlyUnique).sort();
 const AVAILABLE_PROMPTS = PROMPTS_IN_SET.filter(onlyUnique).sort();
-console.log(AVAILABLE_MODELS, AVAILABLE_INPUT_IMGS, AVAILABLE_PROMPTS);
+// console.log(AVAILABLE_MODELS, AVAILABLE_INPUT_IMGS, AVAILABLE_PROMPTS);
 
 /* BREAK OUT */
 // function sortFloat(a,b) { return a - b; }
@@ -672,8 +672,10 @@ export default {
       console.log(this.viewportImages.map((x) => x.id));
       console.log("rated images 4 and above:");
       console.log(this.ratedImages.filter((image) => image.rating > 3).map((x) => x.id)); // base on selected rating?
-      // console.log("blacklist:");
-      // console.log(this.blackList);
+      console.log("all rated:");
+      console.log(this.ratedImages.map((x) => x.id)); // base on selected rating?
+      console.log("blacklist:");
+      console.log(this.blackList);
     },
     goTop() {
       window.scroll({
