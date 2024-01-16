@@ -94,6 +94,7 @@ export default {
   },
   watch: {
     selectedZoomLevel() {
+      console.log("selectedZoomLevel", this.selectedZoomLevel);
       this.viewer.viewport.zoomTo(this.selectedZoomLevel);
     },
   },
@@ -308,14 +309,17 @@ body,
   z-index: 2000;
   flex-direction: column;
 }
+
 .btn-zoom {
   padding: 2rem;
   background-color: #333;
   opacity: 0.75;
   cursor: pointer;
 }
+
 .btn-zoom.active {
   opacity: 1;
+  border: 0.1px solid white;
 }
 
 #filter-bar {
@@ -333,12 +337,14 @@ body,
 .btn-layer {
   padding: 2rem;
   background-color: #333;
-  opacity: 0.75;
+  opacity: 0.5;
   cursor: pointer;
 }
 
 .btn-layer.active {
   opacity: 1;
+  border: 0.1px solid white;
+  box-sizing: border-box;
 }
 .layer-1 {
   background-color: #ffd700;
@@ -393,6 +399,7 @@ body,
 .tiktok {
   background-color: rgba(255, 0, 80, 0.3);
   color: black;
+  color: white;
 }
 .tiktok:hover {
   background-color: rgba(255, 0, 80, 0.8);

@@ -276,6 +276,7 @@ export default {
   margin-right: 2.5rem;
 
   background-color: rgba(255, 255, 255, 0.75);
+  /* background-color: rgba(0, 255, 0, 0.75); */
   /* background-color: white; */
 
   font-size: 5rem;

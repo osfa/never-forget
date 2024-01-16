@@ -1,9 +1,15 @@
+- zoom fix?
+
 - more plates
 
   - gridded plate test?
+  - fried?
   - layers how?
   - weird sigils?
   - symlink?
+
+- better audiotoggle
+- gui mobile / hide
 
 - subs
 - loader?
@@ -29,7 +35,7 @@
   - hide bar etc..
   - change zoom scroll correctly
 
-- cloud front?
+- cloud front? config?
 
 # vite-vue2-starter
 
