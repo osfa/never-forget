@@ -73,6 +73,7 @@
             <option value="no_ipa">no_ipa</option>
           </select>
           <button @click="isWeighted = !isWeighted">{{ isWeighted ? "weighted" : "linear" }}</button>
+          <button @click="forceWeights = !forceWeights">{{ forceWeights ? "T" : "-" }}</button>
 
           <button @click="dumpFiles">DUMP</button>
         </div>
@@ -80,7 +81,7 @@
     </div>
 
     <div class="main-sequence-container">
-      <div v-for="(image, idx) in viewportImages" :key="image.id" :class="{ selected: selectedImages.includes(image) }">
+      <div v-for="(image, idx) in viewportImages" :key="`${idx}-${image.id}`" :class="{ selected: selectedImages.includes(image) }">
         <div class="card-container">
           <div v-show="currentMode !== 'blacklist'" class="card-actions">
             <button class="blacklist-triple card-action" @click="blackListAction(image, 'triple')">•••</button>
@@ -298,6 +299,7 @@ export default {
       isVertical: false,
       currentMode: "sequence",
       isWeighted: true,
+      forceWeights: true,
       gridSize: "3",
       lightBoxed: null,
       imageQuality: "fried",
@@ -342,7 +344,7 @@ export default {
       return this.availableInputs.sort();
     },
     filterOpts() {
-      return `${this.currentPage}|${this.selectedSorting}|${this.selectedRating}|${this.selectedModel}|${this.selectedInputImage}|${this.selectedPrompt}|${this.selectedInputCategory}|${this.sortDir}|${this.ipaFilter}|${this.currentMode}|${this.imgPerPage}|${this.isWeighted}`;
+      return `${this.currentPage}|${this.selectedSorting}|${this.selectedRating}|${this.selectedModel}|${this.selectedInputImage}|${this.selectedPrompt}|${this.selectedInputCategory}|${this.sortDir}|${this.ipaFilter}|${this.currentMode}|${this.imgPerPage}|${this.isWeighted}|${this.forceWeights}`;
     },
   },
   methods: {
@@ -463,11 +465,15 @@ export default {
 
         // need to check if input is already used?
         // need like repeating here to fill up?
-        const pulledImages = this.getRandomElements(singleInputPool, Math.min(singleInputPool.length, categoryImageCount));
-
+        let pulledImages = this.getRandomElements(singleInputPool, Math.min(singleInputPool.length, categoryImageCount));
         console.log("got:", pulledImages.length);
 
-        selection = selection.concat(pulledImages);
+        if (this.forceWeights && pulledImages.length < categoryImageCount) {
+          while (pulledImages.length < categoryImageCount) {
+            pulledImages = pulledImages.concat(pulledImages);
+          }
+        }
+        selection = selection.concat(pulledImages.slice(0, categoryImageCount));
       }
       console.log("done:", selection.length);
       return this.shuffle(selection);

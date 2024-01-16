@@ -6,7 +6,7 @@
         v-for="category in availableCategories"
         :key="category"
         :value="category"
-        :style="{ backgroundColor: CATEGORY_MAP[category]?.hexColor, width: `${CATEGORY_MAP[category]?.weight * 100}%` }">
+        :style="{ backgroundColor: CATEGORY_MAP[category]?.hexColor, width: `${CATEGORY_MAP[category]?.weight * 100}vw` }">
         {{ category }}
       </div>
     </div>
@@ -41,11 +41,11 @@ export default {
 }
 .weight {
   padding: 0.25rem 0;
-  width: 20%;
   font-size: 0.5rem;
   text-align: center;
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
 }
 </style>
