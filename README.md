@@ -37,6 +37,8 @@
 
 - cloud front? config?
 
+- narrator voice drops sometimes?
+
 # vite-vue2-starter
 
 ln -s DROPBOX_PATH/\_NF-03-5 /whereverdularepot/never-forget-vite-vue2/public/NF-03-5

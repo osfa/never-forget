@@ -46,6 +46,7 @@ import OpenSeadragon from "openseadragon";
 import { availableSchemas } from "../schemas.js";
 import BarebonesTone from "./BarebonesTone.vue";
 import { MODEL_META_MAP } from "../maps";
+console.log("load.");
 
 const ZOOM_COLORS = ["#000", "#111", "#222", "#333", "#666", "#999", "#ccc", "#fff"];
 window.OpenSeadragon = OpenSeadragon;
@@ -107,7 +108,11 @@ export default {
     clearTimeout(this.timer);
     clearTimeout(this.driftTimer);
   },
+  created() {
+    console.log("dzi created");
+  },
   mounted() {
+    console.log("dzi mounted");
     this.initViewer();
     this.frame();
   },
