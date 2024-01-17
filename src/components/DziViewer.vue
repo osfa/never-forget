@@ -66,8 +66,9 @@ export default {
       selectedZoomLevel: 1,
       startZoom: 6,
       minZoom: 6, // how far you can zoom out, the smaller the more
-      // minZoom: 2, // how far you can zoom out, the smaller the more
+      // minZoom: 1, // how far you can zoom out, the smaller the more
       maxZoom: 28,
+      // maxZoom: 10,
 
       // not used?
       selectMode: false,
@@ -162,10 +163,11 @@ export default {
     },
     setPlateFilter(model) {
       this.selectedModel = model;
-      this.idx += 1;
-      const z = this.viewer.viewport.getZoom();
-      this.viewer.viewport.defaultZoomLevel = z;
-      this.viewer.goToPage(this.idx % this.viewer.tileSources.length);
+      // this.idx += 1;
+      // const z = this.viewer.viewport.getZoom();
+      // this.viewer.viewport.defaultZoomLevel = z;
+      // this.viewer.goToPage(this.idx % this.viewer.tileSources.length);
+      this.viewer.viewport.panTo(this.randomCoord());
     },
     initViewer() {
       // const ts = this.active_schema
@@ -186,10 +188,12 @@ export default {
         // this.startZoom = 0.2; // decrease with viewport width
         this.startZoom = 2; // decrease with viewport width
         // this.minZoom = 0.01; // decrease with viewport width
+
         this.minZoom = 2; // decrease with viewport width
         // this.maxZoom = 24; // decrease with viewport width
         this.maxZoom = 9; // decrease with viewport width
       }
+
       console.log("init viewer:", window.innerWidth, this.startZoom, this.minZoom, this.maxZoom, availableSchemas);
       // smaller width => higher zoom?
       this.viewer = OpenSeadragon({

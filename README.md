@@ -1,3 +1,5 @@
+- narrator voice drops sometimes?
+
 - zoom fix?
 
 - more plates
@@ -36,8 +38,6 @@
   - change zoom scroll correctly
 
 - cloud front? config?
-
-- narrator voice drops sometimes?
 
 # vite-vue2-starter
 
