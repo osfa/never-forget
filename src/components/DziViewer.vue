@@ -65,8 +65,8 @@ export default {
       currentZoom: 0.2,
       selectedZoomLevel: 1,
       startZoom: 6,
-      minZoom: 6, // how far you can zoom out, the smaller the more
-      // minZoom: 1, // how far you can zoom out, the smaller the more
+      // minZoom: 6, // how far you can zoom out, the smaller the more
+      minZoom: 1, // how far you can zoom out, the smaller the more
       maxZoom: 28,
       // maxZoom: 10,
 
@@ -172,27 +172,27 @@ export default {
     initViewer() {
       // const ts = this.active_schema
 
-      if (window.innerWidth < 640) {
-        console.log("ZOOM MOBILE");
-        this.startZoom = 24;
-        this.minZoom = 2;
-        this.maxZoom = 75;
-      } else if (window.innerWidth < 889) {
-        console.log("ZOOM TABLET");
-        this.startZoom = 18;
-        this.minZoom = 2;
-        this.maxZoom = 50;
-      } else {
-        console.log("ZOOM DESKTOP");
-        this.startZoom = 8; // decrease with viewport width
-        // this.startZoom = 0.2; // decrease with viewport width
-        this.startZoom = 2; // decrease with viewport width
-        // this.minZoom = 0.01; // decrease with viewport width
+      // if (window.innerWidth < 640) {
+      //   console.log("ZOOM MOBILE");
+      //   this.startZoom = 24;
+      //   this.minZoom = 2;
+      //   this.maxZoom = 75;
+      // } else if (window.innerWidth < 889) {
+      //   console.log("ZOOM TABLET");
+      //   this.startZoom = 18;
+      //   this.minZoom = 2;
+      //   this.maxZoom = 50;
+      // } else {
+      //   console.log("ZOOM DESKTOP");
+      //   this.startZoom = 8; // decrease with viewport width
+      //   // this.startZoom = 0.2; // decrease with viewport width
+      //   this.startZoom = 2; // decrease with viewport width
+      //   // this.minZoom = 0.01; // decrease with viewport width
 
-        this.minZoom = 2; // decrease with viewport width
-        // this.maxZoom = 24; // decrease with viewport width
-        this.maxZoom = 9; // decrease with viewport width
-      }
+      //   this.minZoom = 2; // decrease with viewport width
+      //   // this.maxZoom = 24; // decrease with viewport width
+      //   this.maxZoom = 9; // decrease with viewport width
+      // }
 
       console.log("init viewer:", window.innerWidth, this.startZoom, this.minZoom, this.maxZoom, availableSchemas);
       // smaller width => higher zoom?
@@ -309,7 +309,7 @@ body,
 
 #zoom-bar {
   position: fixed;
-  left: 2rem;
+  left: 0;
   top: 0;
   height: 100vh;
   display: flex;
@@ -333,7 +333,7 @@ body,
 
 #filter-bar {
   position: fixed;
-  right: 2rem;
+  right: 0;
   top: 0;
   height: 100vh;
   display: flex;

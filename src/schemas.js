@@ -57,7 +57,7 @@ const ANIVERSE = {
 const ANIVERSE1 = {
   Image: {
     xmlns: "http://schemas.microsoft.com/deepzoom/2008",
-    Url: "/dzi/ignore/aniverse-v1.0_files/",
+    Url: "/dzi/aniverse-v1.0_files/",
     Format: "jpeg",
     Overlap: "1",
     TileSize: "254",
@@ -69,4 +69,4 @@ const ANIVERSE1 = {
   },
 };
 // export const availableSchemas = [ANIVERSE, ANIME, y1997, SECOND_LIFE];
-export const availableSchemas = [ANIVERSE, ANIME, y1997, SECOND_LIFE];
+export const availableSchemas = [ANIVERSE1, ANIVERSE, ANIME, y1997, SECOND_LIFE];
