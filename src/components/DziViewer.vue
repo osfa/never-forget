@@ -16,7 +16,7 @@
         <!-- <InformationIcon /> -->
       </div>
 
-      <BarebonesTone ref="audioModule" automaticFade :debug="false" />
+      <BarebonesTone ref="audioModule" automaticFade :debug="true" />
     </div>
     <div id="social-media-bar">
       <a href="https://www.youtube.com/@NeverForgetNow" class="btn-platform youtube">YouTube</a>
@@ -32,12 +32,7 @@
         @click="setPlateFilter(model)"></div>
     </div>
     <div id="zoom-bar">
-      <div
-        v-for="zoom in [1, 2, 3, 4, 5, 6, 7]"
-        class="btn-zoom"
-        :class="{ active: zoom === selectedZoomLevel }"
-        @click="selectedZoomLevel = zoom"
-        :style="{ backgroundColor: ZOOM_COLORS[zoom - 1] }"></div>
+      <div v-for="zoom in [1, 2, 3]" class="btn-zoom" :class="{ active: zoom === selectedZoomLevel }" @click="selectedZoomLevel = zoom" :style="{ backgroundColor: ZOOM_COLORS[zoom - 1] }"></div>
     </div>
   </div>
 </template>
@@ -48,7 +43,8 @@ import BarebonesTone from "./BarebonesTone.vue";
 import { MODEL_META_MAP } from "../maps";
 console.log("load.");
 
-const ZOOM_COLORS = ["#000", "#111", "#222", "#333", "#666", "#999", "#ccc", "#fff"];
+// const ZOOM_COLORS = ["#000", "#111", "#222", "#333", "#666", "#999", "#ccc", "#fff"];
+const ZOOM_COLORS = ["#000", "#333", "#fff"];
 window.OpenSeadragon = OpenSeadragon;
 export default {
   name: "DziViewer",
@@ -64,10 +60,10 @@ export default {
       // zoom hell
       currentZoom: 0.2,
       selectedZoomLevel: 1,
-      startZoom: 6,
+      startZoom: 1,
       // minZoom: 6, // how far you can zoom out, the smaller the more
       minZoom: 1, // how far you can zoom out, the smaller the more
-      maxZoom: 28,
+      // maxZoom: 28,
       // maxZoom: 10,
 
       // not used?
@@ -97,7 +93,9 @@ export default {
   watch: {
     selectedZoomLevel() {
       console.log("selectedZoomLevel", this.selectedZoomLevel);
-      this.viewer.viewport.zoomTo(this.selectedZoomLevel);
+      // this.zoomPerScroll
+      this.viewer.viewport.zoomTo(this.selectedZoomLevel * this.zoomPerScroll);
+      // this.viewer.viewport.zoomBy(this.zoomPerScroll);
     },
   },
   computed: {
@@ -215,8 +213,8 @@ export default {
         zoomPerScroll: 1.2,
         defaultZoomLevel: this.startZoom,
         minZoomLevel: this.minZoom,
-        maxZoomLevel: this.maxZoom,
-        // maxZoomPixelRatio: 2, // default 1.1 The maximum ratio to allow a zoom-in to affect the highest level pixel ratio.
+        // maxZoomLevel: this.maxZoom,
+        maxZoomPixelRatio: 1, // default 1.1 The maximum ratio to allow a zoom-in to affect the highest level pixel ratio.
         // This can be set to Infinity to allow 'infinite' zooming into the image
         wrapHorizontal: this.wrap,
         wrapVertical: this.wrap,
@@ -227,6 +225,11 @@ export default {
       this.viewer.gestureSettingsMouse.clickToZoom = false;
 
       this.viewer.addHandler("open", () => {
+        const homeZoom = this.viewer.viewport.getHomeZoom();
+        const fullZoom = this.viewer.viewport.imageToViewportZoom(1);
+        this.viewer.zoomPerClick = Math.cbrt(fullZoom / homeZoom); // cubed
+        this.zoomPerScroll = Math.cbrt(fullZoom / homeZoom); // cubed
+
         this.currentCenter = this.viewer.viewport.getCenter();
         this.viewer.addHandler("zoom", () => {
           console.log("zoom", this.viewer.viewport.getZoom());

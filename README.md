@@ -1,3 +1,19 @@
+By default, the furthest you can zoom in is based on the ratio of image pixels to screen pixels specified in the maxZoomPixelRatio option (default 1.1).
+
+In other words, if maxZoomPixelRatio is 1, then you can only zoom in enough to see the image pixels 1:1. As you've found, you can override that with maxZoomLevel, but then how close to the actual pixels you can get will depend on the size of your viewer.
+
+If your image naturally fills the viewer on the horizontal dimension, you'll get a starting zoom of 1.
+
+If zoomPerClick is set to 2, on the first click your zoom will now be 2. On the second click it'll be 4 (zooms are multiplicative), and on the third zoom it'll be 8.
+
+Therefore you should set your maxZoomLevel to 8 in that scenario.
+
+If your image doesn't start with a zoom of 1 (because it's tall enough it doesn't fill out the width of the viewer),
+
+you'll have to base the maxZoomLevel on that starting zoom. If you have a different zoomPerClick, you'll have to take that into account.
+
+---
+
 - narrator voice drops sometimes?
 
 - zoom fix?
