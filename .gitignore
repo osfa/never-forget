@@ -27,3 +27,4 @@ dist-ssr
 .netlify
 public/NF-03-5
 public/dzi/ignore
+src/data/pics-parsed.json

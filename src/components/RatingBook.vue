@@ -5,7 +5,6 @@
       <div class="controls-inner">
         <div class="left">
           <div class="pills">
-            <!-- <div @click="setSortOrder('model')" class="label" :class="{ active: selectedSorting === 'model' }">Model</div> -->
             <select
               @click.shift="setSortOrder('model')"
               required
@@ -17,7 +16,6 @@
               <option value="">All Models</option>
               <option v-for="model in availableModels" :key="model" :value="model">{{ MODEL_META_MAP[model].friendlyName }}</option>
             </select>
-            <!-- <div @click="setSortOrder('promptUsed')" class="label" :class="{ active: selectedSorting === 'promptUsed' }">Prompt</div> -->
             <select required name="selectedPrompt" id="selectedPrompt" v-model="selectedPrompt" :style="{ backgroundColor: PROMPT_MAP[selectedPrompt]?.hexColor }">
               <option value="">All Prompts</option>
               <option v-for="prompt in availablePrompts" :key="prompt" :value="prompt">
@@ -27,20 +25,16 @@
           </div>
         </div>
         <div class="center">
-          <!-- <div @click="setSortOrder('category')" class="label" :class="{ active: selectedSorting === 'category' }">Category</div> -->
-          <select required name="selectedInputCategory" id="selectedInputCategory" v-model="selectedInputCategory" :style="{ backgroundColor: CATEGORY_MAP[selectedInputCategory]?.hexColor }">
-            >
+          <select required name="selectedInputCategory" id="selectedInputCategory" v-model="selectedInputCategory" :style="{ backgroundColor: category_map[selectedInputCategory]?.hexColor }">
             <option value="">All Categories</option>
-            <option v-for="input in availableCategories" :key="input" :value="input">{{ input }} ({{ CATEGORY_MAP[input][selectedModel]?.count }})</option>
+            <option v-for="input in availableCategories" :key="input" :value="input">{{ input }} ({{ category_map[input][selectedModel]?.count }})</option>
           </select>
 
-          <!-- <div @click="setSortOrder('inputImage')" class="label" :class="{ active: selectedSorting === 'inputImage' }">Input Img</div> -->
           <select required name="selectedInputImage" id="selectedInputImage" v-model="selectedInputImage">
             <option value="">All Input Images</option>
             <option v-for="input in inputImgs" :key="input" :value="input">{{ input }}</option>
           </select>
 
-          <!-- <div @click="setSortOrder('rating')" class="label" :class="{ active: selectedSorting === 'rating' }">Rating</div> -->
           <select required name="selectedRating" id="selectedRating" v-model="selectedRating" :class="{ active: selectedSorting === 'rating' }">
             <option value="">All</option>
             <option value="rated">Rated</option>
@@ -102,7 +96,7 @@
               <div class="badge" @click="filterPrompt(image.prompt)" :style="{ backgroundColor: PROMPT_MAP[image.prompt].hexColor }">{{ image.prompt }}</div>
               <div class="badge static">{{ image.supportPrompt }}</div>
               <div class="badge static">{{ image.cfg }} CFG : {{ image.ss }} SS</div>
-              <div class="badge" @click="filterInput(image.inputImage)" :style="{ backgroundColor: CATEGORY_MAP[image.category]?.hexColor }">{{ image.inputImage }}</div>
+              <div class="badge" @click="filterInput(image.inputImage)" :style="{ backgroundColor: category_map[image.category]?.hexColor }">{{ image.inputImage }}</div>
             </div>
           </div>
           <div
@@ -129,7 +123,7 @@
       <div @dblclick="tripleDelete(idx)" class="triple" v-for="(triple, idx) in includedTriples">
         <div class="badge first" :style="{ backgroundColor: PROMPT_MAP[triple.prompt]?.hexColor }">{{ triple.prompt }}</div>
         <div class="badge center" :style="{ backgroundColor: MODEL_META_MAP[triple.model].hexColor }">{{ MODEL_META_MAP[triple.model].friendlyName }}</div>
-        <div class="badge last" :style="{ backgroundColor: CATEGORY_MAP[triple.category]?.hexColor }">{{ triple.category }}</div>
+        <div class="badge last" :style="{ backgroundColor: category_map[triple.category]?.hexColor }">{{ triple.category }}</div>
       </div>
     </div>
     <footer>
@@ -165,18 +159,16 @@
           <option value="blacklist">blacklist</option>
         </select>
         <button @click="isVertical = !isVertical">{{ isVertical ? "portrait" : "landscape" }}</button>
-        <!-- <button @click="showMeta = !showMeta">{{ showMeta ? "meta" : "no meta" }}</button> -->
         <button @click="imageCover = !imageCover">{{ imageCover ? "cover" : "contain" }}</button>
       </div>
     </footer>
   </div>
 </template>
 <script>
-import * as allImgs from "../data/pics-versioned.json";
-import { CATEGORY_MAP, MODEL_META_MAP, PROMPT_MAP, parsePathCrawl } from "../maps";
+import parsedBatch from "../data/pics-parsed.json";
+import { CATEGORY_MAP, MODEL_META_MAP, PROMPT_MAP } from "../maps";
 
 console.log("ratingBook hit");
-const BASE_POOL = allImgs.default; //.slice(0, 2000);
 
 export default {
   components: {
@@ -225,7 +217,7 @@ export default {
       sortDir: 1,
       MODEL_META_MAP,
       PROMPT_MAP,
-      CATEGORY_MAP,
+      category_map: CATEGORY_MAP,
     };
   },
   computed: {
@@ -334,9 +326,9 @@ export default {
     },
     getRandomWeightedElements(arr, n) {
       let selection = [];
-      for (const category in CATEGORY_MAP) {
-        console.log(`${category}: ${CATEGORY_MAP[category].weight}`);
-        const cat = CATEGORY_MAP[category];
+      for (const category in this.category_map) {
+        console.log(`${category}: ${this.category_map[category].weight}`);
+        const cat = this.category_map[category];
         const categoryImageCount = Math.floor(n * cat.weight);
         console.log("trying to get:", categoryImageCount);
 
@@ -346,20 +338,13 @@ export default {
           continue;
         }
 
-        let usedInputs = [];
-        // shuffle first?
-        // or check if max 3?
+        let usedInputs = {};
         const singleInputPool = pool.filter((image) => {
-          if (usedInputs.includes(image.inputImage)) {
-            return false;
-          } else {
-            usedInputs.push(image.inputImage);
-            return true;
-          }
+          usedInputs[image.inputImage] = usedInputs[image.inputImage] || { count: 0 };
+          usedInputs[image.inputImage]["count"] += 1;
+          return usedInputs[image.inputImage]["count"] <= 3;
         });
 
-        // need to check if input is already used?
-        // need like repeating here to fill up?
         let pulledImages = this.getRandomElements(singleInputPool, Math.min(singleInputPool.length, categoryImageCount));
         console.log("got:", pulledImages.length);
 
@@ -639,15 +624,14 @@ export default {
   },
   async created() {
     console.log("created fire.");
-
-    const parseResult = parsePathCrawl(BASE_POOL, CATEGORY_MAP);
+    const parseResult = parsedBatch;
     this.batch = parseResult.imageObjs;
     console.log(parseResult);
 
     this.availableModels = parseResult.availableModels;
     this.availableInputs = parseResult.availableInputs;
     this.availablePrompts = parseResult.availablePrompts;
-    this.CATEGORY_MAP = parseResult.category_map;
+    this.category_map = parseResult.category_map;
 
     this.blackList = JSON.parse(localStorage.getItem("blackList") || "[]").filter((n) => n);
     this.ratedImages = JSON.parse(localStorage.getItem("imageRatings") || "[]");

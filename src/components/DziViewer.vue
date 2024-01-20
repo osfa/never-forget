@@ -32,7 +32,12 @@
         @click="setPlateFilter(model)"></div>
     </div>
     <div id="zoom-bar">
-      <div v-for="zoom in [1, 2, 3]" class="btn-zoom" :class="{ active: zoom === selectedZoomLevel }" @click="selectedZoomLevel = zoom" :style="{ backgroundColor: ZOOM_COLORS[zoom - 1] }"></div>
+      <div
+        v-for="(zoom, idx) in zoomLevels"
+        class="btn-zoom"
+        :class="{ active: idx === selectedZoomLevelIdx }"
+        @click="selectedZoomLevelIdx = idx"
+        :style="{ backgroundColor: ZOOM_COLORS[idx] }"></div>
     </div>
   </div>
 </template>
@@ -43,8 +48,10 @@ import BarebonesTone from "./BarebonesTone.vue";
 import { MODEL_META_MAP } from "../maps";
 console.log("load.");
 
-// const ZOOM_COLORS = ["#000", "#111", "#222", "#333", "#666", "#999", "#ccc", "#fff"];
-const ZOOM_COLORS = ["#000", "#333", "#fff"];
+const ZOOM_COLORS = ["#000", "#111", "#222", "#333", "#666", "#999", "#ccc", "#fff"];
+// const ZOOM_COLORS = ["#000", "#333", "#fff"];
+// const ZOOM_COLORS = ["#000", "#333", "#666", "#ccc", "#fff"];
+
 window.OpenSeadragon = OpenSeadragon;
 export default {
   name: "DziViewer",
@@ -57,20 +64,13 @@ export default {
       active_schema: availableSchemas[0],
       wrap: true,
 
-      // zoom hell
+      // zoom
       currentZoom: 0.2,
-      selectedZoomLevel: 1,
+      selectedZoomLevelIdx: 0,
+      zoomLevels: [1, 2, 4, 8, 16, 32],
       startZoom: 1,
-      // minZoom: 6, // how far you can zoom out, the smaller the more
       minZoom: 1, // how far you can zoom out, the smaller the more
-      // maxZoom: 28,
-      // maxZoom: 10,
-
-      // not used?
-      selectMode: false,
-      selected: null,
-      cull: [],
-      cursorHistory: [],
+      maxZoom: 28, // how far you can zoom in, the higher the more
 
       // dev mode
       favorites: [],
@@ -91,10 +91,9 @@ export default {
     };
   },
   watch: {
-    selectedZoomLevel() {
-      console.log("selectedZoomLevel", this.selectedZoomLevel);
-      // this.zoomPerScroll
-      this.viewer.viewport.zoomTo(this.selectedZoomLevel * this.zoomPerScroll);
+    selectedZoomLevelIdx() {
+      console.log("selectedZoomLevel", this.selectedZoomLevelIdx, this.zoomLevels[this.selectedZoomLevelIdx]);
+      this.viewer.viewport.zoomTo(this.zoomLevels[this.selectedZoomLevelIdx]);
       // this.viewer.viewport.zoomBy(this.zoomPerScroll);
     },
   },
@@ -143,6 +142,16 @@ export default {
       const coord = new OpenSeadragon.Point(point.x + this.randomFloat(0, d), point.y + this.randomFloat(0, d));
       return coord;
     },
+    triggerZoom(e) {
+      console.log("trigg", this.selectedZoomLevelIdx);
+      if (e.scroll > 0 && this.selectedZoomLevelIdx < this.zoomLevels.length - 1) {
+        // zoom in
+        this.selectedZoomLevelIdx += 1;
+      } else if (e.scroll < 0 && this.selectedZoomLevelIdx >= 1) {
+        // zoom out
+        this.selectedZoomLevelIdx -= 1;
+      }
+    },
     frame() {
       const now = Date.now();
       if (!this.lastNow || now - this.lastNow >= 1000) {
@@ -168,49 +177,25 @@ export default {
       this.viewer.viewport.panTo(this.randomCoord());
     },
     initViewer() {
-      // const ts = this.active_schema
-
-      // if (window.innerWidth < 640) {
-      //   console.log("ZOOM MOBILE");
-      //   this.startZoom = 24;
-      //   this.minZoom = 2;
-      //   this.maxZoom = 75;
-      // } else if (window.innerWidth < 889) {
-      //   console.log("ZOOM TABLET");
-      //   this.startZoom = 18;
-      //   this.minZoom = 2;
-      //   this.maxZoom = 50;
-      // } else {
-      //   console.log("ZOOM DESKTOP");
-      //   this.startZoom = 8; // decrease with viewport width
-      //   // this.startZoom = 0.2; // decrease with viewport width
-      //   this.startZoom = 2; // decrease with viewport width
-      //   // this.minZoom = 0.01; // decrease with viewport width
-
-      //   this.minZoom = 2; // decrease with viewport width
-      //   // this.maxZoom = 24; // decrease with viewport width
-      //   this.maxZoom = 9; // decrease with viewport width
-      // }
-
       console.log("init viewer:", window.innerWidth, this.startZoom, this.minZoom, this.maxZoom, availableSchemas);
       // smaller width => higher zoom?
       this.viewer = OpenSeadragon({
         id: "viewer-image",
         maxImageCacheCount: 10000,
-        // tileSources: ts,
-        tileSources: availableSchemas, //[availableSchemas[0], availableSchemas[1], availableSchemas[2]],
+        tileSources: availableSchemas,
         sequenceMode: true,
         showSequenceControl: false,
-        // imageSmoothingEnabled???
+        imageSmoothingEnabled: true,
+        // placeholderFillStyle : draw grid if not loaded?
         showNavigator: false,
         showRotationControl: false,
         animationTime: 1,
         blendTime: 0.1,
         showNavigationControl: false,
         visibilityRatio: 1, // dont allow bigger than image
-        // constrainDuringPan: true, // prevents bounceback anim
+        constrainDuringPan: false, // prevents bounceback anim
         autoResize: true,
-        zoomPerScroll: 1.2,
+        zoomPerScroll: 2,
         defaultZoomLevel: this.startZoom,
         minZoomLevel: this.minZoom,
         // maxZoomLevel: this.maxZoom,
@@ -218,17 +203,16 @@ export default {
         // This can be set to Infinity to allow 'infinite' zooming into the image
         wrapHorizontal: this.wrap,
         wrapVertical: this.wrap,
-        scrollToZoom: true,
-        // something to stop
+        scrollToZoom: false,
       });
 
       this.viewer.gestureSettingsMouse.clickToZoom = false;
 
       this.viewer.addHandler("open", () => {
-        const homeZoom = this.viewer.viewport.getHomeZoom();
-        const fullZoom = this.viewer.viewport.imageToViewportZoom(1);
-        this.viewer.zoomPerClick = Math.cbrt(fullZoom / homeZoom); // cubed
-        this.zoomPerScroll = Math.cbrt(fullZoom / homeZoom); // cubed
+        // const homeZoom = this.viewer.viewport.getHomeZoom();
+        // const fullZoom = this.viewer.viewport.imageToViewportZoom(1);
+        // this.viewer.zoomPerClick = Math.cbrt(fullZoom / homeZoom); // cubed
+        // this.zoomPerScroll = Math.cbrt(fullZoom / homeZoom); // cubed
 
         this.currentCenter = this.viewer.viewport.getCenter();
         this.viewer.addHandler("zoom", () => {
@@ -237,27 +221,23 @@ export default {
         });
       });
 
+      this.viewer.addHandler("canvas-scroll", (event) => {
+        event.preventDefault = false;
+        this.triggerZoom(event);
+      });
+
       this.viewer.addHandler("canvas-click", (event) => {
         this.infoOpen = false;
         if (!event.quick) {
           return;
         }
+
         console.log("canvas-click-center:", this.viewer.viewport.getCenter(true));
         const webPoint = event.position;
-        // this.viewer.viewport.panTo(
-        //   this.viewer.viewport.pointFromPixel(webPoint)
-        // )
         const ip = this.viewer.viewport.viewerElementToImageCoordinates(event.position);
 
         console.log("ip:", ip);
         const viewportPoint = this.viewer.viewport.pointFromPixel(webPoint);
-
-        // https://github.com/openseadragon/openseadragon/issues/1360
-        // TiledImage.viewportToImageCoordinate
-        // var tiledImage = viewer.world.getItemAt(3);
-        // var pointOnImage = tiledImage.viewportToImageCoordinates(viewportPoint.x, viewportPoint.y, true);
-        // var dx = pointOnImage.x;
-        // need to get item at someho?
         const imagePoint = this.viewer.viewport.viewportToImageCoordinates(viewportPoint);
 
         console.log(webPoint.toString(), viewportPoint.toString(), imagePoint.toString());
@@ -268,13 +248,6 @@ export default {
         //   y: 0,
         //   width: 1.92,
         // })
-
-        // this.idx += 1;
-        // const z = this.viewer.viewport.getZoom();
-        // this.viewer.viewport.defaultZoomLevel = z;
-        // this.viewer.goToPage(this.idx % this.viewer.tileSources.length);
-        // this.switchSchema();
-        // this.viewer.viewport.zoomTo(z)
       });
     },
   },
