@@ -97,13 +97,17 @@ const parsePathCrawl = (path_array, category_map) => {
     }
     if (category === null) console.log(imgPath);
 
-    category_map[category][model] = category_map[category][model] || { count: 0, unique: 0 };
+    category_map[category][model] = category_map[category][model] || { count: 0, inputs: [] };
     category_map[category][model]["count"] += 1;
+
+    if (!category_map[category][model]["inputs"].includes(inputImage)) {
+      category_map[category][model]["inputs"].push(inputImage);
+    }
+
     if (!availableInputsAll.includes(inputImage)) {
-      category_map[category][model]["unique"] += 1;
-    } else {
       availableInputsAll.push(inputImage);
     }
+
     if (!availablePromptsAll.includes(prompt)) availablePromptsAll.push(prompt);
     if (model !== "divineelegancemix_V9") availableModelsAll.push(model);
 
@@ -132,6 +136,12 @@ const parsePathCrawl = (path_array, category_map) => {
   const availableInputs = availableInputsAll.filter(onlyUnique);
   const availablePrompts = availablePromptsAll.filter(onlyUnique);
 
+  Object.keys(category_map).forEach((category) => {
+    availableModels.forEach((model) => {
+      category_map[category][model]["inputs"] = category_map[category][model]["inputs"].length;
+    });
+  });
+
   return { imageObjs, category_map, availableModels, availableInputs, availablePrompts };
 };
 
@@ -139,6 +149,6 @@ const allImgs = require("/Users/jbe/static-sites/never-forget-vite-vue2/src/data
 
 const parseResult = parsePathCrawl(allImgs, CATEGORY_MAP);
 var json = JSON.stringify(parseResult);
-
+console.log(parseResult.category_map);
 const fs = require("fs");
 fs.writeFile("/Users/jbe/static-sites/never-forget-vite-vue2/src/data/pics-parsed.json", json, "utf8", () => console.log("done"));

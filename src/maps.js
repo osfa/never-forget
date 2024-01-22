@@ -55,25 +55,22 @@ export const CATEGORY_MAP = {
   jetee: { hexColor: "#890add", weight: 0.2 },
   hack: { hexColor: "#cf6d73", weight: 0.15 },
   trackers: { hexColor: "#9e0912", weight: 0.05 },
-
-  // 50%
-
-  otg: { hexColor: "#176017", weight: 0.05 },
+  // 60%
   911: { hexColor: "#b8b1a6", weight: 0.075 },
   bts: { hexColor: "#e238f2", weight: 0.025 },
-  memorial: { hexColor: "#b8b1a6", weight: 0.05 },
-
   // 70%
-
+  memorial: { hexColor: "#b8b1a6", weight: 0.05 },
+  otg: { hexColor: "#176017", weight: 0.05 },
+  // 80%
   "ava-game": { hexColor: "#0000ff", weight: 0.05 },
   wow: { hexColor: "#424f9e", weight: 0.05 },
-
+  // 90%
   fortnite: { hexColor: "#ba98a0", weight: 0.025 },
   starcraft: { hexColor: "#88409C", weight: 0.025 },
-
+  // 95%
   diablo: { hexColor: "#ff0000", weight: 0.025 },
   cs: { hexColor: "#b751b1", weight: 0.025 },
-  // 90%
+  // 100%
 };
 
 export const parsePathCrawl = (path_array, category_map) => {

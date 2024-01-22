@@ -27,7 +27,9 @@
         <div class="center">
           <select required name="selectedInputCategory" id="selectedInputCategory" v-model="selectedInputCategory" :style="{ backgroundColor: category_map[selectedInputCategory]?.hexColor }">
             <option value="">All Categories</option>
-            <option v-for="input in availableCategories" :key="input" :value="input">{{ input }} ({{ category_map[input][selectedModel]?.count }})</option>
+            <option v-for="input in availableCategories" :key="input" :value="input">
+              {{ input }} ({{ category_map[input][selectedModel]?.count }} / {{ category_map[input][selectedModel]?.inputs }} unique)
+            </option>
           </select>
 
           <select required name="selectedInputImage" id="selectedInputImage" v-model="selectedInputImage">
