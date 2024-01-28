@@ -3,13 +3,22 @@ export const MODEL_META_MAP = {
   aniverse_v15Pruned: { friendlyName: "Aniverse", hexColor: "#FFD700" }, // Gold
   counterfeitV30_v30: { friendlyName: "Counterfeit", hexColor: "#FF4500" }, // Orange Red
   divineanimemix_V2: { friendlyName: "Divine Anime", hexColor: "#BA55D3" }, // Medium Orchid
-  divineelegancemix_V9: { friendlyName: "Divine Elegance", hexColor: "#DB7093" }, // Pale Violet Red
+  divineelegancemix_V9: {
+    friendlyName: "Divine Elegance",
+    hexColor: "#DB7093",
+  }, // Pale Violet Red
   "dreamlike-photoreal-2.0": { friendlyName: "Dreamlike", hexColor: "#ADD8E6" }, // Light Blue
   dreamshaper_8: { friendlyName: "Dreamshaper", hexColor: "#20B2AA" }, // Light Sea Green
-  epicrealism_naturalSinRC1VAE: { friendlyName: "Epic Realism", hexColor: "#778899" }, // Light Slate Gray
+  epicrealism_naturalSinRC1VAE: {
+    friendlyName: "Epic Realism",
+    hexColor: "#778899",
+  }, // Light Slate Gray
   indigoComic_v10withvae: { friendlyName: "Indigo Comic", hexColor: "#4B0082" }, // Indigo
   meinamix_meinaV11: { friendlyName: "Meinamix", hexColor: "#FF69B4" }, // Hot Pink
-  realisticVisionV51_v51VAE: { friendlyName: "Realistic Vision", hexColor: "#2E8B57" }, // Sea Green
+  realisticVisionV51_v51VAE: {
+    friendlyName: "Realistic Vision",
+    hexColor: "#2E8B57",
+  }, // Sea Green
   revAnimated_v122EOL: { friendlyName: "Rev Animated", hexColor: "#FF6347" }, // Tomato
   toonyou_beta6: { friendlyName: "Toonyou", hexColor: "#FFA07A" }, // Light Salmon
   "v1-5-pruned-emaonly": { friendlyName: "1.5", hexColor: "#B0C4DE" }, // Light Steel Blue
@@ -51,10 +60,10 @@ export const PROMPT_MAP = {
 };
 
 export const CATEGORY_MAP = {
-  avatar: { hexColor: "#2df1b5", weight: 0.3 },
+  avatar: { hexColor: "#2df1b5", weight: 0.2 },
   jetee: { hexColor: "#890add", weight: 0.2 },
-  hack: { hexColor: "#cf6d73", weight: 0.15 },
-  trackers: { hexColor: "#9e0912", weight: 0.05 },
+  hack: { hexColor: "#cf6d73", weight: 0.1 },
+  trackers: { hexColor: "#9e0912", weight: 0.1 },
   // 60%
   911: { hexColor: "#b8b1a6", weight: 0.075 },
   bts: { hexColor: "#e238f2", weight: 0.025 },
@@ -68,9 +77,9 @@ export const CATEGORY_MAP = {
   fortnite: { hexColor: "#ba98a0", weight: 0.025 },
   starcraft: { hexColor: "#88409C", weight: 0.025 },
   // 95%
-  diablo: { hexColor: "#ff0000", weight: 0.025 },
-  cs: { hexColor: "#b751b1", weight: 0.025 },
-  // 100%
+  diablo: { hexColor: "#ff0000", weight: 0.05 },
+  cs: { hexColor: "#b751b1", weight: 0.05 },
+  // 105%
 };
 
 export const parsePathCrawl = (path_array, category_map) => {
@@ -79,8 +88,13 @@ export const parsePathCrawl = (path_array, category_map) => {
   const availablePromptsAll = [];
 
   const imageObjs = path_array.map((imgPath) => {
-    const srcFried = imgPath.replace("/Users/jbe/Dropbox/stabdiff-ui-v2/comfyui-outs/_NF/", "");
-    imgPath = imgPath.replace("/Users/jbe/Dropbox/stabdiff-ui-v2/comfyui-outs/_NF/", "").replace("/fried/", "/2pass/");
+    const srcFried = imgPath.replace(
+      "/Users/jbe/Dropbox/stabdiff-ui-v2/comfyui-outs/_NF/",
+      ""
+    );
+    imgPath = imgPath
+      .replace("/Users/jbe/Dropbox/stabdiff-ui-v2/comfyui-outs/_NF/", "")
+      .replace("/fried/", "/2pass/");
     imgPath = imgPath.split("-fried_")[0] + "_00001_.png";
 
     const model = imgPath.split("--")[1];
@@ -96,7 +110,11 @@ export const parsePathCrawl = (path_array, category_map) => {
     if (imgPath.includes("avatar1") || imgPath.includes("avatar2")) {
       category = "avatar";
       inputImage = fn.split("--")[2].split(".jpg")[0] + ".jpg";
-      prompt = fn.split("--")[2].split(".jpg")[1].split("_")[1].replace("prompt-", "");
+      prompt = fn
+        .split("--")[2]
+        .split(".jpg")[1]
+        .split("_")[1]
+        .replace("prompt-", "");
     } else {
       inputImage = imgPath.split("--")[2].split("_")[0];
       prompt = imgPath.split("--")[2].split("_")[1].replace("prompt-", "");
@@ -154,7 +172,9 @@ export const parsePathCrawl = (path_array, category_map) => {
       fn,
       id: imgPath,
       src: imgPath,
-      src1pass: imgPath.replace("/2pass/", "/1pass/").replace("_00001_.png", "-1x_00001_.png"),
+      src1pass: imgPath
+        .replace("/2pass/", "/1pass/")
+        .replace("_00001_.png", "-1x_00001_.png"),
       srcFried,
       model,
       category,
@@ -175,5 +195,11 @@ export const parsePathCrawl = (path_array, category_map) => {
   const availableInputs = availableInputsAll.filter(onlyUnique);
   const availablePrompts = availablePromptsAll.filter(onlyUnique);
 
-  return { imageObjs, category_map, availableModels, availableInputs, availablePrompts };
+  return {
+    imageObjs,
+    category_map,
+    availableModels,
+    availableInputs,
+    availablePrompts,
+  };
 };
