@@ -12,32 +12,71 @@
               id="selectedModel"
               v-model="selectedModel"
               :class="{ active: selectedSorting === 'model' }"
-              :style="{ backgroundColor: MODEL_META_MAP[selectedModel]?.hexColor }">
+              :style="{
+                backgroundColor: MODEL_META_MAP[selectedModel]?.hexColor,
+              }">
               <option value="">All Models</option>
-              <option v-for="model in availableModels" :key="model" :value="model">{{ MODEL_META_MAP[model].friendlyName }}</option>
+              <option
+                v-for="model in availableModels"
+                :key="model"
+                :value="model">
+                {{ MODEL_META_MAP[model].friendlyName }}
+              </option>
             </select>
-            <select required name="selectedPrompt" id="selectedPrompt" v-model="selectedPrompt" :style="{ backgroundColor: PROMPT_MAP[selectedPrompt]?.hexColor }">
+            <select
+              required
+              name="selectedPrompt"
+              id="selectedPrompt"
+              v-model="selectedPrompt"
+              :style="{
+                backgroundColor: PROMPT_MAP[selectedPrompt]?.hexColor,
+              }">
               <option value="">All Prompts</option>
-              <option v-for="prompt in availablePrompts" :key="prompt" :value="prompt">
+              <option
+                v-for="prompt in availablePrompts"
+                :key="prompt"
+                :value="prompt">
                 {{ prompt }}
               </option>
             </select>
           </div>
         </div>
         <div class="center">
-          <select required name="selectedInputCategory" id="selectedInputCategory" v-model="selectedInputCategory" :style="{ backgroundColor: category_map[selectedInputCategory]?.hexColor }">
+          <select
+            required
+            name="selectedInputCategory"
+            id="selectedInputCategory"
+            v-model="selectedInputCategory"
+            :style="{
+              backgroundColor: category_map[selectedInputCategory]?.hexColor,
+            }">
             <option value="">All Categories</option>
-            <option v-for="input in availableCategories" :key="input" :value="input">
-              {{ input }} ({{ category_map[input][selectedModel]?.count }} / {{ category_map[input][selectedModel]?.inputs }} unique)
+            <option
+              v-for="input in availableCategories"
+              :key="input"
+              :value="input">
+              {{ input }} ({{ category_map[input][selectedModel]?.count }} /
+              {{ category_map[input][selectedModel]?.inputs }} unique)
             </option>
           </select>
 
-          <select required name="selectedInputImage" id="selectedInputImage" v-model="selectedInputImage">
+          <select
+            required
+            name="selectedInputImage"
+            id="selectedInputImage"
+            v-model="selectedInputImage">
             <option value="">All Input Images</option>
-            <option v-for="input in inputImgs" :key="input" :value="input">{{ input }}</option>
+            <option v-for="input in inputImgs" :key="input" :value="input">
+              {{ input }}
+            </option>
           </select>
 
-          <select required name="selectedRating" id="selectedRating" v-model="selectedRating" :class="{ active: selectedSorting === 'rating' }">
+          <select
+            required
+            name="selectedRating"
+            id="selectedRating"
+            v-model="selectedRating"
+            :class="{ active: selectedSorting === 'rating' }">
             <option value="">All</option>
             <option value="rated">Rated</option>
             <option value="unrated">Unrated</option>
@@ -50,15 +89,25 @@
           </select>
         </div>
         <div>
-          <button @click="sortDir = sortDir === -1 ? 1 : -1">{{ sortDir === -1 ? "sort down" : "sort up" }}</button>
+          <button @click="sortDir = sortDir === -1 ? 1 : -1">
+            {{ sortDir === -1 ? "sort down" : "sort up" }}
+          </button>
 
-          <select required name="selectedSort" id="selectedSort" v-model="selectedSorting">
+          <select
+            required
+            name="selectedSort"
+            id="selectedSort"
+            v-model="selectedSorting">
             <option value="inputImage">Input Image</option>
             <option value="model">Model</option>
             <option value="prompt">Prompt</option>
             <option value="rating">Rating</option>
           </select>
-          <select required name="imageQuality" id="imageQuality" v-model="imageQuality">
+          <select
+            required
+            name="imageQuality"
+            id="imageQuality"
+            v-model="imageQuality">
             <option value="1pass">1pass</option>
             <option value="2pass">2pass</option>
             <option value="fried">fried</option>
@@ -68,8 +117,12 @@
             <option value="ipa_only">ipa_only</option>
             <option value="no_ipa">no_ipa</option>
           </select>
-          <button @click="isWeighted = !isWeighted">{{ isWeighted ? "weighted" : "linear" }}</button>
-          <button @click="forceWeights = !forceWeights">{{ forceWeights ? "T" : "-" }}</button>
+          <button @click="isWeighted = !isWeighted">
+            {{ isWeighted ? "weighted" : "linear" }}
+          </button>
+          <button @click="forceWeights = !forceWeights">
+            {{ forceWeights ? "T" : "-" }}
+          </button>
 
           <button @click="dumpFiles">DUMP</button>
         </div>
@@ -77,28 +130,86 @@
     </div>
 
     <div class="main-sequence-container">
-      <div v-for="(image, idx) in viewportImages" :key="`${idx}-${image.id}`" :class="{ selected: selectedImages.includes(image) }">
+      <div
+        v-for="(image, idx) in viewportImages"
+        :key="`${idx}-${image.id}`"
+        :class="{ selected: selectedImages.includes(image) }">
         <div class="card-container">
           <div v-show="currentMode !== 'blacklist'" class="card-actions">
-            <button class="blacklist-triple card-action" @click="blackListAction(image, 'triple')">•••</button>
-            <button class="blacklist-input card-action" @click="blackListAction(image, 'inputImage')">inp</button>
-            <button class="blacklist-input card-action" @click="blackListAction(image, 'inputImageModel')">inp/model</button>
-            <button class="blacklist-card card-action" @click="blackListAction(image, 'id')">•</button>
-            <button class="save-triple card-action" @click="tripleSave(image)">•••</button>
-            <button class="save-triple card-action" @click="reRoll(idx)">Reroll</button>
+            <button
+              class="blacklist-triple card-action"
+              @click="blackListAction(image, 'triple')">
+              •••
+            </button>
+            <button
+              class="blacklist-input card-action"
+              @click="blackListAction(image, 'inputImage')">
+              inp
+            </button>
+            <button
+              class="blacklist-input card-action"
+              @click="blackListAction(image, 'inputImageModel')">
+              inp/model
+            </button>
+            <button
+              class="blacklist-card card-action"
+              @click="blackListAction(image, 'id')">
+              •
+            </button>
+            <button class="save-triple card-action" @click="tripleSave(image)">
+              •••
+            </button>
+            <button class="save-triple card-action" @click="reRoll(idx)">
+              Reroll
+            </button>
           </div>
-          <div v-show="showMeta && currentMode === 'blacklist'" class="card-actions">
-            <button class="blacklist-triple greeen card-action" @click="reinstateAction(image, 'triple')">•••</button>
-            <button class="blacklist-input green card-action" @click="reinstateAction(image, 'inputImage')">••</button>
-            <button class="blacklist-card green card-action" @click="reinstateAction(image, 'id')">•</button>
+          <div
+            v-show="showMeta && currentMode === 'blacklist'"
+            class="card-actions">
+            <button
+              class="blacklist-triple greeen card-action"
+              @click="reinstateAction(image, 'triple')">
+              •••
+            </button>
+            <button
+              class="blacklist-input green card-action"
+              @click="reinstateAction(image, 'inputImage')">
+              ••
+            </button>
+            <button
+              class="blacklist-card green card-action"
+              @click="reinstateAction(image, 'id')">
+              •
+            </button>
           </div>
           <div v-show="showMeta" class="card-header">
             <div class="left">
-              <div class="badge" @click="filterModel(image.model)" :style="{ backgroundColor: MODEL_META_MAP[image.model].hexColor }">{{ MODEL_META_MAP[image.model].friendlyName }}</div>
-              <div class="badge" @click="filterPrompt(image.prompt)" :style="{ backgroundColor: PROMPT_MAP[image.prompt].hexColor }">{{ image.prompt }}</div>
+              <div
+                class="badge"
+                @click="filterModel(image.model)"
+                :style="{
+                  backgroundColor: MODEL_META_MAP[image.model].hexColor,
+                }">
+                {{ MODEL_META_MAP[image.model].friendlyName }}
+              </div>
+              <div
+                class="badge"
+                @click="filterPrompt(image.prompt)"
+                :style="{ backgroundColor: PROMPT_MAP[image.prompt].hexColor }">
+                {{ image.prompt }}
+              </div>
               <div class="badge static">{{ image.supportPrompt }}</div>
-              <div class="badge static">{{ image.cfg }} CFG : {{ image.ss }} SS</div>
-              <div class="badge" @click="filterInput(image.inputImage)" :style="{ backgroundColor: category_map[image.category]?.hexColor }">{{ image.inputImage }}</div>
+              <div class="badge static">
+                {{ image.cfg }} CFG : {{ image.ss }} SS
+              </div>
+              <div
+                class="badge"
+                @click="filterInput(image.inputImage)"
+                :style="{
+                  backgroundColor: category_map[image.category]?.hexColor,
+                }">
+                {{ image.inputImage }}
+              </div>
             </div>
           </div>
           <div
@@ -122,18 +233,46 @@
       </div>
     </div>
     <div class="triples-bar">
-      <div @dblclick="tripleDelete(idx)" class="triple" v-for="(triple, idx) in includedTriples">
-        <div class="badge first" :style="{ backgroundColor: PROMPT_MAP[triple.prompt]?.hexColor }">{{ triple.prompt }}</div>
-        <div class="badge center" :style="{ backgroundColor: MODEL_META_MAP[triple.model].hexColor }">{{ MODEL_META_MAP[triple.model].friendlyName }}</div>
-        <div class="badge last" :style="{ backgroundColor: category_map[triple.category]?.hexColor }">{{ triple.category }}</div>
+      <div
+        @dblclick="tripleDelete(idx)"
+        class="triple"
+        v-for="(triple, idx) in includedTriples">
+        <div
+          class="badge first"
+          :style="{ backgroundColor: PROMPT_MAP[triple.prompt]?.hexColor }">
+          {{ triple.prompt }}
+        </div>
+        <div
+          class="badge center"
+          :style="{ backgroundColor: MODEL_META_MAP[triple.model].hexColor }">
+          {{ MODEL_META_MAP[triple.model].friendlyName }}
+        </div>
+        <div
+          class="badge last"
+          :style="{ backgroundColor: category_map[triple.category]?.hexColor }">
+          {{ triple.category }}
+        </div>
       </div>
     </div>
     <footer>
       <div class="grid-settings"></div>
       <div class="paging">
-        <button v-if="currentPage > 1" @click="currentPage -= 1">Previous</button>
-        <div class="cursor-label">${{ cursorPosition }} | Page {{ currentPage }} / {{ Math.ceil(filteredImages.length / imgPerPage) }} | {{ filteredImages.length }} images</div>
-        <button v-if="currentPage * imgPerPage <= filteredImages.length && currentMode !== 'random'" @click="currentPage += 1">Next</button>
+        <button v-if="currentPage > 1" @click="currentPage -= 1">
+          Previous
+        </button>
+        <div class="cursor-label">
+          ${{ cursorPosition }} | Page {{ currentPage }} /
+          {{ Math.ceil(filteredImages.length / imgPerPage) }} |
+          {{ filteredImages.length }} images
+        </div>
+        <button
+          v-if="
+            currentPage * imgPerPage <= filteredImages.length &&
+            currentMode !== 'random'
+          "
+          @click="currentPage += 1">
+          Next
+        </button>
       </div>
       <div class="grid-settings">
         <select required name="gridSize" id="gridSize" v-model="gridSize">
@@ -154,14 +293,22 @@
           <option value="2048">2048</option>
           <option value="4096">4096</option>
         </select>
-        <select required name="currentMode" id="currentMode" v-model="currentMode">
+        <select
+          required
+          name="currentMode"
+          id="currentMode"
+          v-model="currentMode">
           <option value="sequence">sequence</option>
           <option value="random">random</option>
           <option value="triples">triples</option>
           <option value="blacklist">blacklist</option>
         </select>
-        <button @click="isVertical = !isVertical">{{ isVertical ? "portrait" : "landscape" }}</button>
-        <button @click="imageCover = !imageCover">{{ imageCover ? "cover" : "contain" }}</button>
+        <button @click="isVertical = !isVertical">
+          {{ isVertical ? "portrait" : "landscape" }}
+        </button>
+        <button @click="imageCover = !imageCover">
+          {{ imageCover ? "cover" : "contain" }}
+        </button>
       </div>
     </footer>
   </div>
@@ -228,7 +375,9 @@ export default {
     },
     inputImgs() {
       if (this.selectedInputCategory !== "") {
-        return this.availableInputs.filter((input) => input.includes(this.selectedInputCategory)).sort();
+        return this.availableInputs
+          .filter((input) => input.includes(this.selectedInputCategory))
+          .sort();
       }
       return this.availableInputs.sort();
     },
@@ -244,7 +393,12 @@ export default {
       if (this.currentMode === "triples") {
         images = [];
         this.includedTriples.forEach((triple) => {
-          const filteredTriple = this.batch.filter((image) => image.category === triple.category && image.prompt === triple.prompt && image.model === triple.model);
+          const filteredTriple = this.batch.filter(
+            (image) =>
+              image.category === triple.category &&
+              image.prompt === triple.prompt &&
+              image.model === triple.model
+          );
           images = images.concat(filteredTriple);
         });
       }
@@ -257,11 +411,15 @@ export default {
         } else if (this.selectedRating === "bad") {
           images = images.filter((image) => image.rating <= 3);
         } else if (this.selectedRating === "good") {
-          images = images.filter((image) => image.rating === null || image.rating > 3);
+          images = images.filter(
+            (image) => image.rating === null || image.rating > 3
+          );
         } else if (this.selectedRating === "excellent") {
           images = images.filter((image) => image.rating > 3);
         } else {
-          images = images.filter((image) => image.rating == this.selectedRating);
+          images = images.filter(
+            (image) => image.rating == this.selectedRating
+          );
         }
       }
 
@@ -282,27 +440,44 @@ export default {
       }
 
       if (this.selectedInputCategory !== "") {
-        images = images.filter((image) => image.inputImage.includes(this.selectedInputCategory));
+        images = images.filter((image) =>
+          image.inputImage.includes(this.selectedInputCategory)
+        );
       }
       if (this.selectedModel !== "") {
         images = images.filter((image) => image.model == this.selectedModel);
       }
       if (this.selectedInputImage !== "") {
-        images = images.filter((image) => image.inputImage == this.selectedInputImage);
+        images = images.filter(
+          (image) => image.inputImage == this.selectedInputImage
+        );
       }
       if (this.selectedPrompt !== "") {
         images = images.filter((image) => image.prompt == this.selectedPrompt);
       }
       this.filteredImagesPool = images;
-      let sorted = images.sort((a, b) => (a[this.selectedSorting] > b[this.selectedSorting] ? -this.sortDir : this.sortDir));
+      let sorted = images.sort((a, b) =>
+        a[this.selectedSorting] > b[this.selectedSorting]
+          ? -this.sortDir
+          : this.sortDir
+      );
       if (this.currentMode === "random" || this.currentMode === "triples") {
         if (this.isWeighted) {
-          sorted = this.getRandomWeightedElements(sorted, Math.min(sorted.length, this.imgPerPage));
+          sorted = this.getRandomWeightedElements(
+            sorted,
+            Math.min(sorted.length, this.imgPerPage)
+          );
         } else {
-          sorted = this.getRandomElements(sorted, Math.min(sorted.length, this.imgPerPage));
+          sorted = this.getRandomElements(
+            sorted,
+            Math.min(sorted.length, this.imgPerPage)
+          );
         }
       }
-      this.viewportImages = sorted.slice((this.currentPage - 1) * this.imgPerPage, (this.currentPage - 1) * this.imgPerPage + this.imgPerPage);
+      this.viewportImages = sorted.slice(
+        (this.currentPage - 1) * this.imgPerPage,
+        (this.currentPage - 1) * this.imgPerPage + this.imgPerPage
+      );
       return sorted;
     },
     getRandomElements(arr, n) {
@@ -310,7 +485,10 @@ export default {
         len = arr.length,
         taken = new Array(len);
 
-      if (n > len) throw new RangeError("getRandomElements: more elements taken than available");
+      if (n > len)
+        throw new RangeError(
+          "getRandomElements: more elements taken than available"
+        );
 
       while (n--) {
         let x = Math.floor(Math.random() * len);
@@ -342,12 +520,17 @@ export default {
 
         let usedInputs = {};
         const singleInputPool = pool.filter((image) => {
-          usedInputs[image.inputImage] = usedInputs[image.inputImage] || { count: 0 };
+          usedInputs[image.inputImage] = usedInputs[image.inputImage] || {
+            count: 0,
+          };
           usedInputs[image.inputImage]["count"] += 1;
           return usedInputs[image.inputImage]["count"] <= 3;
         });
 
-        let pulledImages = this.getRandomElements(singleInputPool, Math.min(singleInputPool.length, categoryImageCount));
+        let pulledImages = this.getRandomElements(
+          singleInputPool,
+          Math.min(singleInputPool.length, categoryImageCount)
+        );
         console.log("got:", pulledImages.length);
 
         if (this.forceWeights && pulledImages.length < categoryImageCount) {
@@ -427,15 +610,25 @@ export default {
 
         // todo: if indexStart or indexEnd for previous? save idx pos on click?
         if (indexStart > indexEnd) {
-          this.selectedImages = this.viewportImages.slice(indexEnd, indexStart + 1);
+          this.selectedImages = this.viewportImages.slice(
+            indexEnd,
+            indexStart + 1
+          );
         } else {
-          this.selectedImages = this.viewportImages.slice(indexStart, indexEnd + 1);
+          this.selectedImages = this.viewportImages.slice(
+            indexStart,
+            indexEnd + 1
+          );
         }
       } else if (ctrlClick && this.selectedImages.length > 0) {
-        this.selectedImages.push(this.viewportImages.find((img) => img.id === id));
+        this.selectedImages.push(
+          this.viewportImages.find((img) => img.id === id)
+        );
       } else {
         this.selectedImages = [];
-        this.selectedImages.push(this.viewportImages.find((img) => img.id === id));
+        this.selectedImages.push(
+          this.viewportImages.find((img) => img.id === id)
+        );
       }
     },
     tripleSave(image) {
@@ -459,19 +652,37 @@ export default {
       console.log("blacklist", image, type);
       if (type === "pair") {
         if (confirm("Ban Model/Prompt Pair?")) {
-          this.batch.filter((img) => img.model === image.model && img.prompt === image.prompt).forEach((img) => this.blackList.push(img.id));
+          this.batch
+            .filter(
+              (img) => img.model === image.model && img.prompt === image.prompt
+            )
+            .forEach((img) => this.blackList.push(img.id));
         }
       } else if (type === "triple") {
         if (confirm("Ban Triple?")) {
-          this.batch.filter((img) => img.category === image.category && img.model === image.model && img.prompt === image.prompt).forEach((img) => this.blackList.push(img.id));
+          this.batch
+            .filter(
+              (img) =>
+                img.category === image.category &&
+                img.model === image.model &&
+                img.prompt === image.prompt
+            )
+            .forEach((img) => this.blackList.push(img.id));
         }
       } else if (type === "inputImageModel") {
         if (confirm("Ban Input for model?")) {
-          this.batch.filter((img) => img.model === image.model && img.inputImage === image.inputImage).forEach((img) => this.blackList.push(img.id));
+          this.batch
+            .filter(
+              (img) =>
+                img.model === image.model && img.inputImage === image.inputImage
+            )
+            .forEach((img) => this.blackList.push(img.id));
         }
       } else if (type === "inputImage") {
         if (confirm("Ban Input?")) {
-          this.batch.filter((img) => img.inputImage === image.inputImage).forEach((img) => this.blackList.push(img.id));
+          this.batch
+            .filter((img) => img.inputImage === image.inputImage)
+            .forEach((img) => this.blackList.push(img.id));
         }
       } else if (type === "id") {
         this.blackList.push(image.id);
@@ -493,8 +704,12 @@ export default {
         }
       } else if (type === "inputImage") {
         if (confirm("Reinstate Input?")) {
-          const existingForInput = this.batch.filter((img) => img.inputImage === image.inputImage).map((img) => img.id);
-          this.blackList = this.blackList.filter((id) => !existingForInput.includes(id));
+          const existingForInput = this.batch
+            .filter((img) => img.inputImage === image.inputImage)
+            .map((img) => img.id);
+          this.blackList = this.blackList.filter(
+            (id) => !existingForInput.includes(id)
+          );
         }
       } else if (type === "id") {
         // this.blackList = this.blackList.slice(this.blackList.indexOf(image), 1);
@@ -521,27 +736,50 @@ export default {
         return;
       } else if (e.shiftKey === true && e.key === "ArrowLeft") {
         this.promptCursor -= 1;
-        this.selectedPrompt = this.availablePrompts[(this.promptCursor + this.availablePrompts.length) % this.availablePrompts.length];
+        this.selectedPrompt =
+          this.availablePrompts[
+            (this.promptCursor + this.availablePrompts.length) %
+              this.availablePrompts.length
+          ];
         return;
       } else if (e.shiftKey === true && e.key === "ArrowRight") {
         this.promptCursor += 1;
-        this.selectedPrompt = this.availablePrompts[(this.promptCursor + this.availablePrompts.length) % this.availablePrompts.length];
+        this.selectedPrompt =
+          this.availablePrompts[
+            (this.promptCursor + this.availablePrompts.length) %
+              this.availablePrompts.length
+          ];
         return;
       } else if (e.altKey === true && e.key === "ArrowLeft") {
         this.inputCursor -= 1;
-        this.selectedInputImage = this.availableInputs[(this.inputCursor + this.availableInputs.length) % this.availableInputs.length];
+        this.selectedInputImage =
+          this.availableInputs[
+            (this.inputCursor + this.availableInputs.length) %
+              this.availableInputs.length
+          ];
         return;
       } else if (e.altKey === true && e.key === "ArrowRight") {
         this.inputCursor += 1;
-        this.selectedInputImage = this.inputImgs[(this.inputCursor + this.inputImgs.length) % this.inputImgs.length];
+        this.selectedInputImage =
+          this.inputImgs[
+            (this.inputCursor + this.inputImgs.length) % this.inputImgs.length
+          ];
         return;
       } else if (e.key === "ArrowLeft") {
         this.modelCursor -= 1;
-        this.selectedModel = this.availableModels[(this.modelCursor + this.availableModels.length) % this.availableModels.length];
+        this.selectedModel =
+          this.availableModels[
+            (this.modelCursor + this.availableModels.length) %
+              this.availableModels.length
+          ];
         return;
       } else if (e.key === "ArrowRight") {
         this.modelCursor += 1;
-        this.selectedModel = this.availableModels[(this.modelCursor + this.availableModels.length) % this.availableModels.length];
+        this.selectedModel =
+          this.availableModels[
+            (this.modelCursor + this.availableModels.length) %
+              this.availableModels.length
+          ];
         return;
       }
     },
@@ -562,9 +800,15 @@ export default {
       console.log("viewportImages:");
       console.log(this.viewportImages.map((x) => x.id));
       console.log("rated images 4 and above:");
-      console.log(this.ratedImages.filter((image) => image.rating > 3).map((x) => x.id)); // base on selected rating?
+      console.log(
+        this.ratedImages.filter((image) => image.rating > 3).map((x) => x.id)
+      ); // base on selected rating?
       console.log("all rated:");
-      console.log(this.ratedImages.map((x) => x.id)); // base on selected rating?
+      console.log(
+        this.ratedImages.map((x) => {
+          return { id: x.id, rating: x.rating };
+        })
+      ); // base on selected rating?
       console.log("blacklist:");
       console.log(this.blackList);
     },
@@ -596,18 +840,27 @@ export default {
     },
     selectedPrompt() {
       this.currentPage = 1;
-      localStorage.setItem("selectedPrompt", JSON.stringify(this.selectedPrompt));
+      localStorage.setItem(
+        "selectedPrompt",
+        JSON.stringify(this.selectedPrompt)
+      );
     },
     selectedInputCategory() {
       this.currentPage = 1;
       this.selectedInputImage = "";
-      localStorage.setItem("selectedInputCategory", JSON.stringify(this.selectedInputCategory));
+      localStorage.setItem(
+        "selectedInputCategory",
+        JSON.stringify(this.selectedInputCategory)
+      );
     },
     selectedInputImage() {
       if (this.currentMode === "random") {
         this.currentMode = "sequence";
       }
-      localStorage.setItem("selectedInputImage", JSON.stringify(this.selectedInputImage));
+      localStorage.setItem(
+        "selectedInputImage",
+        JSON.stringify(this.selectedInputImage)
+      );
       this.currentPage = 1;
     },
     sortDir() {
@@ -621,7 +874,10 @@ export default {
     },
     selectedSorting() {
       this.currentPage = 1;
-      localStorage.setItem("selectedSorting", JSON.stringify(this.selectedSorting));
+      localStorage.setItem(
+        "selectedSorting",
+        JSON.stringify(this.selectedSorting)
+      );
     },
   },
   async created() {
@@ -635,7 +891,9 @@ export default {
     this.availablePrompts = parseResult.availablePrompts;
     this.category_map = parseResult.category_map;
 
-    this.blackList = JSON.parse(localStorage.getItem("blackList") || "[]").filter((n) => n);
+    this.blackList = JSON.parse(
+      localStorage.getItem("blackList") || "[]"
+    ).filter((n) => n);
     this.ratedImages = JSON.parse(localStorage.getItem("imageRatings") || "[]");
     this.includedTriples = JSON.parse(localStorage.getItem("triples") || "[]");
     console.log("loaded rated:", this.ratedImages.length);
@@ -648,15 +906,33 @@ export default {
       return img;
     });
 
-    this.selectedModel = localStorage.getItem("selectedModel") ? JSON.parse(localStorage.getItem("selectedModel")) : "";
-    this.selectedPrompt = localStorage.getItem("selectedPrompt") ? JSON.parse(localStorage.getItem("selectedPrompt")) : "";
-    this.selectedRating = localStorage.getItem("selectedRating") ? JSON.parse(localStorage.getItem("selectedRating")) : "";
-    this.selectedInputCategory = localStorage.getItem("selectedInputCategory") ? JSON.parse(localStorage.getItem("selectedInputCategory")) : "";
-    this.currentMode = localStorage.getItem("currentMode") ? JSON.parse(localStorage.getItem("currentMode")) : "sequence";
-    this.sortDir = localStorage.getItem("sortDir") ? JSON.parse(localStorage.getItem("sortDir")) : 1;
-    this.imgPerPage = localStorage.getItem("imgPerPage") ? JSON.parse(localStorage.getItem("imgPerPage")) : 128;
-    this.selectedSorting = localStorage.getItem("selectedSorting") ? JSON.parse(localStorage.getItem("selectedSorting")) : "inputImage";
-    this.isWeighted = localStorage.getItem("isWeighted") ? JSON.parse(localStorage.getItem("isWeighted")) : false;
+    this.selectedModel = localStorage.getItem("selectedModel")
+      ? JSON.parse(localStorage.getItem("selectedModel"))
+      : "";
+    this.selectedPrompt = localStorage.getItem("selectedPrompt")
+      ? JSON.parse(localStorage.getItem("selectedPrompt"))
+      : "";
+    this.selectedRating = localStorage.getItem("selectedRating")
+      ? JSON.parse(localStorage.getItem("selectedRating"))
+      : "";
+    this.selectedInputCategory = localStorage.getItem("selectedInputCategory")
+      ? JSON.parse(localStorage.getItem("selectedInputCategory"))
+      : "";
+    this.currentMode = localStorage.getItem("currentMode")
+      ? JSON.parse(localStorage.getItem("currentMode"))
+      : "sequence";
+    this.sortDir = localStorage.getItem("sortDir")
+      ? JSON.parse(localStorage.getItem("sortDir"))
+      : 1;
+    this.imgPerPage = localStorage.getItem("imgPerPage")
+      ? JSON.parse(localStorage.getItem("imgPerPage"))
+      : 128;
+    this.selectedSorting = localStorage.getItem("selectedSorting")
+      ? JSON.parse(localStorage.getItem("selectedSorting"))
+      : "inputImage";
+    this.isWeighted = localStorage.getItem("isWeighted")
+      ? JSON.parse(localStorage.getItem("isWeighted"))
+      : false;
   },
 };
 </script>

@@ -33,8 +33,13 @@ const parsePathCrawl = (path_array, category_map) => {
   const availablePromptsAll = [];
 
   const imageObjs = path_array.map((imgPath) => {
-    const srcFried = imgPath.replace("/Users/jbe/Dropbox/stabdiff-ui-v2/comfyui-outs/_NF/", "");
-    imgPath = imgPath.replace("/Users/jbe/Dropbox/stabdiff-ui-v2/comfyui-outs/_NF/", "").replace("/fried/", "/2pass/");
+    const srcFried = imgPath.replace(
+      "/Users/jbe/Dropbox/stabdiff-ui-v2/comfyui-outs/_NF/",
+      ""
+    );
+    imgPath = imgPath
+      .replace("/Users/jbe/Dropbox/stabdiff-ui-v2/comfyui-outs/_NF/", "")
+      .replace("/fried/", "/2pass/");
     imgPath = imgPath.split("-fried_")[0] + "_00001_.png";
 
     const model = imgPath.split("--")[1];
@@ -50,7 +55,11 @@ const parsePathCrawl = (path_array, category_map) => {
     if (imgPath.includes("avatar1") || imgPath.includes("avatar2")) {
       category = "avatar";
       inputImage = fn.split("--")[2].split(".jpg")[0] + ".jpg";
-      prompt = fn.split("--")[2].split(".jpg")[1].split("_")[1].replace("prompt-", "");
+      prompt = fn
+        .split("--")[2]
+        .split(".jpg")[1]
+        .split("_")[1]
+        .replace("prompt-", "");
     } else {
       inputImage = imgPath.split("--")[2].split("_")[0];
       prompt = imgPath.split("--")[2].split("_")[1].replace("prompt-", "");
@@ -65,7 +74,12 @@ const parsePathCrawl = (path_array, category_map) => {
     if (imgPath.includes("trackers")) {
       category = "trackers";
     }
-    if (imgPath.includes("--bts")) {
+    if (
+      imgPath.includes("--bts") ||
+      imgPath.includes("--davos") ||
+      imgPath.includes("--mission") ||
+      imgPath.includes("--poolc")
+    ) {
       category = "bts";
     }
     if (imgPath.includes("--hack")) {
@@ -92,12 +106,19 @@ const parsePathCrawl = (path_array, category_map) => {
     if (imgPath.includes("--otg")) {
       category = "otg";
     }
+
+    if (imgPath.includes("--otg")) {
+      category = "otg";
+    }
     if (imgPath.includes("memorial")) {
       category = "memorial";
     }
     if (category === null) console.log(imgPath);
 
-    category_map[category][model] = category_map[category][model] || { count: 0, inputs: [] };
+    category_map[category][model] = category_map[category][model] || {
+      count: 0,
+      inputs: [],
+    };
     category_map[category][model]["count"] += 1;
 
     if (!category_map[category][model]["inputs"].includes(inputImage)) {
@@ -115,7 +136,9 @@ const parsePathCrawl = (path_array, category_map) => {
       fn,
       id: imgPath,
       src: imgPath,
-      src1pass: imgPath.replace("/2pass/", "/1pass/").replace("_00001_.png", "-1x_00001_.png"),
+      src1pass: imgPath
+        .replace("/2pass/", "/1pass/")
+        .replace("_00001_.png", "-1x_00001_.png"),
       srcFried,
       model,
       category,
@@ -138,11 +161,18 @@ const parsePathCrawl = (path_array, category_map) => {
 
   Object.keys(category_map).forEach((category) => {
     availableModels.forEach((model) => {
-      category_map[category][model]["inputs"] = category_map[category][model]["inputs"].length;
+      category_map[category][model]["inputs"] =
+        category_map[category][model]["inputs"].length;
     });
   });
 
-  return { imageObjs, category_map, availableModels, availableInputs, availablePrompts };
+  return {
+    imageObjs,
+    category_map,
+    availableModels,
+    availableInputs,
+    availablePrompts,
+  };
 };
 
 const allImgs = require("/Users/jbe/static-sites/never-forget-vite-vue2/src/data/pics-versioned.json");
@@ -151,4 +181,9 @@ const parseResult = parsePathCrawl(allImgs, CATEGORY_MAP);
 var json = JSON.stringify(parseResult);
 console.log(parseResult.category_map);
 const fs = require("fs");
-fs.writeFile("/Users/jbe/static-sites/never-forget-vite-vue2/src/data/pics-parsed.json", json, "utf8", () => console.log("done"));
+fs.writeFile(
+  "/Users/jbe/static-sites/never-forget-vite-vue2/src/data/pics-parsed.json",
+  json,
+  "utf8",
+  () => console.log("done")
+);
