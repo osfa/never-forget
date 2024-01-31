@@ -314,7 +314,8 @@
   </div>
 </template>
 <script>
-import parsedBatch from "../data/pics-parsed.json";
+import parsedBatch from "../data/pics-dummy.json";
+// import parsedBatch from "../data/pics-parsed.json";
 import { CATEGORY_MAP, MODEL_META_MAP, PROMPT_MAP } from "../maps";
 
 console.log("ratingBook hit");
