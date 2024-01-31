@@ -1,6 +1,8 @@
 <template>
   <div id="viewer-image" ref="image">
-    <div id="overlay" :style="{ backgroundSize: `${Math.min(currentZoom * 25, 35)}%` }"></div>
+    <div
+      id="overlay"
+      :style="{ backgroundSize: `${Math.min(currentZoom * 25, 35)}%` }"></div>
     <!-- <img id="overlay" src="/grid2.svg" :style="{ scale: `${currentZoom * 150}%` }" /> -->
     <div id="action-bar-top">
       <div
@@ -16,14 +18,26 @@
         <!-- <InformationIcon /> -->
       </div>
 
-      <BarebonesTone ref="audioModule" automaticFade :debug="true" />
+      <BarebonesTone ref="audioModule" automaticFade :debug="false" />
     </div>
     <div id="social-media-bar">
-      <a href="https://www.youtube.com/@NeverForgetNow" class="btn-platform youtube">YouTube</a>
-      <a href="https://www.tiktok.com/@neverforgetnow" class="btn-platform tiktok">TikTok</a>
-      <a href="https://www.instagram.com/neverforgetnow1" class="btn-platform instagram">Instagram</a>
+      <a
+        href="https://www.youtube.com/@NeverForgetNow"
+        class="btn-platform youtube"
+        >YouTube</a
+      >
+      <a
+        href="https://www.tiktok.com/@neverforgetnow"
+        class="btn-platform tiktok"
+        >TikTok</a
+      >
+      <a
+        href="https://www.instagram.com/neverforgetnow1"
+        class="btn-platform instagram"
+        >Instagram</a
+      >
     </div>
-    <div id="filter-bar">
+    <div v-if="false" id="filter-bar">
       <div
         v-for="(model, idx) in Object.keys(MODEL_META_MAP).slice(0, 7)"
         class="btn-layer"
@@ -48,7 +62,16 @@ import BarebonesTone from "./BarebonesTone.vue";
 import { MODEL_META_MAP } from "../maps";
 console.log("load.");
 
-const ZOOM_COLORS = ["#000", "#111", "#222", "#333", "#666", "#999", "#ccc", "#fff"];
+const ZOOM_COLORS = [
+  "#000",
+  "#111",
+  "#222",
+  "#333",
+  "#666",
+  "#999",
+  "#ccc",
+  "#fff",
+];
 // const ZOOM_COLORS = ["#000", "#333", "#fff"];
 // const ZOOM_COLORS = ["#000", "#333", "#666", "#ccc", "#fff"];
 
@@ -92,7 +115,11 @@ export default {
   },
   watch: {
     selectedZoomLevelIdx() {
-      console.log("selectedZoomLevel", this.selectedZoomLevelIdx, this.zoomLevels[this.selectedZoomLevelIdx]);
+      console.log(
+        "selectedZoomLevel",
+        this.selectedZoomLevelIdx,
+        this.zoomLevels[this.selectedZoomLevelIdx]
+      );
       this.viewer.viewport.zoomTo(this.zoomLevels[this.selectedZoomLevelIdx]);
       // this.viewer.viewport.zoomBy(this.zoomPerScroll);
     },
@@ -124,7 +151,11 @@ export default {
       // }
     },
     isTouchDevice() {
-      return "ontouchstart" in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
+      return (
+        "ontouchstart" in window ||
+        navigator.maxTouchPoints > 0 ||
+        navigator.msMaxTouchPoints > 0
+      );
     },
     randomInt(min, max) {
       min = Math.ceil(min);
@@ -139,12 +170,18 @@ export default {
       return new OpenSeadragon.Point(Math.random(), Math.random());
     },
     randomCoordInVicinity(point, d) {
-      const coord = new OpenSeadragon.Point(point.x + this.randomFloat(0, d), point.y + this.randomFloat(0, d));
+      const coord = new OpenSeadragon.Point(
+        point.x + this.randomFloat(0, d),
+        point.y + this.randomFloat(0, d)
+      );
       return coord;
     },
     triggerZoom(e) {
       console.log("trigg", this.selectedZoomLevelIdx);
-      if (e.scroll > 0 && this.selectedZoomLevelIdx < this.zoomLevels.length - 1) {
+      if (
+        e.scroll > 0 &&
+        this.selectedZoomLevelIdx < this.zoomLevels.length - 1
+      ) {
         // zoom in
         this.selectedZoomLevelIdx += 1;
       } else if (e.scroll < 0 && this.selectedZoomLevelIdx >= 1) {
@@ -177,8 +214,27 @@ export default {
       this.viewer.viewport.panTo(this.randomCoord());
     },
     initViewer() {
-      console.log("init viewer:", window.innerWidth, this.startZoom, this.minZoom, this.maxZoom, availableSchemas);
+      console.log(
+        "init viewer:",
+        window.innerWidth,
+        this.startZoom,
+        this.minZoom,
+        this.maxZoom,
+        availableSchemas
+      );
       // smaller width => higher zoom?
+
+      //   var tileImageSpec = {
+      //   tileSource: tileSource,
+      //   success: function(event) {
+      //     var tiledImage = event.item;
+      //     tiledImage.source.getTileUrl = function( level, x, y ) {
+      //       return OpenSeadragon.IIIFTileSource.prototype.getTileUrl.call(this, level, x, y);
+      //     }
+      //   }
+      // }
+
+      // getTileUrl?
       this.viewer = OpenSeadragon({
         id: "viewer-image",
         maxImageCacheCount: 10000,
@@ -232,15 +288,25 @@ export default {
           return;
         }
 
-        console.log("canvas-click-center:", this.viewer.viewport.getCenter(true));
+        console.log(
+          "canvas-click-center:",
+          this.viewer.viewport.getCenter(true)
+        );
         const webPoint = event.position;
-        const ip = this.viewer.viewport.viewerElementToImageCoordinates(event.position);
+        const ip = this.viewer.viewport.viewerElementToImageCoordinates(
+          event.position
+        );
 
         console.log("ip:", ip);
         const viewportPoint = this.viewer.viewport.pointFromPixel(webPoint);
-        const imagePoint = this.viewer.viewport.viewportToImageCoordinates(viewportPoint);
+        const imagePoint =
+          this.viewer.viewport.viewportToImageCoordinates(viewportPoint);
 
-        console.log(webPoint.toString(), viewportPoint.toString(), imagePoint.toString());
+        console.log(
+          webPoint.toString(),
+          viewportPoint.toString(),
+          imagePoint.toString()
+        );
 
         // this.viewer.addTiledImage({
         //   tileSource: availableSchemas[1],
@@ -260,7 +326,7 @@ export default {
 html,
 body,
 #viewer-image {
-  height: 100%;
+  height: 96vh;
   width: 100%;
 }
 
@@ -357,6 +423,7 @@ body,
   justify-content: space-evenly;
   font-family: Papyrus, fantasy;
   font-size: 0.8rem;
+  height: 4vh;
 }
 
 #social-media-bar a {
@@ -369,6 +436,7 @@ body,
 
 .youtube {
   background-color: rgba(255, 0, 0, 0.3);
+  background-color: rgba(255, 0, 0, 1);
   color: white;
 }
 .youtube:hover {
@@ -376,6 +444,7 @@ body,
 }
 .instagram {
   background-color: rgba(193, 53, 132, 0.3);
+  background-color: rgba(193, 53, 132, 1);
   color: white;
 }
 .instagram:hover {
@@ -383,11 +452,13 @@ body,
 }
 .tiktok {
   background-color: rgba(255, 0, 80, 0.3);
+  background-color: rgba(255, 0, 80, 1);
   color: black;
   color: white;
 }
 .tiktok:hover {
   background-color: rgba(255, 0, 80, 0.8);
+  background-color: rgba(255, 0, 80, 1);
   color: black;
 }
 </style>

@@ -67,6 +67,36 @@ const ANIVERSE1 = {
       Width: "48000",
     },
   },
+  height: 27000,
+  width: 48000,
+  tileSize: 256,
+  tileOverlap: 1,
+  // minLevel: 8,
+  // maxLevel: 8,
+  getTileUrl: function (level, x, y) {
+    const models = ["aniverse-v1.0", "aniverse-v0"];
+    const randomModel = models[Math.floor(Math.random() * models.length)];
+    // http://localhost:3000/dzi/aniverse-v1.0_files/12/10_4.jpeg
+    // http://localhost:3000/dzi/
+    return `http://localhost:3000/dzi/${randomModel}_files/${level}/${x}_${y}.jpeg`;
+
+    return (
+      "http://s3.amazonaws.com/com.modestmaps.bluemarble/" +
+      (level - 8) +
+      "-r" +
+      y +
+      "-c" +
+      x +
+      ".jpg"
+    );
+  },
 };
+
 // export const availableSchemas = [ANIVERSE, ANIME, y1997, SECOND_LIFE];
-export const availableSchemas = [ANIVERSE1, ANIVERSE, ANIME, y1997, SECOND_LIFE];
+export const availableSchemas = [
+  ANIVERSE1,
+  // ANIVERSE,
+  // ANIME,
+  // y1997,
+  // SECOND_LIFE,
+];

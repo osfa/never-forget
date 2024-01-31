@@ -1,5 +1,10 @@
 <template>
-  <div class="btn-audio" :class="{ hasInit: hasInit || debug, isPlaying }" @click="toggleAudio">{{ muteIcon() }}</div>
+  <div
+    class="btn-audio"
+    :class="{ hasInit: hasInit || debug, isPlaying }"
+    @click="toggleAudio">
+    {{ muteIcon() }}
+  </div>
 </template>
 <script>
 import * as Tone from "tone";
@@ -120,7 +125,10 @@ export default {
 
       this.initAmbiance();
 
-      const narrationUrls = audioLibrary.asmr.reduce((acc, curr) => ((acc[curr] = curr), acc), {});
+      const narrationUrls = audioLibrary.asmr.reduce(
+        (acc, curr) => ((acc[curr] = curr), acc),
+        {}
+      );
       const narrationPlayer = new Tone.Players(narrationUrls, () => {
         // console.log("loaded into narrationPlayer", narrationUrls);
         this.narrationPlayer = narrationPlayer;
@@ -151,7 +159,10 @@ export default {
       this.noiseMaker.start();
     },
     setVolume() {
-      Tone.getDestination().volume.rampTo(this.baseVolume === -100 ? -Infinity : this.baseVolume, 0);
+      Tone.getDestination().volume.rampTo(
+        this.baseVolume === -100 ? -Infinity : this.baseVolume,
+        0
+      );
     },
     initAmbiance() {
       const def = {
@@ -170,23 +181,33 @@ export default {
 
       this.chorus = new Tone.Chorus(def).toDestination();
       // this.chorus.wet.value = this.chorusWetness
-      this.crossFade = new Tone.CrossFade().connect(this.chorus).connect(new Tone.Reverb(0.1)).connect(autoFilter); // .toDestination()
+      this.crossFade = new Tone.CrossFade()
+        .connect(this.chorus)
+        .connect(new Tone.Reverb(0.1))
+        .connect(autoFilter); // .toDestination()
       this.crossFade.fade.value = this.crossFadeVal; // 0-currently1, 1-currently2
 
       this.currently1 = audioLibrary.availableReal.sample();
-      this.ambianceChannel1 = new Tone.Player(this.currently1).connect(this.crossFade.a);
+      this.ambianceChannel1 = new Tone.Player(this.currently1).connect(
+        this.crossFade.a
+      );
       this.ambianceChannel1.autostart = true;
       this.ambianceChannel1.loop = true;
       this.ambianceChannel1.volume.value = this.ambianceVolume;
 
       this.currently2 = audioLibrary.availableReal.sample();
-      this.ambianceChannel2 = new Tone.Player(this.currently2).connect(this.crossFade.b);
+      this.ambianceChannel2 = new Tone.Player(this.currently2).connect(
+        this.crossFade.b
+      );
       this.ambianceChannel2.autostart = true;
       this.ambianceChannel2.loop = true;
       this.ambianceChannel2.volume.value = this.ambianceVolume;
 
       if (this.automaticFade) {
-        this.crossFadeInterval = setInterval(this.doCrossFade, (this.crossFadeDuration / 5) * 1000);
+        this.crossFadeInterval = setInterval(
+          this.doCrossFade,
+          (this.crossFadeDuration / 5) * 1000
+        );
       }
       autoFilter.start();
     },
@@ -206,14 +227,21 @@ export default {
       }
     },
     isObj(variable) {
-      return typeof variable === "object" && !Array.isArray(variable) && variable !== null;
+      return (
+        typeof variable === "object" &&
+        !Array.isArray(variable) &&
+        variable !== null
+      );
     },
     load1(chosen) {
       console.log("load1:", chosen);
       if (this.isObj(chosen)) {
         console.log(chosen.path);
         this.currently1 = chosen.path;
-        this.ambianceChannel1.volume.rampTo(this.ambianceVolume + chosen.volume, 3);
+        this.ambianceChannel1.volume.rampTo(
+          this.ambianceVolume + chosen.volume,
+          3
+        );
       } else {
         this.currently1 = chosen;
         this.ambianceChannel1.volume.rampTo(this.ambianceVolume, 3);
@@ -224,7 +252,10 @@ export default {
       console.log("load2:", chosen);
       if (this.isObj(chosen)) {
         this.currently2 = chosen.path;
-        this.ambianceChannel2.volume.rampTo(this.ambianceVolume + chosen.volume, 3);
+        this.ambianceChannel2.volume.rampTo(
+          this.ambianceVolume + chosen.volume,
+          3
+        );
       } else {
         this.currently2 = chosen;
         this.ambianceChannel2.volume.rampTo(this.ambianceVolume, 3);
@@ -242,7 +273,10 @@ export default {
     doCrossFade() {
       // console.log("cross fade");
       const stepSize = this.kioskMode ? 0.1 : 0.05;
-      if (this.crossFade.fade.value === 1.0 || this.crossFade.fade.value <= 0.0) {
+      if (
+        this.crossFade.fade.value === 1.0 ||
+        this.crossFade.fade.value <= 0.0
+      ) {
         this.crossDirection = !this.crossDirection;
         if (this.crossFade.fade.value === 1.0) {
           const chosen = audioLibrary.realGrouped.sample().sample();
@@ -256,11 +290,17 @@ export default {
       // crossFadeVal = 0, only currently1
       // crossFadeVal = 1, only currently2
       if (this.crossDirection) {
-        const val = Math.min(parseFloat(this.crossFade.fade.value + stepSize), 1);
+        const val = Math.min(
+          parseFloat(this.crossFade.fade.value + stepSize),
+          1
+        );
         this.crossFade.fade.value = val;
         this.crossFadeVal = val.toFixed(1);
       } else {
-        const val = Math.max(parseFloat(this.crossFade.fade.value - stepSize), 0);
+        const val = Math.max(
+          parseFloat(this.crossFade.fade.value - stepSize),
+          0
+        );
         this.crossFade.fade.value = val;
         this.crossFadeVal = val.toFixed(1);
       }
@@ -272,7 +312,7 @@ export default {
 .btn-audio {
   position: fixed;
   top: 0;
-  left: 0%;
+  left: 0;
   margin-right: 2.5rem;
 
   background-color: rgba(255, 255, 255, 0.75);
@@ -283,7 +323,7 @@ export default {
   z-index: 10000;
 
   width: 100vw;
-  height: 100vh;
+  height: 96vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -294,15 +334,17 @@ export default {
   background-color: rgba(0, 0, 0, 0.25);
   background-color: black;
   background-color: rgba(0, 0, 0, 0.75);
+  background-color: rgba(255, 255, 255, 0.75);
 
   /* background-color: transparent; */
   padding: 1rem;
-  width: auto;
+  width: 1rem;
   height: auto;
   font-size: 1.5rem;
 
-  left: 50%;
-  margin-right: 2.5rem;
+  left: auto;
+  right: 0;
+  margin-right: 0;
   /* padding-right: 20px; */
   /* line-height: 1rem; */
 }
