@@ -4,7 +4,7 @@
       id="overlay"
       :style="{ backgroundSize: `${Math.min(currentZoom * 25, 35)}%` }"></div>
     <!-- <img id="overlay" src="/grid2.svg" :style="{ scale: `${currentZoom * 150}%` }" /> -->
-    <!-- <div id="scroller">
+    <div id="scroller">
       <div class="marquee enable-animation marquee--fit-content">
         <ul class="marquee__content">
           <li>
@@ -23,7 +23,7 @@
           </li>
         </ul>
       </div>
-    </div> -->
+    </div>
     <div id="action-bar-top">
       <div
         id="info"
@@ -584,6 +584,7 @@ body,
   position: absolute;
   bottom: 10vh;
   font-size: 2rem;
+  display: none;
 }
 
 .marquee {

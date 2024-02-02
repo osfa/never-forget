@@ -1,14 +1,22 @@
 # - fix map updater opt...
 
 - and triples feature in builder?
+  - allow 2 and 3?
+  - clean CSS and shit ffs.
+
+## queue
+
+## promme
 
 ---
 
-- swap audios..
+- swap for betyter audios..
 
 - chk notion..
 
 - ollama describe images? quick lllm api hookup? keys how?
+
+- bunch guis?
 
 --
 

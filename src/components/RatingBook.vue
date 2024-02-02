@@ -239,11 +239,11 @@
         @dblclick="tripleDelete(idx)"
         class="triple"
         v-for="(triple, idx) in includedTriples">
-        <div
+        <!-- <div
           class="badge first"
           :style="{ backgroundColor: PROMPT_MAP[triple.prompt]?.hexColor }">
           {{ triple.prompt }}
-        </div>
+        </div> -->
         <div
           class="badge center"
           :style="{ backgroundColor: MODEL_META_MAP[triple.model].hexColor }">
@@ -316,8 +316,8 @@
   </div>
 </template>
 <script>
-// import parsedBatch from "../data/pics-dummy.json";
-import parsedBatch from "../data/pics-parsed.json";
+import parsedBatch from "../data/pics-dummy.json";
+// import parsedBatch from "../data/pics-parsed.json";
 import { CATEGORY_MAP, MODEL_META_MAP, PROMPT_MAP } from "../maps";
 
 console.log("ratingBook hit");
@@ -394,16 +394,16 @@ export default {
       let images = this.batch;
 
       if (this.currentMode === "triples") {
-        images = [];
-        this.includedTriples.forEach((triple) => {
-          const filteredTriple = this.batch.filter(
-            (image) =>
-              image.category === triple.category &&
-              image.prompt === triple.prompt &&
-              image.model === triple.model
-          );
-          images = images.concat(filteredTriple);
-        });
+        // images = [];
+        // this.includedTriples.forEach((triple) => {
+        //   const filteredTriple = this.batch.filter(
+        //     (image) =>
+        //       image.category === triple.category &&
+        //       image.prompt === triple.prompt &&
+        //       image.model === triple.model
+        //   );
+        //   images = images.concat(filteredTriple);
+        // });
       }
 
       if (this.selectedRating !== "") {
@@ -442,6 +442,22 @@ export default {
         images = images.filter((image) => !image.isIpa);
       }
 
+      // run here so images isn't purged of other model content
+      let tripleImgs = [];
+      if (this.currentMode === "triples") {
+        // find all images that match the triples (ignore prompt for now)
+        this.includedTriples.forEach((triple) => {
+          const t = images.filter(
+            (image) =>
+              image.category === triple.category &&
+              // image.prompt === triple.prompt &&
+              image.model === triple.model
+          );
+          tripleImgs = tripleImgs.concat(t);
+        });
+        console.log("found for triples:", tripleImgs.length);
+      }
+
       if (this.selectedInputCategory !== "") {
         images = images.filter((image) =>
           image.inputImage.includes(this.selectedInputCategory)
@@ -458,12 +474,32 @@ export default {
       if (this.selectedPrompt !== "") {
         images = images.filter((image) => image.prompt == this.selectedPrompt);
       }
+
+      if (this.currentMode === "triples") {
+        // remove other matching triples
+        // console.log("before triples filter:", images.length);
+        this.includedTriples.forEach((triple) => {
+          images = images.filter(
+            (image) =>
+              image.category !== triple.category &&
+              // image.prompt === triple.prompt &&
+              image.model !== triple.model
+          );
+        });
+        // console.log("after triples filter:", images.length);
+
+        // add in selected triples
+        images = images.concat(tripleImgs);
+        // console.log("after triples add:", images.length);
+      }
+
       this.filteredImagesPool = images;
       let sorted = images.sort((a, b) =>
         a[this.selectedSorting] > b[this.selectedSorting]
           ? -this.sortDir
           : this.sortDir
       );
+
       if (this.currentMode === "random" || this.currentMode === "triples") {
         if (this.isWeighted) {
           sorted = this.getRandomWeightedElements(
@@ -519,10 +555,10 @@ export default {
     getRandomWeightedElements(arr, n) {
       let selection = [];
       for (const category in this.category_map) {
-        console.log(`${category}: ${this.category_map[category].weight}`);
+        // console.log(`${category}: ${this.category_map[category].weight}`);
         const cat = this.category_map[category];
         const categoryImageCount = Math.floor(n * cat.weight);
-        console.log("trying to get:", categoryImageCount);
+        // console.log("trying to get:", categoryImageCount);
 
         const pool = arr.filter((image) => image.category === category);
         if (pool.length < 1) {
@@ -543,7 +579,7 @@ export default {
           singleInputPool,
           Math.min(singleInputPool.length, categoryImageCount)
         );
-        console.log("got:", pulledImages.length);
+        // console.log("got:", pulledImages.length);
 
         if (this.forceWeights && pulledImages.length < categoryImageCount) {
           while (pulledImages.length < categoryImageCount) {
@@ -1107,10 +1143,6 @@ button {
 .card-action:hover {
   opacity: 0.75;
 }
-.triples-bar {
-  visibility: hidden;
-}
-
 .card-header .badge,
 .triples-bar .badge {
   display: flex;
@@ -1121,6 +1153,7 @@ button {
   padding: 0 0.5rem;
   font-size: 0.5rem;
   border-radius: 10px;
+  border-radius: 0;
   margin-right: 4px;
   cursor: pointer;
   color: white;
@@ -1154,13 +1187,13 @@ button {
 
 .triples-bar {
   position: fixed;
-  bottom: 3rem;
+  top: 3rem;
   left: 0;
   width: 100%;
   background-color: rgba(0, 0, 0, 0.25);
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  /* justify-content: center; */
 }
 .triples-bar .badge {
   margin-right: 0;
