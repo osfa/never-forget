@@ -1,6 +1,8 @@
 <template>
   <div tabindex="-1" @keyup="keyListener">
-    <WeightingBar :available-categories="availableCategories" />
+    <WeightingBar
+      :category-map="category_map"
+      @updateCategoryWeight="updateCategoryWeight" />
     <div v-show="showControls" class="controls">
       <div class="controls-inner">
         <div class="left">
@@ -314,8 +316,8 @@
   </div>
 </template>
 <script>
-import parsedBatch from "../data/pics-dummy.json";
-// import parsedBatch from "../data/pics-parsed.json";
+// import parsedBatch from "../data/pics-dummy.json";
+import parsedBatch from "../data/pics-parsed.json";
 import { CATEGORY_MAP, MODEL_META_MAP, PROMPT_MAP } from "../maps";
 
 console.log("ratingBook hit");
@@ -497,6 +499,15 @@ export default {
         taken[x] = --len in taken ? taken[len] : len;
       }
       return result;
+    },
+    updateCategoryWeight(category, newWeight) {
+      console.log("updatinng map:", category, newWeight);
+      this.category_map[category].weight = newWeight;
+      // for (const category in this.category_map) {
+      //   const cat = this.category_map[category];
+      //   // cat.weight = cat.count / cat.inputs;
+      //   cat.weight = update_map[category].weight;
+      // }
     },
     shuffle(array) {
       for (let i = array.length - 1; i > 0; i--) {

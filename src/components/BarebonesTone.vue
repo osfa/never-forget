@@ -34,7 +34,7 @@ export default {
       baseVolume: -6,
       // narrationVolume: -9,
       // narrationVolume: -3,
-      narrationVolume: 3,
+      narrationVolume: -9,
       narrationVolumeMin: -32,
 
       noiseMaker: null,
@@ -324,6 +324,7 @@ export default {
 
   width: 100vw;
   height: 96vh;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -335,11 +336,16 @@ export default {
   background-color: black;
   background-color: rgba(0, 0, 0, 0.75);
   background-color: rgba(255, 255, 255, 0.75);
+  background-color: rgba(255, 255, 255, 1);
+  background-color: rgba(0, 255, 0, 1);
 
   /* background-color: transparent; */
-  padding: 1rem;
-  width: 1rem;
-  height: auto;
+  /* padding: 1rem 0; */
+
+  width: 3vw;
+
+  height: 15vh;
+
   font-size: 1.5rem;
 
   left: auto;
@@ -348,7 +354,15 @@ export default {
   /* padding-right: 20px; */
   /* line-height: 1rem; */
 }
+@media (orientation: portrait) {
+  .btn-audio.hasInit {
+    width: 4vw;
+    font-size: 0.5rem;
+  }
+}
 .btn-audio.isPlaying {
   background-color: rgba(255, 255, 255, 0.75);
+  background-color: rgba(255, 255, 255, 1);
+  /* background-color: rgba(0, 0, 0, 1); */
 }
 </style>

@@ -4,6 +4,26 @@
       id="overlay"
       :style="{ backgroundSize: `${Math.min(currentZoom * 25, 35)}%` }"></div>
     <!-- <img id="overlay" src="/grid2.svg" :style="{ scale: `${currentZoom * 150}%` }" /> -->
+    <!-- <div id="scroller">
+      <div class="marquee enable-animation marquee--fit-content">
+        <ul class="marquee__content">
+          <li>
+            This is the story of a man, marked by an image of his childhood. The
+            violent scene that upsets him, and whose meaning he was to grasp
+            only years later happened on the main jetty at Dulles, the
+            Washington DC airport sometime before, the outbreak of war.
+          </li>
+        </ul>
+        <ul class="marquee__content" aria-hidden="true">
+          <li>
+            This is the story of a man, marked by an image of his childhood. The
+            violent scene that upsets him, and whose meaning he was to grasp
+            only years later happened on the main jetty at Dulles, the
+            Washington DC airport sometime before, the outbreak of war.
+          </li>
+        </ul>
+      </div>
+    </div> -->
     <div id="action-bar-top">
       <div
         id="info"
@@ -37,7 +57,7 @@
         >Instagram</a
       >
     </div>
-    <div v-if="false" id="filter-bar">
+    <div id="filter-bar">
       <div
         v-for="(model, idx) in Object.keys(MODEL_META_MAP).slice(0, 7)"
         class="btn-layer"
@@ -70,6 +90,7 @@ const ZOOM_COLORS = [
   "#666",
   "#999",
   "#ccc",
+  "#eee",
   "#fff",
 ];
 // const ZOOM_COLORS = ["#000", "#333", "#fff"];
@@ -90,11 +111,14 @@ export default {
       // zoom
       currentZoom: 0.2,
       selectedZoomLevelIdx: 0,
-      zoomLevels: [1, 2, 4, 8, 16, 32],
+      zoomLevels: [2, 4, 6, 8, 12, 16, 18, 24],
       startZoom: 1,
       minZoom: 1, // how far you can zoom out, the smaller the more
       maxZoom: 28, // how far you can zoom in, the higher the more
 
+      driftStep: 0.05,
+      currentDirectionX: 0,
+      currentDirectionY: -1,
       // dev mode
       favorites: [],
       devMode: true,
@@ -120,6 +144,8 @@ export default {
         this.selectedZoomLevelIdx,
         this.zoomLevels[this.selectedZoomLevelIdx]
       );
+      // doesnt center?
+      // need to take viewport width in account somehow?
       this.viewer.viewport.zoomTo(this.zoomLevels[this.selectedZoomLevelIdx]);
       // this.viewer.viewport.zoomBy(this.zoomPerScroll);
     },
@@ -205,13 +231,40 @@ export default {
       this.viewer.viewport.defaultZoomLevel = z;
       this.viewer.goToPage(this.idx % this.viewer.tileSources.length);
     },
+    triggerPan(event) {
+      console.log("triggerPan", event.delta);
+      if (Math.abs(event.delta.x) > Math.abs(event.delta.y)) {
+        this.currentDirectionX = event.delta.x > 0 ? 1 : -1;
+        this.currentDirectionY = 0;
+      } else {
+        this.currentDirectionX = 0;
+        this.currentDirectionY = event.delta.y > 0 ? 1 : -1;
+      }
+      const move = new OpenSeadragon.Point(
+        this.driftStep * this.currentDirectionX * (1 / this.currentZoom),
+        this.driftStep * this.currentDirectionY * (1 / this.currentZoom)
+      );
+      this.viewer.viewport.panBy(move);
+    },
+    panDown() {
+      const dirX = 0;
+      const dirY = -1;
+      const move = new OpenSeadragon.Point(
+        this.driftStep * dirX,
+        this.driftStep * dirY
+      );
+      this.viewer.viewport.panBy(move);
+    },
     setPlateFilter(model) {
       this.selectedModel = model;
       // this.idx += 1;
       // const z = this.viewer.viewport.getZoom();
       // this.viewer.viewport.defaultZoomLevel = z;
       // this.viewer.goToPage(this.idx % this.viewer.tileSources.length);
-      this.viewer.viewport.panTo(this.randomCoord());
+      // this.viewer.viewport.panTo(this.randomCoord());
+
+      // adjust based on zoom?
+      this.panDown();
     },
     initViewer() {
       console.log(
@@ -245,13 +298,25 @@ export default {
         // placeholderFillStyle : draw grid if not loaded?
         showNavigator: false,
         showRotationControl: false,
-        animationTime: 1,
-        blendTime: 0.1,
+        // animationTime: 1.5,
+        // animationTime: 1.2,
+        animationTime: 0.5,
+        // animationTime: 0.25,
+        // animationTime: 0.1,
+        // springStiffness: 6.5 ,
+        // springStiffness: 0.25,
+        // springStiffness: 10,
+        springStiffness: 0.1,
+        // blendTime: 0.1,
+        blendTime: 1,
+        // alwaysBlend: true,
         showNavigationControl: false,
-        visibilityRatio: 1, // dont allow bigger than image
+        // visibilityRatio: 1, // dont allow bigger than image
+        visibilityRatio: 2, // dont allow bigger than image
         constrainDuringPan: false, // prevents bounceback anim
         autoResize: true,
         zoomPerScroll: 2,
+        // zoomPerClick: 2,
         defaultZoomLevel: this.startZoom,
         minZoomLevel: this.minZoom,
         // maxZoomLevel: this.maxZoom,
@@ -260,9 +325,13 @@ export default {
         wrapHorizontal: this.wrap,
         wrapVertical: this.wrap,
         scrollToZoom: false,
+        panHorizontal: false,
+        panVertical: false,
       });
 
       this.viewer.gestureSettingsMouse.clickToZoom = false;
+      this.viewer.gestureSettingsMouse.scrollToZoom = false;
+      this.viewer.gestureSettingsMouse.dragToPan = false;
 
       this.viewer.addHandler("open", () => {
         // const homeZoom = this.viewer.viewport.getHomeZoom();
@@ -277,6 +346,27 @@ export default {
         });
       });
 
+      this.viewer.addHandler("canvas-drag", (event) => {
+        // console.log("canvas-drag", event);
+        event.preventDefault = false;
+        event.preventDefaultAction = false;
+        this.triggerPan(event);
+      });
+
+      // this.viewer.addHandler("canvas-drag-end", (event) => {
+      //   // console.log("canvas-drag", event);
+      //   event.preventDefault = false;
+      //   event.preventDefaultAction = false;
+      //   this.triggerPan(event);
+      // });
+
+      // this.viewer.addHandler("pan", (event) => {
+      //   console.log("pan", event);
+      //   this.doPan();
+      //   // this.viewer.viewport.panTo(this.randomCoord());
+      //   // this.viewer.viewport.panTo(this.viewer.viewport.getCenter());
+      // });
+
       this.viewer.addHandler("canvas-scroll", (event) => {
         event.preventDefault = false;
         this.triggerZoom(event);
@@ -286,6 +376,11 @@ export default {
         this.infoOpen = false;
         if (!event.quick) {
           return;
+        }
+
+        if (this.selectedZoomLevelIdx < this.zoomLevels.length - 1) {
+          // zoom in
+          this.selectedZoomLevelIdx += 1;
         }
 
         console.log(
@@ -326,10 +421,17 @@ export default {
 html,
 body,
 #viewer-image {
-  height: 96vh;
+  height: 98vh;
   width: 100%;
+  /* width: 97vw;
+  padding: 0 0.75vw; */
+  /* background-color: white; */
 }
-
+#viewer-image {
+  margin-top: 2vh;
+  width: 97vw;
+  padding: 0 3vw;
+}
 #overlay {
   position: fixed;
   top: 0;
@@ -355,29 +457,34 @@ body,
   top: 0;
   height: 100vh;
   display: flex;
-  justify-content: center;
+  /* justify-content: center; */
   align-items: center;
   z-index: 2000;
   flex-direction: column;
 }
 
 .btn-zoom {
-  padding: 2rem;
+  /* padding: 2rem; */
   background-color: #333;
-  opacity: 0.75;
+  /* opacity: 0.75; */
   cursor: pointer;
+  width: 3vw;
+  box-sizing: border-box;
+
+  height: 12.5vh;
 }
 
 .btn-zoom.active {
   opacity: 1;
-  border: 0.1px solid white;
+  border: 0.5px solid white;
+  border: 1px dotted white;
 }
 
 #filter-bar {
   position: fixed;
   right: 0;
-  top: 0;
-  height: 100vh;
+  top: 12vh;
+  height: 92vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -386,15 +493,18 @@ body,
 }
 
 .btn-layer {
-  padding: 2rem;
+  /* padding: 2rem; */
+  width: 3vw;
+  height: 12.5vh;
   background-color: #333;
-  opacity: 0.5;
+  /* opacity: 0.5; */
   cursor: pointer;
 }
 
 .btn-layer.active {
   opacity: 1;
   border: 0.1px solid white;
+  border: 1px dashed white;
   box-sizing: border-box;
 }
 .layer-1 {
@@ -410,25 +520,32 @@ body,
 @media (orientation: portrait) {
   .btn-layer,
   .btn-zoom {
-    padding: 1.5rem;
+    width: 4vw;
+  }
+  #viewer-image {
+    width: 94vw;
+    padding: 0 4vw;
   }
 }
+
 #social-media-bar {
   width: 100vw;
   position: fixed;
-  bottom: 0;
+  /* bottom: 0; */
+  top: 0;
   left: 0;
   z-index: 2000;
   display: flex;
   justify-content: space-evenly;
+  align-items: center;
   font-family: Papyrus, fantasy;
-  font-size: 0.8rem;
-  height: 4vh;
+  font-size: 0.5rem;
+  height: 2vh;
 }
 
 #social-media-bar a {
   display: block;
-  padding: 0.5rem 2rem;
+  padding: 0.25rem 2rem;
   text-decoration: none;
   flex: 1;
   text-align: center;
@@ -460,6 +577,100 @@ body,
   background-color: rgba(255, 0, 80, 0.8);
   background-color: rgba(255, 0, 80, 1);
   color: black;
+}
+
+#scroller {
+  z-index: 4000;
+  position: absolute;
+  bottom: 10vh;
+  font-size: 2rem;
+}
+
+.marquee {
+  color: black;
+  color: #ff0;
+  --gap: 1rem;
+  position: relative;
+  display: flex;
+  overflow: hidden;
+  user-select: none;
+  gap: var(--gap);
+  text-shadow: #fff 0 0 2px;
+  text-shadow: #ff0 0 0 2px;
+  /* text-shadow: #ff0 0 0 1px;
+  text-shadow: #fff 0 0 2px; */
+  font-family: Papyrus, fantasy;
+}
+
+.marquee__content {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-around;
+  gap: var(--gap);
+  min-width: 100%;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.marquee__content li {
+  list-style: none;
+  /* max-width: 30vw; */
+}
+
+@keyframes scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-100% - var(--gap)));
+  }
+}
+
+/* Pause animation when reduced-motion is set */
+@media (prefers-reduced-motion: reduce) {
+  .marquee__content {
+    animation-play-state: paused !important;
+  }
+}
+
+/* Enable animation */
+.enable-animation .marquee__content {
+  animation: scroll 180s linear infinite;
+}
+
+/* Reverse animation */
+.marquee--reverse .marquee__content {
+  animation-direction: reverse;
+}
+
+/* Pause on hover */
+.marquee--hover-pause:hover .marquee__content {
+  animation-play-state: paused;
+}
+
+/* Attempt to size parent based on content. Keep in mind that the parent width is equal to both content containers that stretch to fill the parent. */
+.marquee--fit-content {
+  max-width: fit-content;
+}
+
+/* A fit-content sizing fix: Absolute position the duplicate container. This will set the size of the parent wrapper to a single child container. Shout out to Olavi's article that had this solution 👏 @link: https://olavihaapala.fi/2021/02/23/modern-marquee.html  */
+.marquee--pos-absolute .marquee__content:last-child {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* Enable position absolute animation on the duplicate content (last-child) */
+.enable-animation .marquee--pos-absolute .marquee__content:last-child {
+  animation-name: scroll-abs;
+}
+
+@keyframes scroll-abs {
+  from {
+    transform: translateX(calc(100% + var(--gap)));
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 </style>
 

@@ -12,6 +12,7 @@ dist
 dist-ssr
 *.local
 
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -26,6 +27,6 @@ dist-ssr
 # Local Netlify folder
 .netlify
 public/NF-03-5
-public/dzi/ignore
+public/dzi/_local
 src/data/pics-parsed.json
 src/data/pics-versioned.json

@@ -1,34 +1,52 @@
 <template>
   <div>
-    <div class="weights">
+    <div class="weights" @dblclick="isEditingMap = !isEditingMap">
       <div
         class="weight"
-        v-for="category in availableCategories"
+        v-for="category in Object.keys(categoryMap)"
         :key="category"
         :value="category"
-        :style="{ backgroundColor: CATEGORY_MAP[category]?.hexColor, width: `${CATEGORY_MAP[category]?.weight * 100}vw` }">
+        :style="{
+          backgroundColor: categoryMap[category]?.hexColor,
+          width: `${categoryMap[category]?.weight * 100}vw`,
+        }">
         {{ category }}
+        <input
+          v-show="isEditingMap"
+          type="number"
+          step="0.01"
+          min="0.0001"
+          :id="category"
+          @change="updateCategoryWeight(category, $event)"
+          :value="categoryMap[category].weight" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { CATEGORY_MAP } from "../maps";
-
 export default {
   props: {
-    availableCategories: Array,
+    categoryMap: Object,
   },
   data() {
     return {
-      CATEGORY_MAP,
+      isEditingMap: false,
     };
+  },
+  methods: {
+    updateCategoryWeight(category, event) {
+      console.log(category, event);
+      this.$emit("updateCategoryWeight", category, event.target.value);
+    },
   },
 };
 </script>
 
 <style scoped>
+input {
+  width: 50px;
+}
 .weights {
   position: fixed;
   top: 2rem;
