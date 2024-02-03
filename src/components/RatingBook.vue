@@ -7,24 +7,33 @@
       <div class="controls-inner">
         <div class="left">
           <div class="pills">
-            <select
-              @click.shift="setSortOrder('model')"
-              required
-              name="selectedModel"
-              id="selectedModel"
-              v-model="selectedModel"
-              :class="{ active: selectedSorting === 'model' }"
-              :style="{
-                backgroundColor: MODEL_META_MAP[selectedModel]?.hexColor,
-              }">
-              <option value="">All Models</option>
-              <option
-                v-for="model in availableModels"
-                :key="model"
-                :value="model">
-                {{ MODEL_META_MAP[model].friendlyName }}
-              </option>
-            </select>
+            <multiselect
+              v-model="filterModels"
+              :options="availableModels"
+              :multiple="true"
+              :searchable="true"
+              :close-on-select="false"
+              :clear-on-select="false"
+              :preselect-first="true">
+              <template slot="selection" slot-scope="{ values, search, isOpen }"
+                ><span
+                  class="multiselect__single"
+                  v-if="values.length"
+                  v-show="!isOpen"
+                  >{{ values.length }} models selected</span
+                >
+              </template>
+              <template slot="option" slot-scope="props">
+                <div
+                  class="option__desc"
+                  :style="{
+                    backgroundColor: MODEL_META_MAP[props.option]?.hexColor,
+                  }">
+                  <span class="option__title">{{ props.option }}</span>
+                </div>
+              </template>
+            </multiselect>
+
             <select
               required
               name="selectedPrompt"
@@ -100,12 +109,13 @@
             name="selectedSort"
             id="selectedSort"
             v-model="selectedSorting">
-            <option value="inputImage">Input Image</option>
+            <option value="inputImage">Input</option>
             <option value="model">Model</option>
             <option value="prompt">Prompt</option>
             <option value="rating">Rating</option>
+            <option value="ts">Created</option>
           </select>
-          <select
+          <!-- <select
             required
             name="imageQuality"
             id="imageQuality"
@@ -113,18 +123,18 @@
             <option value="1pass">1pass</option>
             <option value="2pass">2pass</option>
             <option value="fried">fried</option>
-          </select>
-          <select required name="ipaFilter" id="ipaFilter" v-model="ipaFilter">
+          </select> -->
+          <!-- <select required name="ipaFilter" id="ipaFilter" v-model="ipaFilter">
             <option value="all">all</option>
             <option value="ipa_only">ipa_only</option>
             <option value="no_ipa">no_ipa</option>
-          </select>
+          </select> -->
           <button @click="isWeighted = !isWeighted">
             {{ isWeighted ? "weighted" : "linear" }}
           </button>
-          <button @click="forceWeights = !forceWeights">
+          <!-- <button @click="forceWeights = !forceWeights">
             {{ forceWeights ? "T" : "-" }}
-          </button>
+          </button> -->
 
           <button @click="dumpFiles">DUMP</button>
         </div>
@@ -234,7 +244,7 @@
         </div>
       </div>
     </div>
-    <div class="triples-bar">
+    <div v-show="currentMode === 'triples'" class="triples-bar">
       <div
         @dblclick="tripleDelete(idx)"
         class="triple"
@@ -326,6 +336,7 @@ export default {
   components: {
     ImageCard: () => import("./ImageCard.vue"),
     WeightingBar: () => import("./WeightingBar.vue"),
+    Multiselect: () => import("vue-multiselect"),
   },
   data() {
     return {
@@ -365,11 +376,21 @@ export default {
       availableModels: [],
       availableInputs: [],
       availablePrompts: [],
+      availableSupportPrompts: [],
       availableCategories: Object.keys(CATEGORY_MAP),
       sortDir: 1,
       MODEL_META_MAP,
       PROMPT_MAP,
       category_map: CATEGORY_MAP,
+
+      // ##
+      filterModels: null,
+      filterModelsOptions: Object.keys(MODEL_META_MAP),
+
+      filterPrompts: null,
+      filterCategories: null,
+      filterRatings: null,
+      filterInputs: null,
     };
   },
   computed: {
@@ -463,8 +484,13 @@ export default {
           image.inputImage.includes(this.selectedInputCategory)
         );
       }
-      if (this.selectedModel !== "") {
-        images = images.filter((image) => image.model == this.selectedModel);
+      // if (this.selectedModel !== "") {
+      //   images = images.filter((image) => image.model == this.selectedModel);
+      // }
+      if (this.filterModels && this.filterModels.length > 0) {
+        images = images.filter((image) =>
+          this.filterModels.includes(image.model)
+        );
       }
       if (this.selectedInputImage !== "") {
         images = images.filter(
@@ -933,6 +959,7 @@ export default {
     const parseResult = parsedBatch;
     this.batch = parseResult.imageObjs;
     console.log(parseResult);
+    console.log(parseResult.imageObjs[0]);
 
     this.availableModels = parseResult.availableModels;
     this.availableInputs = parseResult.availableInputs;
@@ -984,6 +1011,7 @@ export default {
   },
 };
 </script>
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 <style>
 .selected .meta-bar {
   visibility: visible;

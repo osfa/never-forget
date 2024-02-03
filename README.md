@@ -1,22 +1,26 @@
-# - fix map updater opt...
+- s3 setup
 
-- and triples feature in builder?
-  - allow 2 and 3?
-  - clean CSS and shit ffs.
+  - purge repo
+  - upload main pool?
+  - db setup?
+  - upload feels as well?
 
-## queue
+- filter bar right : own compoennt
+- triple right: own compoennt
+- image card header in imagecard copmponent?
 
-## promme
+- sup prompt sort...
+- additive filter? multi select?
+- cursor jump for inputs? or multiselect there as well?
+
+- chk notion..
+
+- memorial/bts category cleanup!!!
 
 ---
 
 - swap for betyter audios..
-
-- chk notion..
-
 - ollama describe images? quick lllm api hookup? keys how?
-
-- bunch guis?
 
 --
 

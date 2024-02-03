@@ -27,12 +27,15 @@ const CATEGORY_MAP = {
   // 90%
 };
 
-const parsePathCrawl = (path_array, category_map) => {
+const parsePathCrawl = (path_object_array, category_map) => {
+  // const path_array = path_object.map
   const availableModelsAll = [];
   const availableInputsAll = [];
   const availablePromptsAll = [];
 
-  const imageObjs = path_array.map((imgPath) => {
+  const imageObjs = path_object_array.map((path_ts_tuple) => {
+    let imgPath = path_ts_tuple["path"];
+
     const srcFried = imgPath.replace(
       "/Users/jbe/Dropbox/stabdiff-ui-v2/comfyui-outs/_NF/",
       ""
@@ -149,6 +152,7 @@ const parsePathCrawl = (path_array, category_map) => {
       inputImage,
       prompt,
       rating: null,
+      ts: path_ts_tuple["ts"],
     };
   });
 
@@ -175,7 +179,8 @@ const parsePathCrawl = (path_array, category_map) => {
   };
 };
 
-const allImgs = require("/Users/jbe/static-sites/never-forget-vite-vue2/src/data/pics-versioned.json");
+// const allImgs = require("/Users/jbe/static-sites/never-forget-vite-vue2/src/data/pics-versioned.json");
+const allImgs = require("/Users/jbe/static-sites/never-forget-vite-vue2/src/data/pics-versioned-ts.json");
 
 const parseResult = parsePathCrawl(allImgs, CATEGORY_MAP);
 var json = JSON.stringify(parseResult);

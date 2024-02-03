@@ -68,7 +68,7 @@ export const CATEGORY_MAP = {
   911: { hexColor: "#b8b1a6", weight: 0.075 },
   bts: { hexColor: "#e238f2", weight: 0.025 },
   // 70%
-  memorial: { hexColor: "#b8b1a6", weight: 0.05 },
+  memorial: { hexColor: "#000000", weight: 0.05 },
   otg: { hexColor: "#176017", weight: 0.05 },
   // 80%
   "ava-game": { hexColor: "#0000ff", weight: 0.05 },

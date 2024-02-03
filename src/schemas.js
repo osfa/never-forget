@@ -78,7 +78,8 @@ const ANIVERSE1 = {
     const randomModel = models[Math.floor(Math.random() * models.length)];
     // http://localhost:3000/dzi/aniverse-v1.0_files/12/10_4.jpeg
     // http://localhost:3000/dzi/
-    return `https://remember.matrix.surf//dzi/${randomModel}_files/${level}/${x}_${y}.jpeg`;
+    return `http://jpeg.matrix.surf/dzi/${randomModel}_files/${level}/${x}_${y}.jpeg`;
+    return `https://remember.matrix.surf/dzi/${randomModel}_files/${level}/${x}_${y}.jpeg`;
     return `http://localhost:3000/dzi/${randomModel}_files/${level}/${x}_${y}.jpeg`;
 
     return (
