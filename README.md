@@ -1,12 +1,14 @@
 - s3 setup
 
-  - purge repo
-  - upload main pool?
+  - upload main pool? rsync fun etc..
   - db setup?
   - upload feels as well?
 
-- filter bar right : own compoennt
-- triple right: own compoennt
+- split and clean 911s? categories etc??
+
+- filter bar right : make new own component
+- triple right: own components? or put in above?
+
 - image card header in imagecard copmponent?
 
 - sup prompt sort...
