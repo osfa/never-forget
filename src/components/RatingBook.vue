@@ -3,102 +3,28 @@
     <WeightingBar
       :category-map="category_map"
       @updateCategoryWeight="updateCategoryWeight" />
+
+    <FilterBar
+      v-if="hasInit"
+      :category-map="category_map"
+      :available-inputs="availableInputs"
+      :filter-models-options="['All', ...availableModels]"
+      :filter-prompts-options="['All', ...availablePrompts]"
+      :filter-support-prompts-options="['All', ...availableSupportPrompts]"
+      :filter-categories-options="['All', ...availableCategories]"
+      :display-triples="currentMode === 'triples'"
+      :display-filter="showFilter"
+      :includedTriples="includedTriples"
+      @update-filter-models="(value) => (filterModels = value)"
+      @update-filter-prompts="(value) => (filterPrompts = value)"
+      @update-filter-support-prompts="(value) => (filterSupportPrompts = value)"
+      @update-filter-categories="(value) => (filterCategories = value)"
+      @update-filter-ratings="(value) => (filterRatings = value)"
+      @update-filter-inputs="(value) => (filterInputs = value)"
+      @tripleDelete="tripleDelete" />
+
     <div v-show="showControls" class="controls">
       <div class="controls-inner">
-        <div class="left">
-          <div class="pills">
-            <multiselect
-              v-model="filterModels"
-              :options="availableModels"
-              :multiple="true"
-              :searchable="true"
-              :close-on-select="false"
-              :clear-on-select="false"
-              :preselect-first="true">
-              <template slot="selection" slot-scope="{ values, search, isOpen }"
-                ><span
-                  class="multiselect__single"
-                  v-if="values.length"
-                  v-show="!isOpen"
-                  >{{ values.length }} models selected</span
-                >
-              </template>
-              <template slot="option" slot-scope="props">
-                <div
-                  class="option__desc"
-                  :style="{
-                    backgroundColor: MODEL_META_MAP[props.option]?.hexColor,
-                  }">
-                  <span class="option__title">{{ props.option }}</span>
-                </div>
-              </template>
-            </multiselect>
-
-            <select
-              required
-              name="selectedPrompt"
-              id="selectedPrompt"
-              v-model="selectedPrompt"
-              :style="{
-                backgroundColor: PROMPT_MAP[selectedPrompt]?.hexColor,
-              }">
-              <option value="">All Prompts</option>
-              <option
-                v-for="prompt in availablePrompts"
-                :key="prompt"
-                :value="prompt">
-                {{ prompt }}
-              </option>
-            </select>
-          </div>
-        </div>
-        <div class="center">
-          <select
-            required
-            name="selectedInputCategory"
-            id="selectedInputCategory"
-            v-model="selectedInputCategory"
-            :style="{
-              backgroundColor: category_map[selectedInputCategory]?.hexColor,
-            }">
-            <option value="">All Categories</option>
-            <option
-              v-for="input in availableCategories"
-              :key="input"
-              :value="input">
-              {{ input }} ({{ category_map[input][selectedModel]?.count }} /
-              {{ category_map[input][selectedModel]?.inputs }} unique)
-            </option>
-          </select>
-
-          <select
-            required
-            name="selectedInputImage"
-            id="selectedInputImage"
-            v-model="selectedInputImage">
-            <option value="">All Input Images</option>
-            <option v-for="input in inputImgs" :key="input" :value="input">
-              {{ input }}
-            </option>
-          </select>
-
-          <select
-            required
-            name="selectedRating"
-            id="selectedRating"
-            v-model="selectedRating"
-            :class="{ active: selectedSorting === 'rating' }">
-            <option value="">All</option>
-            <option value="rated">Rated</option>
-            <option value="unrated">Unrated</option>
-            <option value="good">Unrated and 4-5</option>
-            <option value="excellent">4-5</option>
-            <option value="bad">{{ "=< 3" }}</option>
-            <option v-for="n in 5" :key="n" :value="n">
-              {{ n }}
-            </option>
-          </select>
-        </div>
         <div>
           <button @click="sortDir = sortDir === -1 ? 1 : -1">
             {{ sortDir === -1 ? "sort down" : "sort up" }}
@@ -115,28 +41,20 @@
             <option value="rating">Rating</option>
             <option value="ts">Created</option>
           </select>
-          <!-- <select
-            required
-            name="imageQuality"
-            id="imageQuality"
-            v-model="imageQuality">
-            <option value="1pass">1pass</option>
-            <option value="2pass">2pass</option>
-            <option value="fried">fried</option>
-          </select> -->
+
           <!-- <select required name="ipaFilter" id="ipaFilter" v-model="ipaFilter">
             <option value="all">all</option>
             <option value="ipa_only">ipa_only</option>
             <option value="no_ipa">no_ipa</option>
           </select> -->
-          <button @click="isWeighted = !isWeighted">
-            {{ isWeighted ? "weighted" : "linear" }}
-          </button>
-          <!-- <button @click="forceWeights = !forceWeights">
-            {{ forceWeights ? "T" : "-" }}
-          </button> -->
 
-          <button @click="dumpFiles">DUMP</button>
+          <button @click="showFilter = !showFilter">🛠️</button>
+
+          <button @click="isWeighted = !isWeighted">
+            {{ isWeighted ? "💪" : "📈" }}
+          </button>
+
+          <button @click="dumpFiles">📦</button>
         </div>
       </div>
     </div>
@@ -198,7 +116,6 @@
             <div class="left">
               <div
                 class="badge"
-                @click="filterModel(image.model)"
                 :style="{
                   backgroundColor: MODEL_META_MAP[image.model].hexColor,
                 }">
@@ -206,7 +123,6 @@
               </div>
               <div
                 class="badge"
-                @click="filterPrompt(image.prompt)"
                 :style="{ backgroundColor: PROMPT_MAP[image.prompt].hexColor }">
                 {{ image.prompt }}
               </div>
@@ -216,7 +132,6 @@
               </div>
               <div
                 class="badge"
-                @click="filterInput(image.inputImage)"
                 :style="{
                   backgroundColor: category_map[image.category]?.hexColor,
                 }">
@@ -244,28 +159,7 @@
         </div>
       </div>
     </div>
-    <div v-show="currentMode === 'triples'" class="triples-bar">
-      <div
-        @dblclick="tripleDelete(idx)"
-        class="triple"
-        v-for="(triple, idx) in includedTriples">
-        <!-- <div
-          class="badge first"
-          :style="{ backgroundColor: PROMPT_MAP[triple.prompt]?.hexColor }">
-          {{ triple.prompt }}
-        </div> -->
-        <div
-          class="badge center"
-          :style="{ backgroundColor: MODEL_META_MAP[triple.model].hexColor }">
-          {{ MODEL_META_MAP[triple.model].friendlyName }}
-        </div>
-        <div
-          class="badge last"
-          :style="{ backgroundColor: category_map[triple.category]?.hexColor }">
-          {{ triple.category }}
-        </div>
-      </div>
-    </div>
+    <!-- INSERT FILTERS BAR  -->
     <footer>
       <div class="grid-settings"></div>
       <div class="paging">
@@ -326,9 +220,15 @@
   </div>
 </template>
 <script>
-import parsedBatch from "../data/pics-dummy.json";
-// import parsedBatch from "../data/pics-parsed.json";
+// import parsedBatch from "../data/pics-dummy.json";
+import parsedBatch from "../data/pics-parsed.json";
+// import parsedBatch from "../data/pics-parsed-tiny.json";
 import { CATEGORY_MAP, MODEL_META_MAP, PROMPT_MAP } from "../maps";
+// import {
+//   openDatabase,
+//   fetchDataFromDatabase,
+//   insertDataIntoDatabase,
+// } from "../dbInterface.js";
 
 console.log("ratingBook hit");
 
@@ -336,16 +236,23 @@ export default {
   components: {
     ImageCard: () => import("./ImageCard.vue"),
     WeightingBar: () => import("./WeightingBar.vue"),
+    FilterBar: () => import("./FilterBar.vue"),
     Multiselect: () => import("vue-multiselect"),
   },
   data() {
     return {
-      db: null,
-      imageCover: true,
+      hasInit: false,
+      debug: true,
+      batch: [],
+
       modelCursor: 0,
       promptCursor: 0,
       inputCursor: 0,
+      // ##
+
       showMeta: true,
+      showFilter: true,
+      imageCover: true,
       isVertical: false,
       currentMode: "sequence",
       isWeighted: true,
@@ -353,31 +260,34 @@ export default {
       gridSize: "3",
       lightBoxed: null,
       imageQuality: "fried",
-      ipaFilter: "no_ipa",
-      debug: true,
-      batch: [],
+      ipaFilter: "all",
+
       cursorPosition: 0,
       selectedImages: [],
       viewportImages: [],
       filteredImages: [],
       filteredImagesPool: [],
+      // ##
       blackList: [],
       ratedImages: [],
+      // ##
       includedTriples: [],
+      // ##
       currentPage: 1,
       imgPerPage: 128,
       isLoading: false,
+      // ##
+
       selectedSorting: "inputImage",
-      selectedRating: "",
-      selectedModel: "",
-      selectedInputImage: "",
-      selectedPrompt: "",
-      selectedInputCategory: "",
+
+      // ##
       availableModels: [],
       availableInputs: [],
       availablePrompts: [],
       availableSupportPrompts: [],
       availableCategories: Object.keys(CATEGORY_MAP),
+      // ##
+
       sortDir: 1,
       MODEL_META_MAP,
       PROMPT_MAP,
@@ -385,28 +295,26 @@ export default {
 
       // ##
       filterModels: null,
-      filterModelsOptions: Object.keys(MODEL_META_MAP),
-
       filterPrompts: null,
+      filterSupportPrompts: null,
       filterCategories: null,
       filterRatings: null,
       filterInputs: null,
+
+      // ##
+      db: null,
+      dbName: "never_forget_db",
+      storeName: "imageStore",
+      loadingDB: true,
     };
   },
   computed: {
     showControls() {
       return this.lightBoxed === null;
     },
-    inputImgs() {
-      if (this.selectedInputCategory !== "") {
-        return this.availableInputs
-          .filter((input) => input.includes(this.selectedInputCategory))
-          .sort();
-      }
-      return this.availableInputs.sort();
-    },
+
     filterOpts() {
-      return `${this.currentPage}|${this.selectedSorting}|${this.selectedRating}|${this.selectedModel}|${this.selectedInputImage}|${this.selectedPrompt}|${this.selectedInputCategory}|${this.sortDir}|${this.ipaFilter}|${this.currentMode}|${this.imgPerPage}|${this.isWeighted}|${this.forceWeights}`;
+      return `${this.currentPage}|${this.filterCategories}|${this.filterModels}|${this.filterPrompts}|${this.selectedSorting}|${this.sortDir}|${this.ipaFilter}|${this.currentMode}|${this.imgPerPage}|${this.isWeighted}|${this.forceWeights}`;
     },
   },
   methods: {
@@ -414,37 +322,16 @@ export default {
       console.log("filterImagesFire");
       let images = this.batch;
 
-      if (this.currentMode === "triples") {
-        // images = [];
-        // this.includedTriples.forEach((triple) => {
-        //   const filteredTriple = this.batch.filter(
-        //     (image) =>
-        //       image.category === triple.category &&
-        //       image.prompt === triple.prompt &&
-        //       image.model === triple.model
-        //   );
-        //   images = images.concat(filteredTriple);
-        // });
-      }
-
-      if (this.selectedRating !== "") {
-        if (this.selectedRating === "rated") {
-          images = images.filter((image) => image.rating !== null);
-        } else if (this.selectedRating === "unrated") {
-          images = images.filter((image) => image.rating == null);
-        } else if (this.selectedRating === "bad") {
-          images = images.filter((image) => image.rating <= 3);
-        } else if (this.selectedRating === "good") {
-          images = images.filter(
-            (image) => image.rating === null || image.rating > 3
-          );
-        } else if (this.selectedRating === "excellent") {
-          images = images.filter((image) => image.rating > 3);
-        } else {
-          images = images.filter(
-            (image) => image.rating == this.selectedRating
-          );
-        }
+      if (this.filterRatings && this.filterRatings.length > 0) {
+        images = images.filter((image) => {
+          if (this.filterRatings.includes("Unrated")) {
+            return (
+              this.filterRatings.includes(image.rating) || image.rating === null
+            );
+          } else {
+            return this.filterRatings.includes(image.rating);
+          }
+        });
       }
 
       if (this.currentMode !== "blacklist") {
@@ -479,26 +366,30 @@ export default {
         console.log("found for triples:", tripleImgs.length);
       }
 
-      if (this.selectedInputCategory !== "") {
+      if (this.filterCategories && this.filterCategories.length > 0) {
         images = images.filter((image) =>
-          image.inputImage.includes(this.selectedInputCategory)
+          this.filterCategories.includes(image.category)
         );
       }
-      // if (this.selectedModel !== "") {
-      //   images = images.filter((image) => image.model == this.selectedModel);
-      // }
       if (this.filterModels && this.filterModels.length > 0) {
         images = images.filter((image) =>
           this.filterModels.includes(image.model)
         );
       }
-      if (this.selectedInputImage !== "") {
-        images = images.filter(
-          (image) => image.inputImage == this.selectedInputImage
+      if (this.filterPrompts && this.filterPrompts.length > 0) {
+        images = images.filter((image) =>
+          this.filterPrompts.includes(image.prompt)
         );
       }
-      if (this.selectedPrompt !== "") {
-        images = images.filter((image) => image.prompt == this.selectedPrompt);
+      if (this.filterSupportPrompts && this.filterSupportPrompts.length > 0) {
+        images = images.filter((image) =>
+          this.filterSupportPrompts.includes(image.supportPrompt)
+        );
+      }
+      if (this.filterInputs && this.filterInputs.length > 0) {
+        images = images.filter((image) =>
+          this.filterInputs.includes(image.inputImage)
+        );
       }
 
       if (this.currentMode === "triples") {
@@ -640,15 +531,15 @@ export default {
     setSortOrder(sortOrder) {
       this.selectedSorting = sortOrder;
     },
-    filterPrompt(prompt) {
-      this.selectedPrompt = prompt;
-    },
-    filterModel(model) {
-      this.selectedModel = model;
-    },
-    filterInput(inputImage) {
-      this.selectedInputImage = inputImage;
-    },
+    // filterPrompt(prompt) {
+    //   this.selectedPrompt = prompt;
+    // },
+    // filterModel(model) {
+    //   this.selectedModel = model;
+    // },
+    // filterInput(inputImage) {
+    //   this.selectedInputImage = inputImage;
+    // },
     rateSelected(rating) {
       this.selectedImages.forEach((image) => {
         this.rateImage(image.id, rating);
@@ -808,53 +699,6 @@ export default {
       } else if (e.key === "5") {
         this.rateSelected(5);
         return;
-      } else if (e.shiftKey === true && e.key === "ArrowLeft") {
-        this.promptCursor -= 1;
-        this.selectedPrompt =
-          this.availablePrompts[
-            (this.promptCursor + this.availablePrompts.length) %
-              this.availablePrompts.length
-          ];
-        return;
-      } else if (e.shiftKey === true && e.key === "ArrowRight") {
-        this.promptCursor += 1;
-        this.selectedPrompt =
-          this.availablePrompts[
-            (this.promptCursor + this.availablePrompts.length) %
-              this.availablePrompts.length
-          ];
-        return;
-      } else if (e.altKey === true && e.key === "ArrowLeft") {
-        this.inputCursor -= 1;
-        this.selectedInputImage =
-          this.availableInputs[
-            (this.inputCursor + this.availableInputs.length) %
-              this.availableInputs.length
-          ];
-        return;
-      } else if (e.altKey === true && e.key === "ArrowRight") {
-        this.inputCursor += 1;
-        this.selectedInputImage =
-          this.inputImgs[
-            (this.inputCursor + this.inputImgs.length) % this.inputImgs.length
-          ];
-        return;
-      } else if (e.key === "ArrowLeft") {
-        this.modelCursor -= 1;
-        this.selectedModel =
-          this.availableModels[
-            (this.modelCursor + this.availableModels.length) %
-              this.availableModels.length
-          ];
-        return;
-      } else if (e.key === "ArrowRight") {
-        this.modelCursor += 1;
-        this.selectedModel =
-          this.availableModels[
-            (this.modelCursor + this.availableModels.length) %
-              this.availableModels.length
-          ];
-        return;
       }
     },
     randomInt(min, max) {
@@ -908,33 +752,38 @@ export default {
       this.currentPage = 1;
       localStorage.setItem("currentMode", JSON.stringify(this.currentMode));
     },
-    selectedModel() {
+    filterModels() {
+      console.log("setting:", this.filterModels);
       this.currentPage = 1;
-      localStorage.setItem("selectedModel", JSON.stringify(this.selectedModel));
+      localStorage.setItem("filterModels", JSON.stringify(this.filterModels));
     },
-    selectedPrompt() {
+    filterPrompts() {
+      this.currentPage = 1;
+      localStorage.setItem("filterPrompts", JSON.stringify(this.filterPrompts));
+    },
+    filterSupportPrompts() {
       this.currentPage = 1;
       localStorage.setItem(
-        "selectedPrompt",
-        JSON.stringify(this.selectedPrompt)
+        "filterSupportPrompts",
+        JSON.stringify(this.filterSupportPrompts)
       );
     },
-    selectedInputCategory() {
+    filterRatings() {
       this.currentPage = 1;
-      this.selectedInputImage = "";
+      localStorage.setItem("filterRatings", JSON.stringify(this.filterRatings));
+    },
+    filterCategories() {
+      this.currentPage = 1;
       localStorage.setItem(
-        "selectedInputCategory",
-        JSON.stringify(this.selectedInputCategory)
+        "filterCategories",
+        JSON.stringify(this.filterCategories)
       );
     },
-    selectedInputImage() {
+    filterInputs() {
       if (this.currentMode === "random") {
         this.currentMode = "sequence";
       }
-      localStorage.setItem(
-        "selectedInputImage",
-        JSON.stringify(this.selectedInputImage)
-      );
+      localStorage.setItem("filterInputs", JSON.stringify(this.filterInputs));
       this.currentPage = 1;
     },
     sortDir() {
@@ -956,6 +805,34 @@ export default {
   },
   async created() {
     console.log("created fire.");
+
+    // if (!("indexedDB" in window)) {
+    //   console.error("This browser does not support IndexedDB");
+    //   return;
+    // }
+    // this.loadingDB = true;
+    // openDatabase(
+    //   this.dbName,
+    //   this.storeName,
+    //   (db) => {
+    //     this.db = db;
+    //     fetchDataFromDatabase(
+    //       db,
+    //       this.storeName,
+    //       (data) => {
+    //         this.items = data;
+    //         this.loadingDB = false;
+    //       },
+    //       (error) => {
+    //         console.error("Error fetching data from database", error);
+    //       }
+    //     );
+    //   },
+    //   (error) => {
+    //     console.error("Error opening database", error);
+    //   }
+    // );
+
     const parseResult = parsedBatch;
     this.batch = parseResult.imageObjs;
     console.log(parseResult);
@@ -964,6 +841,7 @@ export default {
     this.availableModels = parseResult.availableModels;
     this.availableInputs = parseResult.availableInputs;
     this.availablePrompts = parseResult.availablePrompts;
+    this.availableSupportPrompts = parseResult.availableSupportPrompts;
     this.category_map = parseResult.category_map;
 
     this.blackList = JSON.parse(
@@ -981,18 +859,6 @@ export default {
       return img;
     });
 
-    this.selectedModel = localStorage.getItem("selectedModel")
-      ? JSON.parse(localStorage.getItem("selectedModel"))
-      : "";
-    this.selectedPrompt = localStorage.getItem("selectedPrompt")
-      ? JSON.parse(localStorage.getItem("selectedPrompt"))
-      : "";
-    this.selectedRating = localStorage.getItem("selectedRating")
-      ? JSON.parse(localStorage.getItem("selectedRating"))
-      : "";
-    this.selectedInputCategory = localStorage.getItem("selectedInputCategory")
-      ? JSON.parse(localStorage.getItem("selectedInputCategory"))
-      : "";
     this.currentMode = localStorage.getItem("currentMode")
       ? JSON.parse(localStorage.getItem("currentMode"))
       : "sequence";
@@ -1008,16 +874,29 @@ export default {
     this.isWeighted = localStorage.getItem("isWeighted")
       ? JSON.parse(localStorage.getItem("isWeighted"))
       : false;
+
+    this.hasInit = true;
   },
 };
 </script>
+
+<!-- // load in file here?  -->
+<!-- <style scoped src="vue-multiselect/dist/card-header.css"></style> -->
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
+
 <style>
 .selected .meta-bar {
   visibility: visible;
 }
 </style>
 <style scoped>
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #0f0;
+}
+
 select {
   padding: 8px;
   border: none;
@@ -1036,9 +915,6 @@ button {
   border: none;
   background-color: white;
   color: black;
-}
-.controls-inner {
-  background-color: white;
 }
 .left {
   display: flex;
@@ -1061,7 +937,6 @@ button {
   font-size: 0.5rem;
 }
 .badge:hover {
-  /* text-decoration: underline; */
   opacity: 0.75;
 }
 
@@ -1070,11 +945,6 @@ button {
   text-decoration: underline;
 }
 
-.center {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
 .lightBoxed {
   width: 100vw;
   height: 100vh;
@@ -1083,13 +953,14 @@ button {
   left: 0;
   z-index: 1000;
 }
+
 .card-container {
-  /* background-color: #0f0; */
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  position: relative;
 }
 .selected .meta-bar {
   visibility: visible;
@@ -1099,6 +970,8 @@ button {
   padding: 0.1rem;
   background-color: #0f0;
 }
+
+/* CARD HEADER  */
 .card-header {
   width: 98%;
   height: 0.75rem;
@@ -1107,8 +980,6 @@ button {
   top: 0;
   display: flex;
   flex-direction: row;
-  /* font-size: 10px;
-  font-size: 8px; */
   padding: 1%;
   justify-content: space-between;
   z-index: 100;
@@ -1120,9 +991,6 @@ button {
 .card-header .left {
   display: flex;
   flex-direction: row;
-}
-.card-container {
-  position: relative;
 }
 .card-actions {
   display: flex;
@@ -1167,12 +1035,10 @@ button {
 .card-action.green {
   background-color: #0f0;
 }
-
 .card-action:hover {
   opacity: 0.75;
 }
-.card-header .badge,
-.triples-bar .badge {
+.card-header .badge {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1193,57 +1059,9 @@ button {
 .card-header .badge.static:hover {
   opacity: 1;
 }
+/* CARD HEADER  */
 
-.action-bar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  font-size: 0.5rem;
-  z-index: 10000;
-  background-color: rgba(0, 0, 0, 0.5);
-  padding: 0.5rem;
-}
-
-.action {
-  padding: 0.5rem;
-  cursor: pointer;
-}
-
-.action:hover {
-  background-color: rgba(255, 255, 255, 0.5);
-}
-
-.triples-bar {
-  position: fixed;
-  top: 3rem;
-  left: 0;
-  width: 100%;
-  background-color: rgba(0, 0, 0, 0.25);
-  display: flex;
-  flex-direction: row;
-  /* justify-content: center; */
-}
-.triples-bar .badge {
-  margin-right: 0;
-}
-.triples-bar .badge:hover {
-  opacity: 1;
-}
-.triples-bar .badge.center {
-  border-radius: 0;
-}
-.triples-bar .badge.first {
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-}
-.triples-bar .badge.last {
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-}
-.triple {
-  display: flex;
-  flex-direction: row;
-}
+/* FOOTER  */
 
 footer {
   position: fixed;
@@ -1274,39 +1092,15 @@ footer {
   width: 28vw;
 }
 
-html,
-body {
-  margin: 0;
-  padding: 0;
-  /* overflow-x: hidden; */
-  background-color: #0f0;
-}
-
-.formats {
-  display: none;
-  position: fixed;
-  z-index: 3000;
-  bottom: 0.5rem;
-  right: 2rem;
-  width: 15vw;
-}
-
-.tick-info {
-  position: fixed;
-  z-index: 3000;
-  bottom: 0.5rem;
-  right: 2rem;
-  font-size: 1.5rem;
-  text-shadow: 0px 0px 3px rgb(0, 0, 0);
-}
+/* FOOTER  */
 
 .controls {
   position: fixed;
-  top: 0;
-  right: 0px;
+  bottom: 0;
+  left: 0;
   z-index: 3000;
   /* background-color: rgba(0, 0, 0, 0.5); */
-  width: 100%;
+  /* width: 100%; */
 }
 
 .controls-inner {
@@ -1315,6 +1109,7 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 0 0.5rem;
+  background-color: white;
 }
 .cursor-label {
   margin: 0 1rem;
@@ -1331,36 +1126,9 @@ body {
   background-color: black;
   /* background-color: #0f0; */
   margin-top: 2rem;
-  margin-top: 3rem;
-}
-.sequences-container {
-  width: 100vw;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  overflow-x: hidden;
-  justify-content: center;
-  margin-bottom: 1rem;
+  margin-top: 3.5rem;
   margin-top: 1rem;
 }
-
-.chapter-bkg {
-  width: 50vw;
-  height: 50vh;
-  position: relative;
-  cursor: pointer;
-  /* opacity: 0; */
-  /* pointer-events: none; */
-  /* position: fixed;
-  top: 0;
-  left: 0; */
-}
-
-.btn {
-  cursor: pointer;
-  text-decoration: underline;
-}
-
 .isLoading {
   opacity: 0.75;
   background-color: #0f0;

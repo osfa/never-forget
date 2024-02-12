@@ -32,6 +32,9 @@ const parsePathCrawl = (path_object_array, category_map) => {
   const availableModelsAll = [];
   const availableInputsAll = [];
   const availablePromptsAll = [];
+  const availableSupportPromptsAll = [];
+
+  // NF-03-5--v1-5-pruned-emaonly--avatar12-00007-2x.jpg_prompt-second-life_support_prompt-9-11_MP-1_cfg-24_ss-15_seed-1000195145_cnet_d-0.9_cnet_c-0_00001_
 
   const imageObjs = path_object_array.map((path_ts_tuple) => {
     let imgPath = path_ts_tuple["path"];
@@ -54,7 +57,6 @@ const parsePathCrawl = (path_object_array, category_map) => {
     const cfg = fn.split("_cfg-")[1].split("_")[0];
     const ss = fn.split("_ss-")[1].split("_")[0];
     const supportPrompt = fn.split("_support_prompt-")[1].split("_")[0];
-
     if (imgPath.includes("avatar1") || imgPath.includes("avatar2")) {
       category = "avatar";
       inputImage = fn.split("--")[2].split(".jpg")[0] + ".jpg";
@@ -116,7 +118,7 @@ const parsePathCrawl = (path_object_array, category_map) => {
     if (imgPath.includes("memorial")) {
       category = "memorial";
     }
-    if (category === null) console.log(imgPath);
+    if (category === null) throw new Error(imgPath);
 
     category_map[category][model] = category_map[category][model] || {
       count: 0,
@@ -133,6 +135,8 @@ const parsePathCrawl = (path_object_array, category_map) => {
     }
 
     if (!availablePromptsAll.includes(prompt)) availablePromptsAll.push(prompt);
+    if (!availableSupportPromptsAll.includes(supportPrompt))
+      availableSupportPromptsAll.push(supportPrompt);
     if (model !== "divineelegancemix_V9") availableModelsAll.push(model);
 
     return {
@@ -162,11 +166,14 @@ const parsePathCrawl = (path_object_array, category_map) => {
   const availableModels = availableModelsAll.filter(onlyUnique);
   const availableInputs = availableInputsAll.filter(onlyUnique);
   const availablePrompts = availablePromptsAll.filter(onlyUnique);
+  const availableSupportPrompts = availableSupportPromptsAll.filter(onlyUnique);
 
   Object.keys(category_map).forEach((category) => {
     availableModels.forEach((model) => {
-      category_map[category][model]["inputs"] =
-        category_map[category][model]["inputs"].length;
+      if (category_map[category][model]) {
+        category_map[category][model]["inputs"] =
+          category_map[category][model]["inputs"].length;
+      }
     });
   });
 
@@ -176,15 +183,16 @@ const parsePathCrawl = (path_object_array, category_map) => {
     availableModels,
     availableInputs,
     availablePrompts,
+    availableSupportPrompts,
   };
 };
 
 // const allImgs = require("/Users/jbe/static-sites/never-forget-vite-vue2/src/data/pics-versioned.json");
 const allImgs = require("/Users/jbe/static-sites/never-forget-vite-vue2/src/data/pics-versioned-ts.json");
+// const allImgs = require("/Users/jbe/static-sites/never-forget-vite-vue2/src/data/pics-versioned-ts-tiny.json");
 
 const parseResult = parsePathCrawl(allImgs, CATEGORY_MAP);
 var json = JSON.stringify(parseResult);
-console.log(parseResult.category_map);
 const fs = require("fs");
 fs.writeFile(
   "/Users/jbe/static-sites/never-forget-vite-vue2/src/data/pics-parsed.json",

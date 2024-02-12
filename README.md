@@ -1,23 +1,27 @@
-- s3 setup
+- filter bar right
 
-  - upload main pool? rsync fun etc..
-  - db setup?
-  - upload feels as well?
+  - save maps settings?
+  - ipa filter
+  - filter execute button?
+  - paging broke?
 
-- split and clean 911s? categories etc??
+- image card header in imagecard copmponent? or sep style sheet?
+- split and clean 911s? categories etc?? - join gui cat
 
-- filter bar right : make new own component
-- triple right: own components? or put in above?
-
-- image card header in imagecard copmponent?
-
+- memorial/bts category cleanup!!!
 - sup prompt sort...
-- additive filter? multi select?
-- cursor jump for inputs? or multiselect there as well?
+
+- icons instead of strings in soc med bar. and smaller...?
+- db setup?
 
 - chk notion..
 
-- memorial/bts category cleanup!!!
+- infin scroll interaction how?
+- "soul harvest"
+
+- s3 - upload feels as well?
+
+- soc med icons
 
 ---
 
@@ -52,7 +56,6 @@
 - link to #neverforget int in marquee?
 
 - ju djupare ner i narrativet, ju fler ljud fx spår?
-- icons instead of strings in soc med bar. and smaller...?
 
 - larger tile sizes? more models? variate tile sizes and pos rand zoom? blend plates of diff resolutions? diff tilesizers and images in grid? degrade over scroll?
 
