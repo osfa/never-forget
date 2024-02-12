@@ -42,11 +42,11 @@
             <option value="ts">Created</option>
           </select>
 
-          <!-- <select required name="ipaFilter" id="ipaFilter" v-model="ipaFilter">
+          <select required name="ipaFilter" id="ipaFilter" v-model="ipaFilter">
             <option value="all">all</option>
             <option value="ipa_only">ipa_only</option>
             <option value="no_ipa">no_ipa</option>
-          </select> -->
+          </select>
 
           <button @click="showFilter = !showFilter">🛠️</button>
 

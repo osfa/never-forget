@@ -1,8 +1,9 @@
 - filter bar right
 
   - save maps settings?
-  - ipa filter
-  - filter execute button?
+  - show ipa settings in card header
+  - and support prompt in card header
+  - filter execute button? move?
   - paging broke?
 
 - image card header in imagecard copmponent? or sep style sheet?
