@@ -106,7 +106,7 @@
 .btn-zoom.active {
   opacity: 1;
   border: 0.5px solid white;
-  border: 1px dotted white;
+  border: 1px dotted red;
 }
 
 

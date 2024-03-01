@@ -81,7 +81,7 @@
         </div>
       </div>
       <div id="action-section">
-        <div
+        <!-- <div
           class="btn-layer"
           :class="{ active: plateCellSize === 'fullhd' }"
           @click="plateCellSize = 'fullhd'">
@@ -98,7 +98,7 @@
           :class="{ active: plateCellSize === 'sd' }"
           @click="plateCellSize = 'sd'">
           ◳
-        </div>
+        </div> -->
         <div
           class="btn-layer"
           :class="{ active: plateFried }"
@@ -154,11 +154,11 @@ export default {
       currentZoom: 0.2,
       selectedZoomLevelIdx: 0,
       zoomLevels: [2, 4, 6, 8, 12, 16, 18, 24],
-      startZoom: 4,
-      minZoom: 2, // how far you can zoom out, the smaller the more
+      startZoom: 2,
+      minZoom: 1, // how far you can zoom out, the smaller the more
       maxZoom: 28, // how far you can zoom in, the higher the more
 
-      driftStep: 0.01,
+      driftStep: 0.025,
       currentDirectionX: 0,
       currentDirectionY: -1,
       // dev mode
@@ -166,7 +166,7 @@ export default {
       devMode: true,
       infoOpen: false,
       develop: false,
-      plateCellSize: "sd",
+      plateCellSize: "fullhd",
       plateFried: false,
 
       // tick stuff
@@ -247,7 +247,7 @@ export default {
         sd: [640, 360],
       };
 
-      const plateCellSize = this.plateCellSize || "sd";
+      const plateCellSize = this.plateCellSize || "fullhd";
       console.log("plateCellSize:", plateCellSize);
       return {
         Image: {
@@ -451,7 +451,8 @@ export default {
 
       this.viewer.addHandler("open", () => {
         // const homeZoom = this.viewer.viewport.getHomeZoom();
-        const fullZoom = this.viewer.viewport.imageToViewportZoom(1);
+
+        const fullZoom = this.viewer.viewport.imageToViewportZoom(0.5);
         console.log("fullZoom:", fullZoom);
 
         //   const zoomTo = Math.max(
@@ -599,6 +600,7 @@ body {
   /* filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4)); */
   opacity: 25%;
   opacity: 15%;
+  opacity: 5%;
   /* mix-blend-mode: difference; */
   /* background-color: transparent; */
 }

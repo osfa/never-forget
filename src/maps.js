@@ -60,11 +60,11 @@ export const MODEL_META_MAP = {
     unicode: "⍼",
   }, // Tomato
   toonyou_beta6: { friendlyName: "Toonyou", hexColor: "#FFA07A", unicode: "◬" }, // Light Salmon
-  // "v1-5-pruned-emaonly": {
-  //   friendlyName: "1.5",
-  //   hexColor: "#B0C4DE",
-  //   unicode: "⏺",
-  // }, // Light Steel Blue
+  "v1-5-pruned-emaonly": {
+    friendlyName: "1.5",
+    hexColor: "#B0C4DE",
+    unicode: "⏺",
+  }, // Light Steel Blue
 };
 
 export const PROMPT_MAP = {
