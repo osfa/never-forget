@@ -3,9 +3,21 @@
     <div
       id="overlay"
       :style="{ backgroundSize: `${Math.min(currentZoom * 25, 35)}%` }"></div>
+
     <!-- <img id="overlay" src="/grid2.svg" :style="{ scale: `${currentZoom * 150}%` }" /> -->
+    <div id="subs-container">
+      <div id="subs-text">{{ subtitles }}</div>
+      <audio id="my-audio-player" src="/audio/script-srt-test.mp3" controls>
+        <track
+          kind="captions"
+          src="/audio/script-srt-test.vtt"
+          srclang="en"
+          label="English"
+          default />
+      </audio>
+    </div>
     <div id="scroller">
-      <div class="marquee enable-animation marquee--fit-content">
+      <!-- <div class="marquee enable-animation marquee--fit-content">
         <ul class="marquee__content">
           <li>
             This is the story of a man, marked by an image of his childhood. The
@@ -22,7 +34,7 @@
             Washington DC airport sometime before, the outbreak of war.
           </li>
         </ul>
-      </div>
+      </div> -->
     </div>
     <div id="action-bar-top">
       <div
@@ -38,7 +50,7 @@
         <!-- <InformationIcon /> -->
       </div>
 
-      <BarebonesTone ref="audioModule" automaticFade :debug="true" />
+      <BarebonesTone ref="audioModule" automaticFade :debug="false" />
     </div>
     <div id="social-media-bar">
       <a
@@ -58,13 +70,43 @@
       /></a>
     </div>
     <div id="filter-bar">
-      <div
-        v-for="(model, idx) in Object.keys(MODEL_META_MAP).slice(0, 7)"
-        class="btn-layer"
-        :class="{ active: selectedModels.includes(model) }"
-        :style="{ backgroundColor: MODEL_META_MAP[model]?.hexColor }"
-        @click="setPlateFilter(model)">
-        {{ MODEL_META_MAP[model]?.unicode }}
+      <div id="model-section">
+        <div
+          v-for="(model, idx) in Object.keys(MODEL_META_MAP)"
+          class="btn-layer"
+          :class="{ active: selectedModels.includes(model) }"
+          :style="{ backgroundColor: MODEL_META_MAP[model]?.hexColor }"
+          @click="setPlateFilter(model)">
+          {{ MODEL_META_MAP[model]?.unicode }}
+        </div>
+      </div>
+      <div id="action-section">
+        <div class="btn-layer" @click="pan(5, 0)">⇉</div>
+        <div class="btn-layer" @click="pan(-5, 0)">⇇</div>
+        <div
+          class="btn-layer"
+          :class="{ active: plateCellSize === 'fullhd' }"
+          @click="plateCellSize = 'fullhd'">
+          ◼
+        </div>
+        <div
+          class="btn-layer"
+          :class="{ active: plateCellSize === 'hd' }"
+          @click="plateCellSize = 'hd'">
+          ◧
+        </div>
+        <div
+          class="btn-layer"
+          :class="{ active: plateCellSize === 'sd' }"
+          @click="plateCellSize = 'sd'">
+          ◳
+        </div>
+        <div
+          class="btn-layer"
+          :class="{ active: plateFried }"
+          @click="plateFried = !plateFried">
+          ◡
+        </div>
       </div>
     </div>
     <div id="zoom-bar">
@@ -107,7 +149,7 @@ export default {
       idx: 0,
       active_schema: this.generateTileUrl(),
       wrap: true,
-
+      subtitles: "",
       // zoom
       currentZoom: 0.2,
       selectedZoomLevelIdx: 0,
@@ -124,6 +166,8 @@ export default {
       devMode: true,
       infoOpen: false,
       develop: false,
+      plateCellSize: "sd",
+      plateFried: false,
 
       // tick stuff
       ticks: 0,
@@ -167,39 +211,61 @@ export default {
     console.log("dzi mounted");
     this.initViewer();
     this.frame();
+    document
+      .getElementById("my-audio-player")
+      .textTracks[0].addEventListener("cuechange", (event) => {
+        console.log("cuechange", event.target.activeCues);
+        // console.log("cuechange", event.originalTarget.activeCues);
+        // console.log(this.activeCues[0].text);
+        if (event.target.activeCues.length > 0) {
+          this.subtitles = event.target.activeCues[0].text;
+        }
+      });
   },
   methods: {
     generateTileUrl() {
-      const dims = (10800, 19200);
-      const fried = true;
-      const cellSizes = ["fullhd", "hd", "sd"];
-
       // dreamshaper_8-15x15-fullhd-no-fry-fry-cells-fit_files
       // dreamshaper_8-15x15-hd-no-fry-fit-q10-15x15_files
+
+      const grid_dims = 15;
+      const dims = {
+        fullhd: [1920, 1080],
+        hd: [1280, 720],
+        sd: [640, 360],
+      };
+
+      const plateCellSize = this.plateCellSize || "sd";
 
       return {
         Image: {
           xmlns: "http://schemas.microsoft.com/deepzoom/2008",
           Url: "",
-          Format: "jpeg",
-          Overlap: "1",
-          TileSize: "512",
-          ServerFormat: "Default",
-          Size: {
-            Height: "10800",
-            Width: "19200",
-          },
         },
-        height: 10800,
-        width: 19200,
+        width: dims[plateCellSize][0] * grid_dims,
+        height: dims[plateCellSize][1] * grid_dims,
         tileSize: 512,
         tileOverlap: 1,
         plates: this.selectedModels,
+        plateCellSize: plateCellSize,
+        plateFried: this.plateFried || false,
         getTileUrl: function (level, x, y) {
           const selectedModel =
             this.plates[Math.floor(Math.random() * this.plates.length)];
 
-          return `http://localhost:3000/dzi/_local/${selectedModel}-15x15-fullhd-no-fry-fry-cells-fit_files/${level}/${x}_${y}.jpeg`;
+          const doFryCells = false;
+          const fry_cells = doFryCells ? "fry-cells-" : "";
+
+          const fried =
+            this.plateFried && plateCellSize != "hd" ? "fry-" : "no-fry-";
+          const q =
+            (this.plateFried && plateCellSize != "hd") || doFryCells
+              ? "q10"
+              : "q50";
+
+          const baseUrl = "jpeg.matrix.surf/dzi/v0";
+          // const baseUrl = "localhost:3000/dzi/_local"
+
+          return `http://${baseUrl}/${selectedModel}-15x15-${this.plateCellSize}-${fried}${fry_cells}fit-${q}_files/${level}/${x}_${y}.jpeg`;
         },
       };
     },
@@ -290,6 +356,13 @@ export default {
       );
       this.viewer.viewport.panBy(move);
     },
+    pan(dirX, dirY) {
+      const move = new OpenSeadragon.Point(
+        this.driftStep * dirX,
+        this.driftStep * dirY
+      );
+      this.viewer.viewport.panBy(move);
+    },
     setPlateFilter(model) {
       console.log("setplatefilter", model);
       if (this.selectedModels.includes(model)) {
@@ -312,6 +385,7 @@ export default {
         this.startZoom,
         this.minZoom,
         this.maxZoom,
+        this.plateCellSize,
         availableSchemas
       );
       const bootSchema = this.generateTileUrl();
@@ -330,8 +404,8 @@ export default {
         // animationTime: 1.5,
         // animationTime: 1.2,
         // animationTime: 0.5,
-        // animationTime: 0.25,
-        animationTime: 0.1,
+        animationTime: 0.25,
+        // animationTime: 0.1,
         // springStiffness: 6.5 ,
         // springStiffness: 0.25,
         // springStiffness: 10,
@@ -477,21 +551,23 @@ export default {
 @import "../assets/dzi-socialmediabar.css";
 @import "../assets/dzi-scroller-subs.css";
 
-:root {
+/* :root {
   --–margins: 3vw;
-}
+} */
 
 html,
-body,
-#viewer-image {
-  height: 98vh;
+body {
   width: 100%;
 }
 
 #viewer-image {
   margin-top: 2vh;
-  width: calc(100vw-var(--margins));
-  padding: 0 var(--margins);
+  height: 98vh;
+  /* width: calc(100vw-var(--margins)); */
+  width: 97vw;
+  /* padding: 0 var(--margins); */
+  padding-left: 3vw;
+  position: relative;
 }
 
 #overlay {

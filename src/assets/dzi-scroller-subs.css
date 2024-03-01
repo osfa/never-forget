@@ -1,10 +1,31 @@
 
+#my-audio-player {
+  width: 100%;
+}
+
+#subs-container {
+  z-index: 4000;
+  position: absolute;
+  bottom: 0;
+  font-size: 2rem;
+  font-family: Papyrus, fantasy;
+  width: 94%;
+  text-align: center;
+  color: #ff0;
+  text-shadow: #000 0 0 2px; 
+}
+
+#subs-text {
+  margin-bottom: 2rem;
+}
+
 #scroller {
   z-index: 4000;
   position: absolute;
   bottom: 10vh;
   font-size: 2rem;
-  display: none;
+  /* display: none; */
+  font-family: Papyrus, fantasy;
 }
 
 .marquee {
@@ -20,7 +41,6 @@
   text-shadow: #ff0 0 0 2px; */
   /* text-shadow: #ff0 0 0 1px;
   text-shadow: #fff 0 0 2px; */
-  font-family: Papyrus, fantasy;
 }
 
 .marquee__content {

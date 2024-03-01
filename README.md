@@ -1,25 +1,33 @@
-- plate out
-
-- plate mix buttons: CSS clean..
-
-- aws s3 cp /Users/jbe/static-sites/never-forget-vite-vue2/public/dzi/\_local s3://never-forget-now/dzi/v0 --recursive
-
----
+aws s3 cp /Users/jbe/static-sites/never-forget-vite-vue2/public/dzi/\_local s3://jpeg.matrix.surf/dzi/v0 --recursive
 
 - audio subs tests (SRT to VTT)
-- LLM test
+
+  - browser device test?
+
+- cleaner dims and res mix
+
+- LLM test: ollama script fiddling
+
+- use existing plate mate to make video?
+
+- single card test: vert hori...
 
 - posting:
+
   - sel out some gui stuff
 
-Working on this sprawling project that never ends but we're almost there, here's some WIP jpegs #instantlore #neverforget
+- Working on this sprawling project that never ends but we're almost there, here's some WIP jpegs #instantlore #neverforget
 
 - feels?
 
 - save weighting
+- sel867 image series...
+
 - capcut fx and ffmpeg out for upscale
+
   - make capcut shorts with just lossy audio
   - rename accs?
+
 - audio play
 
 - highres popup

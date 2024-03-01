@@ -60,17 +60,18 @@ export default {
     playTick() {
       if (!this.isPlaying) return;
 
-      if (this.narrationPlayer && this.narrationPlayer.state === "stopped") {
-        if (this.pauseTicks === 0) {
-          const file = audioLibrary.asmr.sample();
-          console.log("new narration:", file);
-          this.narrationPlayer.player(file).start();
-          this.pauseTicks = this.randomInt(10, 30);
-        } else {
-          console.log("pause", this.pauseTicks);
-          this.pauseTicks -= 1;
-        }
-      }
+      // if (this.narrationPlayer && this.narrationPlayer.state === "stopped") {
+      //   if (this.pauseTicks === 0) {
+      //     const file = audioLibrary.asmr.sample();
+      //     console.log("new narration:", file);
+      //     this.narrationPlayer.player(file).start();
+      //     this.pauseTicks = this.randomInt(10, 30);
+      //   } else {
+      //     console.log("pause", this.pauseTicks);
+      //     this.pauseTicks -= 1;
+      //   }
+      // }
+
       // if (this.narrationPlayer1 && this.narrationPlayer1.state === "stopped") {
       //   console.log("new narration.");
       //   this.narrationPlayer1.player(audioLibrary.bush.sample()).start();

@@ -9,11 +9,11 @@ export const MODEL_META_MAP = {
     hexColor: "#FFD700",
     unicode: "₻",
   }, // Gold
-  // counterfeitV30_v30: {
-  //   friendlyName: "Counterfeit",
-  //   hexColor: "#FF4500",
-  //   unicode: "⏅",
-  // }, // Orange Red
+  counterfeitV30_v30: {
+    friendlyName: "Counterfeit",
+    hexColor: "#FF4500",
+    unicode: "⏅",
+  }, // Orange Red
   divineanimemix_V2: {
     friendlyName: "Divine Anime",
     hexColor: "#BA55D3",
@@ -24,11 +24,11 @@ export const MODEL_META_MAP = {
   //   hexColor: "#DB7093",
   //   unicode: "ↂ",
   // }, // Pale Violet Red
-  // "dreamlike-photoreal-2.0": {
-  //   friendlyName: "Dreamlike",
-  //   hexColor: "#ADD8E6",
-  //   unicode: "∑",
-  // }, // Light Blue
+  "dreamlike-photoreal-2.0": {
+    friendlyName: "Dreamlike",
+    hexColor: "#ADD8E6",
+    unicode: "∑",
+  }, // Light Blue
   dreamshaper_8: {
     friendlyName: "Dreamshaper",
     hexColor: "#20B2AA",
@@ -49,17 +49,17 @@ export const MODEL_META_MAP = {
     hexColor: "#FF69B4",
     unicode: "ℳ",
   }, // Hot Pink
-  // realisticVisionV51_v51VAE: {
-  //   friendlyName: "Realistic Vision",
-  //   hexColor: "#2E8B57",
-  //   unicode: "⫌",
-  // }, // Sea Green
-  // revAnimated_v122EOL: {
-  //   friendlyName: "Rev Animated",
-  //   hexColor: "#FF6347",
-  //   unicode: "⍼",
-  // }, // Tomato
-  // toonyou_beta6: { friendlyName: "Toonyou", hexColor: "#FFA07A", unicode: "◬" }, // Light Salmon
+  realisticVisionV51_v51VAE: {
+    friendlyName: "Realistic Vision",
+    hexColor: "#2E8B57",
+    unicode: "⫌",
+  }, // Sea Green
+  revAnimated_v122EOL: {
+    friendlyName: "Rev Animated",
+    hexColor: "#FF6347",
+    unicode: "⍼",
+  }, // Tomato
+  toonyou_beta6: { friendlyName: "Toonyou", hexColor: "#FFA07A", unicode: "◬" }, // Light Salmon
   // "v1-5-pruned-emaonly": {
   //   friendlyName: "1.5",
   //   hexColor: "#B0C4DE",

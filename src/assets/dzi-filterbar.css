@@ -1,8 +1,7 @@
 #filter-bar {
   position: fixed;
   right: 0;
-  top: 12vh;
-  height: 92vh;
+  bottom: 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -10,15 +9,40 @@
   flex-direction: column;
 }
 
+#model-section {
+  height: 50vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
 .btn-layer {
   width: 3vw;
-  height: 12.5vh;
+  /* height: 12.5vh; */
   background-color: transparent !important;
+  /* background-color: black !important; */
+  background-color: rgba(0,0,0,0.25)!important;
+
   cursor: pointer;
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   text-shadow: #fff 0 0 5px;
+}
+
+#action-section {
+  height: 35vh;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px dotted white;
+  justify-content: space-evenly;
+  color: yellow;
+  .btn-layer {
+    /* blue and red? */
+      /* border: 1px solid yellow; */
+      background-color: rgba(0,0,0,0.5)!important;
+  }
 }
 
 .btn-layer.active {
@@ -26,15 +50,6 @@
   border: 0.1px solid white;
   border: 1px dashed white;
   box-sizing: border-box;
-}
-.layer-1 {
-  background-color: #ffd700;
-}
-.layer-2 {
-  background-color: #ff4500;
-}
-.layer-3 {
-  background-color: #778899;
 }
 
 @media (orientation: portrait) {
@@ -113,9 +128,7 @@
   /* padding: 1rem 0; */
 
   width: 3vw;
-
   height: 15vh;
-
   font-size: 1.5rem;
 
   left: auto;
