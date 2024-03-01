@@ -7,7 +7,7 @@
     <!-- <img id="overlay" src="/grid2.svg" :style="{ scale: `${currentZoom * 150}%` }" /> -->
     <div id="subs-container">
       <div id="subs-text">{{ subtitles }}</div>
-      <audio id="my-audio-player" src="/audio/script-srt-test.mp3" controls>
+      <audio id="my-audio-player" src="/audio/script-srt-test.mp3">
         <track
           kind="captions"
           src="/audio/script-srt-test.vtt"
@@ -194,6 +194,22 @@ export default {
       this.viewer.viewport.zoomTo(this.zoomLevels[this.selectedZoomLevelIdx]);
       // this.viewer.viewport.zoomBy(this.zoomPerScroll);
     },
+    plateFried() {
+      this.viewer.addTiledImage({
+        tileSource: this.generateTileUrl(),
+        x: 0,
+        y: 0,
+        width: 1,
+      });
+    },
+    plateCellSize() {
+      this.viewer.addTiledImage({
+        tileSource: this.generateTileUrl(),
+        x: 0,
+        y: 0,
+        width: 1,
+      });
+    },
   },
   computed: {
     positionDisplay() {
@@ -224,9 +240,6 @@ export default {
   },
   methods: {
     generateTileUrl() {
-      // dreamshaper_8-15x15-fullhd-no-fry-fry-cells-fit_files
-      // dreamshaper_8-15x15-hd-no-fry-fit-q10-15x15_files
-
       const grid_dims = 15;
       const dims = {
         fullhd: [1920, 1080],
@@ -235,7 +248,7 @@ export default {
       };
 
       const plateCellSize = this.plateCellSize || "sd";
-
+      console.log("plateCellSize:", plateCellSize);
       return {
         Image: {
           xmlns: "http://schemas.microsoft.com/deepzoom/2008",
@@ -561,8 +574,8 @@ body {
 }
 
 #viewer-image {
-  margin-top: 2vh;
-  height: 98vh;
+  /* margin-top: 2vh; */
+  height: 100vh;
   /* width: calc(100vw-var(--margins)); */
   width: 97vw;
   /* padding: 0 var(--margins); */

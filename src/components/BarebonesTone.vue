@@ -219,12 +219,16 @@ export default {
       if (!this.audioCtx) {
         this.initAudio();
         this.hasInit = true;
+        document.getElementById("my-audio-player").play();
         return;
       }
       if (this.audioCtx.state === "running") {
+        document.getElementById("my-audio-player").pause();
+
         this.audioCtx.suspend().then(function () {});
       } else if (this.audioCtx.state === "suspended") {
         this.audioCtx.resume().then(function () {});
+        document.getElementById("my-audio-player").play();
       }
     },
     isObj(variable) {
