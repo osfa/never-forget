@@ -81,8 +81,6 @@
         </div>
       </div>
       <div id="action-section">
-        <div class="btn-layer" @click="pan(5, 0)">⇉</div>
-        <div class="btn-layer" @click="pan(-5, 0)">⇇</div>
         <div
           class="btn-layer"
           :class="{ active: plateCellSize === 'fullhd' }"
@@ -107,6 +105,8 @@
           @click="plateFried = !plateFried">
           ◡
         </div>
+        <div class="btn-layer btn-right" @click="pan(5, 0)">⇉</div>
+        <div class="btn-layer btn-left" @click="pan(-5, 0)">⇇</div>
       </div>
     </div>
     <div id="zoom-bar">
@@ -154,11 +154,11 @@ export default {
       currentZoom: 0.2,
       selectedZoomLevelIdx: 0,
       zoomLevels: [2, 4, 6, 8, 12, 16, 18, 24],
-      startZoom: 1,
-      minZoom: 1, // how far you can zoom out, the smaller the more
+      startZoom: 4,
+      minZoom: 2, // how far you can zoom out, the smaller the more
       maxZoom: 28, // how far you can zoom in, the higher the more
 
-      driftStep: 0.05,
+      driftStep: 0.01,
       currentDirectionX: 0,
       currentDirectionY: -1,
       // dev mode
@@ -416,15 +416,15 @@ export default {
         showRotationControl: false,
         // animationTime: 1.5,
         // animationTime: 1.2,
-        // animationTime: 0.5,
-        animationTime: 0.25,
+        animationTime: 0.5,
+        // animationTime: 0.25,
         // animationTime: 0.1,
         // springStiffness: 6.5 ,
         // springStiffness: 0.25,
         // springStiffness: 10,
         springStiffness: 0.1,
         // blendTime: 0.1,
-        blendTime: 0.5,
+        blendTime: 0.25,
         // alwaysBlend: true,
         showNavigationControl: false,
         // visibilityRatio: 1, // dont allow bigger than image
@@ -482,8 +482,7 @@ export default {
         };
         // this.zoomLevels = generateSequentialIntegers(2, fullZoom, 8);
 
-        const minZoom = 1;
-        this.zoomLevels = generateSequentialFloats(minZoom, fullZoom, 8);
+        this.zoomLevels = generateSequentialFloats(this.minZoom, fullZoom, 8);
         console.log("zoomLevels", this.zoomLevels);
 
         // this.viewer.zoomPerClick = Math.cbrt(fullZoom / homeZoom); // cubed
@@ -520,7 +519,8 @@ export default {
 
       this.viewer.addHandler("canvas-scroll", (event) => {
         event.preventDefault = false;
-        this.triggerZoom(event);
+        // this.triggerZoom(event);
+        this.panDown();
       });
 
       this.viewer.addHandler("canvas-click", (event) => {
@@ -577,9 +577,9 @@ body {
   /* margin-top: 2vh; */
   height: 100vh;
   /* width: calc(100vw-var(--margins)); */
-  width: 97vw;
+  width: 98vw;
   /* padding: 0 var(--margins); */
-  padding-left: 3vw;
+  padding-left: 2vw;
   position: relative;
 }
 
