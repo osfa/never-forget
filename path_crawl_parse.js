@@ -1,7 +1,7 @@
 // import { parsePathCrawl, CATEGORY_MAP } from "../maps";
 // import * as allImgs from "src/data/pics-versioned.json";
-
 // import { parse } from 'node-html-parser';
+
 const CATEGORY_MAP = {
   avatar: { hexColor: "#2df1b5", weight: 0.3 },
   jetee: { hexColor: "#890add", weight: 0.2 },
@@ -26,6 +26,88 @@ const CATEGORY_MAP = {
   cs: { hexColor: "#b751b1", weight: 0.05 },
   // 90%
 };
+
+// const extractMetaFromPath = (imgPath) => {
+//   const srcFried = imgPath.replace(
+//     "/Users/jbe/Dropbox/stabdiff-ui-v2/comfyui-outs/_NF/",
+//     ""
+//   );
+//   imgPath = imgPath
+//     .replace("/Users/jbe/Dropbox/stabdiff-ui-v2/comfyui-outs/_NF/", "")
+//     .replace("/fried/", "/2pass/");
+//   imgPath = imgPath.split("-fried_")[0] + "_00001_.png";
+
+//   const model = imgPath.split("--")[1];
+//   let inputImage;
+//   let prompt;
+//   let category = null;
+//   const fna = imgPath.split("/");
+//   const fn = fna[fna.length - 1];
+//   const cfg = fn.split("_cfg-")[1].split("_")[0];
+//   const ss = fn.split("_ss-")[1].split("_")[0];
+//   const supportPrompt = fn.split("_support_prompt-")[1].split("_")[0];
+//   if (imgPath.includes("avatar1") || imgPath.includes("avatar2")) {
+//     category = "avatar";
+//     inputImage = fn.split("--")[2].split(".jpg")[0] + ".jpg";
+//     prompt = fn
+//       .split("--")[2]
+//       .split(".jpg")[1]
+//       .split("_")[1]
+//       .replace("prompt-", "");
+//   } else {
+//     inputImage = imgPath.split("--")[2].split("_")[0];
+//     prompt = imgPath.split("--")[2].split("_")[1].replace("prompt-", "");
+//   }
+
+//   if (imgPath.includes("911")) {
+//     category = "911";
+//   }
+//   if (imgPath.includes("jetee")) {
+//     category = "jetee";
+//   }
+//   if (imgPath.includes("trackers")) {
+//     category = "trackers";
+//   }
+//   if (
+//     imgPath.includes("--bts") ||
+//     imgPath.includes("--davos") ||
+//     imgPath.includes("--mission") ||
+//     imgPath.includes("--poolc")
+//   ) {
+//     category = "bts";
+//   }
+//   if (imgPath.includes("--hack")) {
+//     category = "hack";
+//   }
+//   if (imgPath.includes("--wow")) {
+//     category = "wow";
+//   }
+//   if (imgPath.includes("cs-2x")) {
+//     category = "cs";
+//   }
+//   if (imgPath.includes("fortnite")) {
+//     category = "fortnite";
+//   }
+//   if (imgPath.includes("starcraft")) {
+//     category = "starcraft";
+//   }
+//   if (imgPath.includes("diablo")) {
+//     category = "diablo";
+//   }
+//   if (imgPath.includes("ava-game")) {
+//     category = "ava-game";
+//   }
+//   if (imgPath.includes("--otg")) {
+//     category = "otg";
+//   }
+
+//   if (imgPath.includes("--otg")) {
+//     category = "otg";
+//   }
+//   if (imgPath.includes("memorial")) {
+//     category = "memorial";
+//   }
+// };
 
 const parsePathCrawl = (path_object_array, category_map) => {
   // const path_array = path_object.map
@@ -188,15 +270,58 @@ const parsePathCrawl = (path_object_array, category_map) => {
 };
 
 // const allImgs = require("/Users/jbe/static-sites/never-forget-vite-vue2/src/data/pics-versioned.json");
-const allImgs = require("/Users/jbe/static-sites/never-forget-vite-vue2/src/data/pics-versioned-ts.json");
+const allImgs = require("/Users/jbe/static-sites/never-forget-vite-vue2/src/data/pics-versioned-ts.json"); // { path: string, ts: number }[]
 // const allImgs = require("/Users/jbe/static-sites/never-forget-vite-vue2/src/data/pics-versioned-ts-tiny.json");
 
-const parseResult = parsePathCrawl(allImgs, CATEGORY_MAP);
-var json = JSON.stringify(parseResult);
+// const parseResult = parsePathCrawl(allImgs, CATEGORY_MAP);
+// var json = JSON.stringify(parseResult);
 const fs = require("fs");
-fs.writeFile(
-  "/Users/jbe/static-sites/never-forget-vite-vue2/src/data/pics-parsed.json",
-  json,
-  "utf8",
-  () => console.log("done")
+// fs.writeFile(
+//   "/Users/jbe/static-sites/never-forget-vite-vue2/src/data/pics-parsed.json",
+//   json,
+//   "utf8",
+//   () => console.log("done")
+// );
+
+backup_rating_path =
+  "/Users/jbe/Dropbox/stabdiff-ui-v2/_sorted-outputs/never-forget/_selections/backups/_rated-no-ratings-lol/jbe-favs-jan-14.json"; // flat array
+localstorage_path =
+  "/Users/jbe/Dropbox/stabdiff-ui-v2/_sorted-outputs/never-forget/_selections/backups/jbe-favs-feb-13-raw-localstorage.json"; // {id: string, rating: number}[]
+consolidated_path =
+  "/Users/jbe/Dropbox/stabdiff-ui-v2/_sorted-outputs/never-forget/_selections/backups/favorites-combined-for-localstorage.json";
+consolidated_path_full_meta =
+  "/Users/jbe/Dropbox/stabdiff-ui-v2/_sorted-outputs/never-forget/_selections/backups/favorites-with-meta.json";
+
+const oldRatedArray = require(backup_rating_path); // []
+const localStorageArray = require(localstorage_path); // {id: string, rating: number}[]
+
+const localStorageArrayIds = localStorageArray.map((item) => item.id);
+let combinedIdRatingArray = oldRatedArray
+  .map((id) => {
+    if (!localStorageArrayIds.includes(id)) {
+      return { id, rating: 4 };
+    }
+  })
+  .concat(localStorageArray);
+
+combinedIdRatingArray = combinedIdRatingArray.filter((n) => n);
+
+console.log(
+  oldRatedArray.length,
+  localStorageArray.length,
+  combinedIdRatingArray.length
+);
+
+// var json = JSON.stringify(combinedIdRatingArray);
+// fs.writeFile(consolidated_path, json, "utf8", () => console.log("done"));
+
+const parseResult = parsePathCrawl(
+  combinedIdRatingArray.map((img) => {
+    return { path: img.id, ts: 0 };
+  }),
+  CATEGORY_MAP
+);
+var json = JSON.stringify(parseResult);
+fs.writeFile(consolidated_path_full_meta, json, "utf8", () =>
+  console.log("done")
 );

@@ -1,12 +1,31 @@
 <template>
   <div
     class="chapter-card"
-    :class="{ 'full-size': fullSize, third: cardSize === '3', single: cardSize === '1', fourth: cardSize === '4', fifth: cardSize === '5', sixth: cardSize === '6', vertical: isVertical }">
-    <img :src="showFried ? image.srcFried : show1pass ? image.src1pass : image.src" :alt="`Image ${image.id}`" :class="{ cover: imageDisplay === 'cover' }" />
+    :class="{
+      'full-size': fullSize,
+      third: cardSize === '3',
+      single: cardSize === '1',
+      fourth: cardSize === '4',
+      fifth: cardSize === '5',
+      sixth: cardSize === '6',
+      vertical: isVertical,
+    }">
+    <img
+      :src="
+        showFried
+          ? 'DSK8/' + image.srcFried.replace('MP-1.0', 'MP-1')
+          : show1pass
+          ? 'DSK8/' + image.src1pass.replace('MP-1.0', 'MP-1')
+          : 'DSK8/' + image.src.replace('MP-1.0', 'MP-1')
+      "
+      :alt="`Image ${image.id}`"
+      :class="{ cover: imageDisplay === 'cover' }" />
     <div class="meta-bar">
       <div class="badge">{{ image.id }}</div>
     </div>
-    <div v-if="rating" class="rating-container"><div v-for="n in parseInt(rating)" class="rating"></div></div>
+    <div v-if="rating" class="rating-container">
+      <div v-for="n in parseInt(rating)" class="rating"></div>
+    </div>
   </div>
 </template>
 

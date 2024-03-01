@@ -1,3 +1,41 @@
+- plate out
+
+- plate mix buttons: CSS clean..
+
+- aws s3 cp /Users/jbe/static-sites/never-forget-vite-vue2/public/dzi/\_local s3://never-forget-now/dzi/v0 --recursive
+
+---
+
+- audio subs tests (SRT to VTT)
+- LLM test
+
+- posting:
+  - sel out some gui stuff
+
+Working on this sprawling project that never ends but we're almost there, here's some WIP jpegs #instantlore #neverforget
+
+- feels?
+
+- save weighting
+- capcut fx and ffmpeg out for upscale
+  - make capcut shorts with just lossy audio
+  - rename accs?
+- audio play
+
+- highres popup
+
+---
+
+- frycells?
+- compressions weights?
+- random fit, black plates?
+
+---
+
+- POV you're a variational autoencoder
+
+- bunch gui CATS?
+
 - filter bar right
 
   - save maps settings?
@@ -5,15 +43,18 @@
   - and support prompt in card header
   - filter execute button? move?
   - paging broke?
+  - save plates to localstorage?
 
 - image card header in imagecard copmponent? or sep style sheet?
 - split and clean 911s? categories etc?? - join gui cat
 
 - memorial/bts category cleanup!!!
-- sup prompt sort...
+- sup prompt sort...memorial and 911...
 
 - icons instead of strings in soc med bar. and smaller...?
 - db setup?
+
+- some cells regular, some dzi?
 
 - chk notion..
 

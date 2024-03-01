@@ -1,27 +1,70 @@
 export const MODEL_META_MAP = {
-  "3dAnimationDiffusion_v10": { friendlyName: "3D Anim", hexColor: "#DA70D6" }, // Orchid
-  aniverse_v15Pruned: { friendlyName: "Aniverse", hexColor: "#FFD700" }, // Gold
-  counterfeitV30_v30: { friendlyName: "Counterfeit", hexColor: "#FF4500" }, // Orange Red
-  divineanimemix_V2: { friendlyName: "Divine Anime", hexColor: "#BA55D3" }, // Medium Orchid
-  divineelegancemix_V9: {
-    friendlyName: "Divine Elegance",
-    hexColor: "#DB7093",
-  }, // Pale Violet Red
-  "dreamlike-photoreal-2.0": { friendlyName: "Dreamlike", hexColor: "#ADD8E6" }, // Light Blue
-  dreamshaper_8: { friendlyName: "Dreamshaper", hexColor: "#20B2AA" }, // Light Sea Green
+  "3dAnimationDiffusion_v10": {
+    friendlyName: "3D Anim",
+    hexColor: "#DA70D6",
+    unicode: "‖",
+  }, // Orchid
+  aniverse_v15Pruned: {
+    friendlyName: "Aniverse",
+    hexColor: "#FFD700",
+    unicode: "₻",
+  }, // Gold
+  // counterfeitV30_v30: {
+  //   friendlyName: "Counterfeit",
+  //   hexColor: "#FF4500",
+  //   unicode: "⏅",
+  // }, // Orange Red
+  divineanimemix_V2: {
+    friendlyName: "Divine Anime",
+    hexColor: "#BA55D3",
+    unicode: "⁂",
+  }, // Medium Orchid
+  // divineelegancemix_V9: {
+  //   friendlyName: "Divine Elegance",
+  //   hexColor: "#DB7093",
+  //   unicode: "ↂ",
+  // }, // Pale Violet Red
+  // "dreamlike-photoreal-2.0": {
+  //   friendlyName: "Dreamlike",
+  //   hexColor: "#ADD8E6",
+  //   unicode: "∑",
+  // }, // Light Blue
+  dreamshaper_8: {
+    friendlyName: "Dreamshaper",
+    hexColor: "#20B2AA",
+    unicode: "≝",
+  }, // Light Sea Green
   epicrealism_naturalSinRC1VAE: {
     friendlyName: "Epic Realism",
     hexColor: "#778899",
+    unicode: "ↂ",
   }, // Light Slate Gray
-  indigoComic_v10withvae: { friendlyName: "Indigo Comic", hexColor: "#4B0082" }, // Indigo
-  meinamix_meinaV11: { friendlyName: "Meinamix", hexColor: "#FF69B4" }, // Hot Pink
-  realisticVisionV51_v51VAE: {
-    friendlyName: "Realistic Vision",
-    hexColor: "#2E8B57",
-  }, // Sea Green
-  revAnimated_v122EOL: { friendlyName: "Rev Animated", hexColor: "#FF6347" }, // Tomato
-  toonyou_beta6: { friendlyName: "Toonyou", hexColor: "#FFA07A" }, // Light Salmon
-  "v1-5-pruned-emaonly": { friendlyName: "1.5", hexColor: "#B0C4DE" }, // Light Steel Blue
+  indigoComic_v10withvae: {
+    friendlyName: "Indigo Comic",
+    hexColor: "#4B0082",
+    unicode: "∭",
+  }, // Indigo
+  meinamix_meinaV11: {
+    friendlyName: "Meinamix",
+    hexColor: "#FF69B4",
+    unicode: "ℳ",
+  }, // Hot Pink
+  // realisticVisionV51_v51VAE: {
+  //   friendlyName: "Realistic Vision",
+  //   hexColor: "#2E8B57",
+  //   unicode: "⫌",
+  // }, // Sea Green
+  // revAnimated_v122EOL: {
+  //   friendlyName: "Rev Animated",
+  //   hexColor: "#FF6347",
+  //   unicode: "⍼",
+  // }, // Tomato
+  // toonyou_beta6: { friendlyName: "Toonyou", hexColor: "#FFA07A", unicode: "◬" }, // Light Salmon
+  // "v1-5-pruned-emaonly": {
+  //   friendlyName: "1.5",
+  //   hexColor: "#B0C4DE",
+  //   unicode: "⏺",
+  // }, // Light Steel Blue
 };
 
 export const PROMPT_MAP = {

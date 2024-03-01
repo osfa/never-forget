@@ -32,6 +32,15 @@
 
           <select
             required
+            name="imageQuality"
+            id="imageQuality"
+            v-model="imageQuality">
+            <option value="fried">fried</option>
+            <option value="1pass">1pass</option>
+            <option value="2pass">2pass</option>
+          </select>
+          <select
+            required
             name="selectedSort"
             id="selectedSort"
             v-model="selectedSorting">
@@ -50,9 +59,9 @@
 
           <button @click="showFilter = !showFilter">🛠️</button>
 
-          <button @click="isWeighted = !isWeighted">
+          <!-- <button @click="isWeighted = !isWeighted">
             {{ isWeighted ? "💪" : "📈" }}
-          </button>
+          </button> -->
 
           <button @click="dumpFiles">📦</button>
         </div>
@@ -179,6 +188,9 @@
           @click="currentPage += 1">
           Next
         </button>
+        <!-- <select required name="gridSize" id="gridSize" v-model="currentPage">
+          <option v-for="Math.ceil(filteredImages.length / imgPerPage)" value="1">1</option>
+        </select> -->
       </div>
       <div class="grid-settings">
         <select required name="gridSize" id="gridSize" v-model="gridSize">
@@ -314,7 +326,7 @@ export default {
     },
 
     filterOpts() {
-      return `${this.currentPage}|${this.filterCategories}|${this.filterModels}|${this.filterPrompts}|${this.selectedSorting}|${this.sortDir}|${this.ipaFilter}|${this.currentMode}|${this.imgPerPage}|${this.isWeighted}|${this.forceWeights}`;
+      return `${this.currentPage}|${this.filterCategories}|${this.filterModels}|${this.filterPrompts}|${this.filterSupportPrompts}|${this.filterRatings}|${this.selectedSorting}|${this.sortDir}|${this.ipaFilter}|${this.currentMode}|${this.imgPerPage}|${this.isWeighted}|${this.forceWeights}`;
     },
   },
   methods: {
@@ -418,6 +430,7 @@ export default {
       );
 
       if (this.currentMode === "random" || this.currentMode === "triples") {
+        sorted = this.shuffle(sorted);
         if (this.isWeighted) {
           sorted = this.getRandomWeightedElements(
             sorted,
@@ -430,10 +443,10 @@ export default {
           );
         }
       }
-      this.viewportImages = sorted.slice(
-        (this.currentPage - 1) * this.imgPerPage,
-        (this.currentPage - 1) * this.imgPerPage + this.imgPerPage
-      );
+
+      const start = (this.currentPage - 1) * this.imgPerPage;
+      const end = parseInt(start) + parseInt(this.imgPerPage);
+      this.viewportImages = sorted.slice(start, end);
       return sorted;
     },
     getRandomElements(arr, n) {
@@ -719,7 +732,11 @@ export default {
       console.log(this.viewportImages.map((x) => x.id));
       console.log("rated images 4 and above:");
       console.log(
-        this.ratedImages.filter((image) => image.rating > 3).map((x) => x.id)
+        this.ratedImages
+          .filter((image) => image.rating > 3)
+          .map((x) => {
+            return { id: x.id, rating: x.rating };
+          })
       ); // base on selected rating?
       console.log("all rated:");
       console.log(

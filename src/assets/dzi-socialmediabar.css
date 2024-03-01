@@ -1,0 +1,65 @@
+#social-media-bar {
+  width: 100vw;
+  position: fixed;
+  display: none;
+  /* bottom: 0; */
+  top: 0;
+  left: 0;
+  z-index: 2000;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  font-family: Papyrus, fantasy;
+  font-size: 0.5rem;
+  /* display: none; */
+}
+
+#social-media-bar a {
+  display: block;
+  padding: 0.25rem 2rem;
+  padding: 0;
+  text-decoration: none;
+  flex: 1;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  height: 2vh;
+
+  background-color: rgba(0, 0, 0, 0.3)
+}
+
+#social-media-bar a:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+#social-media-bar a img {
+  width: 10px;
+}
+
+.youtube {
+  background-color: rgba(255, 0, 0, 0.3);
+  background-color: rgba(255, 0, 0, 1);
+  color: white;
+}
+.youtube:hover {
+  background-color: rgba(255, 0, 0, 0.8);
+}
+.instagram {
+  background-color: rgba(193, 53, 132, 0.3);
+  background-color: rgba(193, 53, 132, 1);
+  color: white;
+}
+.instagram:hover {
+  background-color: rgba(193, 53, 132, 0.8);
+}
+.tiktok {
+  background-color: rgba(255, 0, 80, 0.3);
+  background-color: rgba(255, 0, 80, 1);
+  color: black;
+  color: white;
+}
+.tiktok:hover {
+  background-color: rgba(255, 0, 80, 0.8);
+  background-color: rgba(255, 0, 80, 1);
+  color: black;
+}

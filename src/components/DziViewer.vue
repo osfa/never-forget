@@ -38,32 +38,34 @@
         <!-- <InformationIcon /> -->
       </div>
 
-      <BarebonesTone ref="audioModule" automaticFade :debug="false" />
+      <BarebonesTone ref="audioModule" automaticFade :debug="true" />
     </div>
     <div id="social-media-bar">
       <a
         href="https://www.youtube.com/@NeverForgetNow"
         class="btn-platform youtube"
-        >YouTube</a
-      >
+        ><img src="/yt.svg"
+      /></a>
       <a
         href="https://www.tiktok.com/@neverforgetnow"
         class="btn-platform tiktok"
-        >TikTok</a
-      >
+        ><img src="/tiktok.svg"
+      /></a>
       <a
         href="https://www.instagram.com/neverforgetnow1"
         class="btn-platform instagram"
-        >Instagram</a
-      >
+        ><img src="/insta.svg"
+      /></a>
     </div>
     <div id="filter-bar">
       <div
         v-for="(model, idx) in Object.keys(MODEL_META_MAP).slice(0, 7)"
         class="btn-layer"
-        :class="{ active: model === selectedModel }"
+        :class="{ active: selectedModels.includes(model) }"
         :style="{ backgroundColor: MODEL_META_MAP[model]?.hexColor }"
-        @click="setPlateFilter(model)"></div>
+        @click="setPlateFilter(model)">
+        {{ MODEL_META_MAP[model]?.unicode }}
+      </div>
     </div>
     <div id="zoom-bar">
       <div
@@ -93,8 +95,6 @@ const ZOOM_COLORS = [
   "#eee",
   "#fff",
 ];
-// const ZOOM_COLORS = ["#000", "#333", "#fff"];
-// const ZOOM_COLORS = ["#000", "#333", "#666", "#ccc", "#fff"];
 
 window.OpenSeadragon = OpenSeadragon;
 export default {
@@ -105,7 +105,7 @@ export default {
   data() {
     return {
       idx: 0,
-      active_schema: availableSchemas[0],
+      active_schema: this.generateTileUrl(),
       wrap: true,
 
       // zoom
@@ -133,6 +133,7 @@ export default {
       slideTickInterval: 8,
       tickDown: 8,
       selectedModel: "aniverse_v15Pruned",
+      selectedModels: ["aniverse_v15Pruned"],
       MODEL_META_MAP,
       ZOOM_COLORS,
     };
@@ -168,6 +169,40 @@ export default {
     this.frame();
   },
   methods: {
+    generateTileUrl() {
+      const dims = (10800, 19200);
+      const fried = true;
+      const cellSizes = ["fullhd", "hd", "sd"];
+
+      // dreamshaper_8-15x15-fullhd-no-fry-fry-cells-fit_files
+      // dreamshaper_8-15x15-hd-no-fry-fit-q10-15x15_files
+
+      return {
+        Image: {
+          xmlns: "http://schemas.microsoft.com/deepzoom/2008",
+          Url: "",
+          Format: "jpeg",
+          Overlap: "1",
+          TileSize: "512",
+          ServerFormat: "Default",
+          Size: {
+            Height: "10800",
+            Width: "19200",
+          },
+        },
+        height: 10800,
+        width: 19200,
+        tileSize: 512,
+        tileOverlap: 1,
+        plates: this.selectedModels,
+        getTileUrl: function (level, x, y) {
+          const selectedModel =
+            this.plates[Math.floor(Math.random() * this.plates.length)];
+
+          return `http://localhost:3000/dzi/_local/${selectedModel}-15x15-fullhd-no-fry-fry-cells-fit_files/${level}/${x}_${y}.jpeg`;
+        },
+      };
+    },
     tick() {
       this.ticks += 1;
       this.tickDown -= 1;
@@ -256,15 +291,19 @@ export default {
       this.viewer.viewport.panBy(move);
     },
     setPlateFilter(model) {
-      this.selectedModel = model;
-      // this.idx += 1;
-      // const z = this.viewer.viewport.getZoom();
-      // this.viewer.viewport.defaultZoomLevel = z;
-      // this.viewer.goToPage(this.idx % this.viewer.tileSources.length);
-      // this.viewer.viewport.panTo(this.randomCoord());
+      console.log("setplatefilter", model);
+      if (this.selectedModels.includes(model)) {
+        this.selectedModels = this.selectedModels.filter((m) => m !== model);
+      } else {
+        this.selectedModels.push(model);
+      }
 
-      // adjust based on zoom?
-      this.panDown();
+      this.viewer.addTiledImage({
+        tileSource: this.generateTileUrl(),
+        x: 0,
+        y: 0,
+        width: 1,
+      });
     },
     initViewer() {
       console.log(
@@ -275,23 +314,13 @@ export default {
         this.maxZoom,
         availableSchemas
       );
-      // smaller width => higher zoom?
-
-      //   var tileImageSpec = {
-      //   tileSource: tileSource,
-      //   success: function(event) {
-      //     var tiledImage = event.item;
-      //     tiledImage.source.getTileUrl = function( level, x, y ) {
-      //       return OpenSeadragon.IIIFTileSource.prototype.getTileUrl.call(this, level, x, y);
-      //     }
-      //   }
-      // }
-
-      // getTileUrl?
+      const bootSchema = this.generateTileUrl();
       this.viewer = OpenSeadragon({
         id: "viewer-image",
         maxImageCacheCount: 10000,
-        tileSources: availableSchemas,
+        // tileSources: availableSchemas, // hmm
+        tileSources: bootSchema, // hmm
+        // tileSources: customTileSource,
         sequenceMode: true,
         showSequenceControl: false,
         imageSmoothingEnabled: true,
@@ -300,15 +329,15 @@ export default {
         showRotationControl: false,
         // animationTime: 1.5,
         // animationTime: 1.2,
-        animationTime: 0.5,
+        // animationTime: 0.5,
         // animationTime: 0.25,
-        // animationTime: 0.1,
+        animationTime: 0.1,
         // springStiffness: 6.5 ,
         // springStiffness: 0.25,
         // springStiffness: 10,
         springStiffness: 0.1,
         // blendTime: 0.1,
-        blendTime: 1,
+        blendTime: 0.5,
         // alwaysBlend: true,
         showNavigationControl: false,
         // visibilityRatio: 1, // dont allow bigger than image
@@ -318,24 +347,58 @@ export default {
         zoomPerScroll: 2,
         // zoomPerClick: 2,
         defaultZoomLevel: this.startZoom,
-        minZoomLevel: this.minZoom,
-        // maxZoomLevel: this.maxZoom,
+        minZoomLevel: this.minZoom, // HOW FAR YOU CAN ZOOM OUT
+        // maxZoomLevel: this.maxZoom, // HOW FAR YOU CAN ZOOM IN
         maxZoomPixelRatio: 1, // default 1.1 The maximum ratio to allow a zoom-in to affect the highest level pixel ratio.
         // This can be set to Infinity to allow 'infinite' zooming into the image
         wrapHorizontal: this.wrap,
         wrapVertical: this.wrap,
         scrollToZoom: false,
         panHorizontal: false,
-        panVertical: false,
+        // panVertical: false,
       });
 
-      this.viewer.gestureSettingsMouse.clickToZoom = false;
+      this.viewer.gestureSettingsMouse.clickToZoom = true;
       this.viewer.gestureSettingsMouse.scrollToZoom = false;
-      this.viewer.gestureSettingsMouse.dragToPan = false;
+      // this.viewer.gestureSettingsMouse.dragToPan = false;
 
       this.viewer.addHandler("open", () => {
         // const homeZoom = this.viewer.viewport.getHomeZoom();
-        // const fullZoom = this.viewer.viewport.imageToViewportZoom(1);
+        const fullZoom = this.viewer.viewport.imageToViewportZoom(1);
+        console.log("fullZoom:", fullZoom);
+
+        //   const zoomTo = Math.max(
+        //   maxZoom,
+        //   this.zoomLevels[this.selectedZoomLevelIdx]
+        // );
+        // this.maxZoom = fullZoom;
+
+        // [2, 4, 6, 8, 12, 16, 18, 24]
+        // const generateSequentialIntegers = (min, max, n) => {
+        //   if (max - min + 1 < n) {
+        //     throw new Error(
+        //       "Range is too small for the requested number of sequential integers"
+        //     );
+        //   }
+
+        //   const start = Math.floor(Math.random() * (max - min - n + 2)) + min;
+        //   return Array.from({ length: n }, (_, i) => start + i);
+        // };
+
+        const generateSequentialFloats = (min, max, n) => {
+          if (n < 2) {
+            throw new Error("Need at least 2 points for a range");
+          }
+
+          const step = (max - min) / (n - 1);
+          return Array.from({ length: n }, (_, i) => min + step * i);
+        };
+        // this.zoomLevels = generateSequentialIntegers(2, fullZoom, 8);
+
+        const minZoom = 1;
+        this.zoomLevels = generateSequentialFloats(minZoom, fullZoom, 8);
+        console.log("zoomLevels", this.zoomLevels);
+
         // this.viewer.zoomPerClick = Math.cbrt(fullZoom / homeZoom); // cubed
         // this.zoomPerScroll = Math.cbrt(fullZoom / homeZoom); // cubed
 
@@ -346,12 +409,13 @@ export default {
         });
       });
 
-      this.viewer.addHandler("canvas-drag", (event) => {
-        // console.log("canvas-drag", event);
-        event.preventDefault = false;
-        event.preventDefaultAction = false;
-        this.triggerPan(event);
-      });
+      // HNNNG
+      // this.viewer.addHandler("canvas-drag", (event) => {
+      //   // console.log("canvas-drag", event);
+      //   event.preventDefault = false;
+      //   event.preventDefaultAction = false;
+      //   this.triggerPan(event);
+      // });
 
       // this.viewer.addHandler("canvas-drag-end", (event) => {
       //   // console.log("canvas-drag", event);
@@ -378,10 +442,10 @@ export default {
           return;
         }
 
-        if (this.selectedZoomLevelIdx < this.zoomLevels.length - 1) {
-          // zoom in
-          this.selectedZoomLevelIdx += 1;
-        }
+        // if (this.selectedZoomLevelIdx < this.zoomLevels.length - 1) {
+        //   // zoom in
+        //   this.selectedZoomLevelIdx += 1;
+        // }
 
         console.log(
           "canvas-click-center:",
@@ -402,36 +466,34 @@ export default {
           viewportPoint.toString(),
           imagePoint.toString()
         );
-
-        // this.viewer.addTiledImage({
-        //   tileSource: availableSchemas[1],
-        //   x: 0,
-        //   y: 0,
-        //   width: 1.92,
-        // })
       });
     },
   },
 };
 </script>
+
 <style scoped>
-.hidden {
-  display: none !important;
+@import "../assets/dzi-filterbar.css";
+@import "../assets/dzi-socialmediabar.css";
+@import "../assets/dzi-scroller-subs.css";
+
+:root {
+  --–margins: 3vw;
 }
+
 html,
 body,
 #viewer-image {
   height: 98vh;
   width: 100%;
-  /* width: 97vw;
-  padding: 0 0.75vw; */
-  /* background-color: white; */
 }
+
 #viewer-image {
   margin-top: 2vh;
-  width: 97vw;
-  padding: 0 3vw;
+  width: calc(100vw-var(--margins));
+  padding: 0 var(--margins);
 }
+
 #overlay {
   position: fixed;
   top: 0;
@@ -447,245 +509,11 @@ body,
   /* box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; */
   /* filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4)); */
   opacity: 25%;
+  opacity: 15%;
   /* mix-blend-mode: difference; */
   /* background-color: transparent; */
 }
-
-#zoom-bar {
-  position: fixed;
-  left: 0;
-  top: 0;
-  height: 100vh;
-  display: flex;
-  /* justify-content: center; */
-  align-items: center;
-  z-index: 2000;
-  flex-direction: column;
-}
-
-.btn-zoom {
-  /* padding: 2rem; */
-  background-color: #333;
-  /* opacity: 0.75; */
-  cursor: pointer;
-  width: 3vw;
-  box-sizing: border-box;
-
-  height: 12.5vh;
-}
-
-.btn-zoom.active {
-  opacity: 1;
-  border: 0.5px solid white;
-  border: 1px dotted white;
-}
-
-#filter-bar {
-  position: fixed;
-  right: 0;
-  top: 12vh;
-  height: 92vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 2000;
-  flex-direction: column;
-}
-
-.btn-layer {
-  /* padding: 2rem; */
-  width: 3vw;
-  height: 12.5vh;
-  background-color: #333;
-  /* opacity: 0.5; */
-  cursor: pointer;
-}
-
-.btn-layer.active {
-  opacity: 1;
-  border: 0.1px solid white;
-  border: 1px dashed white;
-  box-sizing: border-box;
-}
-.layer-1 {
-  background-color: #ffd700;
-}
-.layer-2 {
-  background-color: #ff4500;
-}
-.layer-3 {
-  background-color: #778899;
-}
-
-@media (orientation: portrait) {
-  .btn-layer,
-  .btn-zoom {
-    width: 4vw;
-  }
-  #viewer-image {
-    width: 94vw;
-    padding: 0 4vw;
-  }
-}
-
-#social-media-bar {
-  width: 100vw;
-  position: fixed;
-  /* bottom: 0; */
-  top: 0;
-  left: 0;
-  z-index: 2000;
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  font-family: Papyrus, fantasy;
-  font-size: 0.5rem;
-  height: 2vh;
-}
-
-#social-media-bar a {
-  display: block;
-  padding: 0.25rem 2rem;
-  text-decoration: none;
-  flex: 1;
-  text-align: center;
-}
-
-.youtube {
-  background-color: rgba(255, 0, 0, 0.3);
-  background-color: rgba(255, 0, 0, 1);
-  color: white;
-}
-.youtube:hover {
-  background-color: rgba(255, 0, 0, 0.8);
-}
-.instagram {
-  background-color: rgba(193, 53, 132, 0.3);
-  background-color: rgba(193, 53, 132, 1);
-  color: white;
-}
-.instagram:hover {
-  background-color: rgba(193, 53, 132, 0.8);
-}
-.tiktok {
-  background-color: rgba(255, 0, 80, 0.3);
-  background-color: rgba(255, 0, 80, 1);
-  color: black;
-  color: white;
-}
-.tiktok:hover {
-  background-color: rgba(255, 0, 80, 0.8);
-  background-color: rgba(255, 0, 80, 1);
-  color: black;
-}
-
-#scroller {
-  z-index: 4000;
-  position: absolute;
-  bottom: 10vh;
-  font-size: 2rem;
-  display: none;
-}
-
-.marquee {
-  color: black;
-  color: #ff0;
-  --gap: 1rem;
-  position: relative;
-  display: flex;
-  overflow: hidden;
-  user-select: none;
-  gap: var(--gap);
-  text-shadow: #fff 0 0 2px;
-  text-shadow: #ff0 0 0 2px;
-  /* text-shadow: #ff0 0 0 1px;
-  text-shadow: #fff 0 0 2px; */
-  font-family: Papyrus, fantasy;
-}
-
-.marquee__content {
-  flex-shrink: 0;
-  display: flex;
-  justify-content: space-around;
-  gap: var(--gap);
-  min-width: 100%;
-  margin-top: 0;
-  margin-bottom: 0;
-}
-.marquee__content li {
-  list-style: none;
-  /* max-width: 30vw; */
-}
-
-@keyframes scroll {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(calc(-100% - var(--gap)));
-  }
-}
-
-/* Pause animation when reduced-motion is set */
-@media (prefers-reduced-motion: reduce) {
-  .marquee__content {
-    animation-play-state: paused !important;
-  }
-}
-
-/* Enable animation */
-.enable-animation .marquee__content {
-  animation: scroll 180s linear infinite;
-}
-
-/* Reverse animation */
-.marquee--reverse .marquee__content {
-  animation-direction: reverse;
-}
-
-/* Pause on hover */
-.marquee--hover-pause:hover .marquee__content {
-  animation-play-state: paused;
-}
-
-/* Attempt to size parent based on content. Keep in mind that the parent width is equal to both content containers that stretch to fill the parent. */
-.marquee--fit-content {
-  max-width: fit-content;
-}
-
-/* A fit-content sizing fix: Absolute position the duplicate container. This will set the size of the parent wrapper to a single child container. Shout out to Olavi's article that had this solution 👏 @link: https://olavihaapala.fi/2021/02/23/modern-marquee.html  */
-.marquee--pos-absolute .marquee__content:last-child {
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-/* Enable position absolute animation on the duplicate content (last-child) */
-.enable-animation .marquee--pos-absolute .marquee__content:last-child {
-  animation-name: scroll-abs;
-}
-
-@keyframes scroll-abs {
-  from {
-    transform: translateX(calc(100% + var(--gap)));
-  }
-  to {
-    transform: translateX(0);
-  }
+.hidden {
+  display: none !important;
 }
 </style>
-
-<!-- "3dAnimationDiffusion_v10": { friendlyName: "3D Anim", hexColor: "#DA70D6" }, // Orchid
-aniverse_v15Pruned: { friendlyName: "Aniverse", hexColor: "#FFD700" }, // Gold
-counterfeitV30_v30: { friendlyName: "Counterfeit", hexColor: "#FF4500" }, // Orange Red
-divineanimemix_V2: { friendlyName: "Divine Anime", hexColor: "#BA55D3" }, // Medium Orchid
-divineelegancemix_V9: { friendlyName: "Divine Elegance", hexColor: "#DB7093" }, // Pale Violet Red
-"dreamlike-photoreal-2.0": { friendlyName: "Dreamlike", hexColor: "#ADD8E6" }, // Light Blue
-dreamshaper_8: { friendlyName: "Dreamshaper", hexColor: "#20B2AA" }, // Light Sea Green
-epicrealism_naturalSinRC1VAE: { friendlyName: "Epic Realism", hexColor: "#778899" }, // Light Slate Gray
-indigoComic_v10withvae: { friendlyName: "Indigo Comic", hexColor: "#4B0082" }, // Indigo
-meinamix_meinaV11: { friendlyName: "Meinamix", hexColor: "#FF69B4" }, // Hot Pink
-realisticVisionV51_v51VAE: { friendlyName: "Realistic Vision", hexColor: "#2E8B57" }, // Sea Green
-revAnimated_v122EOL: { friendlyName: "Rev Animated", hexColor: "#FF6347" }, // Tomato
-toonyou_beta6: { friendlyName: "Toonyou", hexColor: "#FFA07A" }, // Light Salmon
-"v1-5-pruned-emaonly": { friendlyName: "1.5", hexColor: "#B0C4DE" }, // Light Steel Blue -->

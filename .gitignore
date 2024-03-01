@@ -27,6 +27,7 @@ dist-ssr
 # Local Netlify folder
 .netlify
 public/NF-03-5
+public/DSK8
 public/dzi
 public/memories
 src/data/pics-parsed.json
