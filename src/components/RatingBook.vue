@@ -232,6 +232,7 @@
   </div>
 </template>
 <script>
+// BING BONG BUILD
 import parsedBatch from "../data/pics-dummy.json";
 // import parsedBatch from "../data/pics-parsed.json";
 // import parsedBatch from "../data/pics-parsed-tiny.json";
