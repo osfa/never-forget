@@ -416,27 +416,27 @@ export default {
         showRotationControl: false,
         // animationTime: 1.5,
         // animationTime: 1.2,
-        animationTime: 0.5,
-        // animationTime: 0.25,
+        // animationTime: 0.5,
+        animationTime: 0.25,
         // animationTime: 0.1,
         // springStiffness: 6.5 ,
         // springStiffness: 0.25,
         // springStiffness: 10,
         springStiffness: 0.1,
-        // blendTime: 0.1,
-        blendTime: 0.25,
+        blendTime: 0.5,
+        // blendTime: 0.25,
         // alwaysBlend: true,
         showNavigationControl: false,
         // visibilityRatio: 1, // dont allow bigger than image
         visibilityRatio: 2, // dont allow bigger than image
         constrainDuringPan: false, // prevents bounceback anim
         autoResize: true,
-        zoomPerScroll: 2,
+        // zoomPerScroll: 2,
         // zoomPerClick: 2,
         defaultZoomLevel: this.startZoom,
         minZoomLevel: this.minZoom, // HOW FAR YOU CAN ZOOM OUT
         // maxZoomLevel: this.maxZoom, // HOW FAR YOU CAN ZOOM IN
-        maxZoomPixelRatio: 1, // default 1.1 The maximum ratio to allow a zoom-in to affect the highest level pixel ratio.
+        maxZoomPixelRatio: 0.5, // default 1.1 The maximum ratio to allow a zoom-in to affect the highest level pixel ratio.
         // This can be set to Infinity to allow 'infinite' zooming into the image
         wrapHorizontal: this.wrap,
         wrapVertical: this.wrap,
@@ -521,7 +521,12 @@ export default {
       this.viewer.addHandler("canvas-scroll", (event) => {
         event.preventDefault = false;
         // this.triggerZoom(event);
-        this.panDown();
+        console.log(event.scroll);
+        if (event.scroll > 0) {
+          this.panDown();
+        } else {
+          this.pan(1, 0);
+        }
       });
 
       this.viewer.addHandler("canvas-click", (event) => {

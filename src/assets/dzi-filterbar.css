@@ -10,7 +10,7 @@
 }
 
 #model-section {
-  height: 47vh;
+  height: 57vh;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
@@ -18,7 +18,6 @@
 
 .btn-layer {
   width: 3vw;
-  /* height: 12.5vh; */
   background-color: transparent !important;
   /* background-color: black !important; */
   background-color: rgba(0,0,0,0.25)!important;
@@ -32,7 +31,7 @@
 }
 
 #action-section {
-  height: 35vh;
+  height: 25vh;
   display: flex;
   flex-direction: column;
   border-left: 1px dotted white;
