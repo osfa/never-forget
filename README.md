@@ -6,6 +6,9 @@ aws s3 cp /Users/jbe/static-sites/never-forget-vite-vue2/public/dzi/\_local s3:/
 
 - cleaner dims and res mix
 
+- scroll fix
+- reapply gettilulr
+
 - LLM test: ollama script fiddling
 
 - use existing plate mate to make video?

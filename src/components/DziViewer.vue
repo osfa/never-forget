@@ -105,8 +105,14 @@
           @click="plateFried = !plateFried">
           ◡
         </div>
-        <div class="btn-layer btn-right" @click="pan(5, 0)">⇉</div>
-        <div class="btn-layer btn-left" @click="pan(-5, 0)">⇇</div>
+        <div
+          class="btn-layer"
+          :class="{ active: infoModalOpen }"
+          @click="infoModalOpen = !infoModalOpen">
+          ⓘ
+        </div>
+        <!-- <div class="btn-layer btn-right" @click="pan(5, 0)">⇉</div>
+        <div class="btn-layer btn-left" @click="pan(-5, 0)">⇇</div> -->
       </div>
     </div>
     <div id="zoom-bar">
@@ -154,8 +160,8 @@ export default {
       currentZoom: 0.2,
       selectedZoomLevelIdx: 0,
       zoomLevels: [2, 4, 6, 8, 12, 16, 18, 24],
-      startZoom: 2,
-      minZoom: 1, // how far you can zoom out, the smaller the more
+      startZoom: 3,
+      minZoom: 3, // how far you can zoom out, the smaller the more
       maxZoom: 28, // how far you can zoom in, the higher the more
 
       driftStep: 0.025,
@@ -168,6 +174,7 @@ export default {
       develop: false,
       plateCellSize: "fullhd",
       plateFried: false,
+      infoModalOpen: false,
 
       // tick stuff
       ticks: 0,
@@ -231,10 +238,9 @@ export default {
       .getElementById("my-audio-player")
       .textTracks[0].addEventListener("cuechange", (event) => {
         console.log("cuechange", event.target.activeCues);
-        // console.log("cuechange", event.originalTarget.activeCues);
-        // console.log(this.activeCues[0].text);
         if (event.target.activeCues.length > 0) {
           this.subtitles = event.target.activeCues[0].text;
+          this.pan(0.5, 0);
         }
       });
   },
@@ -417,14 +423,14 @@ export default {
         // animationTime: 1.5,
         // animationTime: 1.2,
         // animationTime: 0.5,
-        animationTime: 0.25,
+        // animationTime: 0.25,
         // animationTime: 0.1,
         // springStiffness: 6.5 ,
         // springStiffness: 0.25,
         // springStiffness: 10,
-        springStiffness: 0.1,
-        blendTime: 0.5,
-        // blendTime: 0.25,
+        // springStiffness: 0.1,
+        // blendTime: 0.5,
+        blendTime: 0.25,
         // alwaysBlend: true,
         showNavigationControl: false,
         // visibilityRatio: 1, // dont allow bigger than image
@@ -585,8 +591,10 @@ body {
   /* width: calc(100vw-var(--margins)); */
   width: 98vw;
   /* padding: 0 var(--margins); */
-  padding-left: 2vw;
+  margin-left: 2vw;
   position: relative;
+  cursor: wait;
+  cursor: pointer;
 }
 
 #overlay {

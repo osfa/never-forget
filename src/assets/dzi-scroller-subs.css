@@ -9,10 +9,11 @@
   bottom: 0;
   font-size: 2rem;
   font-family: Papyrus, fantasy;
-  width: 94%;
+  width: 100%;
   text-align: center;
   color: #ff0;
-  text-shadow: #000 0 0 2px; 
+  text-shadow: #000 1px 1px 3px; 
+  pointer-events: none;
 }
 
 #subs-text {
@@ -26,6 +27,17 @@
   font-size: 2rem;
   /* display: none; */
   font-family: Papyrus, fantasy;
+}
+
+@media (orientation: portrait) {
+  #subs-container {
+    font-size: 1.4rem;
+  }
+
+  #subs-text {
+    padding: 0 4rem
+  }
+
 }
 
 .marquee {

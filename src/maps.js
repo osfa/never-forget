@@ -2,7 +2,7 @@ export const MODEL_META_MAP = {
   "3dAnimationDiffusion_v10": {
     friendlyName: "3D Anim",
     hexColor: "#DA70D6",
-    unicode: "‖",
+    unicode: "ↂ",
   }, // Orchid
   aniverse_v15Pruned: {
     friendlyName: "Aniverse",
@@ -37,7 +37,7 @@ export const MODEL_META_MAP = {
   epicrealism_naturalSinRC1VAE: {
     friendlyName: "Epic Realism",
     hexColor: "#778899",
-    unicode: "ↂ",
+    unicode: "‖",
   }, // Light Slate Gray
   indigoComic_v10withvae: {
     friendlyName: "Indigo Comic",

@@ -1,5 +1,5 @@
 #social-media-bar {
-  width: 100vw;
+  width: 97vw;
   position: fixed;
   display: none;
   /* bottom: 0; */
@@ -23,7 +23,7 @@
   text-align: center;
   display: flex;
   justify-content: center;
-  height: 3vh;
+  height: 4vh;
 
   background-color: rgba(0, 0, 0, 0.3)
 }
@@ -62,4 +62,9 @@
   background-color: rgba(255, 0, 80, 0.8);
   background-color: rgba(255, 0, 80, 1);
   color: black;
+}
+@media (orientation: portrait) {
+  #social-media-bar  {
+    width: calc(100vw - 3rem);
+  }
 }

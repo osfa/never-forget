@@ -10,7 +10,7 @@
 }
 
 #model-section {
-  height: 57vh;
+  height: 75vh;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
@@ -31,7 +31,7 @@
 }
 
 #action-section {
-  height: 25vh;
+  height: 15vh;
   display: flex;
   flex-direction: column;
   border-left: 1px dotted white;
@@ -64,16 +64,7 @@
   box-sizing: border-box;
 }
 
-@media (orientation: portrait) {
-  .btn-layer,
-  .btn-zoom {
-    width: 4vw;
-  }
-  #viewer-image {
-    width: 94vw;
-    padding: 0 4vw;
-  }
-}
+
 
 /* ZOOM BUTTON  */
 
@@ -113,7 +104,7 @@
 
 .btn-audio {
   position: fixed;
-  top: 3vh;
+  top: 0;
   left: 2vw;
 
   background-color: rgba(255, 255, 255, 0.5);
@@ -129,26 +120,49 @@
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  color: black;
 }
 
 .btn-audio.hasInit {
   background-color: rgba(0, 255, 0, 0.55);
+  background-color: rgba(255, 255, 255, 0.55);
 
   width: 3vw;
-  height: 15vh;
-  font-size: 1.5rem;
+  height: 10vh;
+  font-size: 1rem;
 
   left: auto;
   right: 0;
 }
 
 @media (orientation: portrait) {
+  .btn-audio{
+    width: 88vw;
+    height: 96vh;
+    left: 0;
+    top: 4vh;
+  }
   .btn-audio.hasInit {
-    width: 4vw;
+    width: 3rem;
     font-size: 0.5rem;
+    top: 0;
+    height: 10vh;
   }
 }
 
 .btn-audio.isPlaying {
   background-color: rgba(255, 255, 255, 0.25);
+}
+
+@media (orientation: portrait) {
+  .btn-layer {
+    width: 3rem;
+  }
+  .btn-zoom {
+    display: none;
+  }
+  #viewer-image {
+    width: 100vw!important;
+    margin-left: 0 !important;
+  }
 }
