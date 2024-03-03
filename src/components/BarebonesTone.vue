@@ -3,7 +3,7 @@
     class="btn-audio"
     :class="{ hasInit: hasInit || debug, isPlaying }"
     @click="toggleAudio">
-    {{ muteIcon() }}
+    <span>{{ muteIcon() }}</span>
   </div>
 </template>
 <script>
@@ -102,7 +102,8 @@ export default {
       return Math.floor(Math.random() * (max - min)) + min;
     },
     muteIcon() {
-      return this.isPlaying ? "🔇" : "🕳️";
+      // return this.isPlaying ? "🔇" : "🕳️";
+      return this.isPlaying ? "🔇" : "⅏";
     },
     initAudio() {
       const context = new Tone.Context();

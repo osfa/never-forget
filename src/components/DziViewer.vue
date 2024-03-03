@@ -132,6 +132,10 @@ import BarebonesTone from "./BarebonesTone.vue";
 import { MODEL_META_MAP } from "../maps";
 console.log("load.");
 
+Array.prototype.random = function () {
+  return this[Math.floor(Math.random() * this.length)];
+};
+
 const ZOOM_COLORS = [
   "#000",
   "#111",
@@ -183,8 +187,8 @@ export default {
       tickInterval: 1000,
       slideTickInterval: 8,
       tickDown: 8,
-      selectedModel: "aniverse_v15Pruned",
-      selectedModels: ["aniverse_v15Pruned"],
+      // selectedModel: "aniverse_v15Pruned",
+      selectedModels: [Object.keys(MODEL_META_MAP).random()],
       MODEL_META_MAP,
       ZOOM_COLORS,
     };
@@ -414,7 +418,7 @@ export default {
         // tileSources: availableSchemas, // hmm
         tileSources: bootSchema, // hmm
         // tileSources: customTileSource,
-        sequenceMode: true,
+        sequenceMode: false,
         showSequenceControl: false,
         imageSmoothingEnabled: true,
         // placeholderFillStyle : draw grid if not loaded?
@@ -430,7 +434,7 @@ export default {
         // springStiffness: 10,
         // springStiffness: 0.1,
         // blendTime: 0.5,
-        blendTime: 0.25,
+        blendTime: 0.1,
         // alwaysBlend: true,
         showNavigationControl: false,
         // visibilityRatio: 1, // dont allow bigger than image
@@ -531,7 +535,7 @@ export default {
         if (event.scroll > 0) {
           this.panDown();
         } else {
-          this.pan(1, 0);
+          this.pan(0, 1);
         }
       });
 

@@ -96,7 +96,7 @@
 .btn-zoom.active {
   opacity: 1;
   border: 0.5px solid white;
-  border: 1px dotted red;
+  /* border: 1px dotted red; */
 }
 
 
@@ -104,23 +104,34 @@
 
 .btn-audio {
   position: fixed;
-  top: 0;
+  top: 5vh;
   left: 2vw;
 
   background-color: rgba(255, 255, 255, 0.5);
-
+  background: radial-gradient(circle, rgba(200,200,200,0.3) 0%, rgba(0,0,0,0.5) 95%);;
+  box-shadow: 0 0 10px 10px rgba(0,0,0,0.5);
   font-size: 5rem;
   z-index: 10000;
 
   width: 95vw;
 
-  height: 100vh;
+  height: 96vh;
 
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  color: black;
+  color: #ff0;
+  color: #fff;
+}
+
+.btn-audio:hover {
+  text-decoration: underline;
+}
+
+.btn-audio span {
+  /* mix-blend-mode: lighten; */
+  text-shadow: 0 0 5px black;
 }
 
 .btn-audio.hasInit {
@@ -133,10 +144,11 @@
 
   left: auto;
   right: 0;
+  top: 0
 }
 
 @media (orientation: portrait) {
-  .btn-audio{
+  .btn-audio {
     width: 88vw;
     height: 96vh;
     left: 0;
