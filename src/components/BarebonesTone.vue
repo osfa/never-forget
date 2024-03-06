@@ -36,7 +36,7 @@ export default {
       // narrationVolume: -3,
       narrationVolume: -9,
       narrationVolumeMin: -32,
-
+      audioTagVolume: 0.5,
       noiseMaker: null,
       noiserMakerVolume: -16,
       // noiserMakerVolume: -32,
@@ -220,16 +220,19 @@ export default {
       if (!this.audioCtx) {
         this.initAudio();
         this.hasInit = true;
+        document.getElementById("my-audio-player").volume = this.audioTagVolume;
         document.getElementById("my-audio-player").play();
         return;
       }
       if (this.audioCtx.state === "running") {
-        document.getElementById("my-audio-player").pause();
+        // document.getElementById("my-audio-player").pause();
+        document.getElementById("my-audio-player").volume = 0;
 
         this.audioCtx.suspend().then(function () {});
       } else if (this.audioCtx.state === "suspended") {
         this.audioCtx.resume().then(function () {});
-        document.getElementById("my-audio-player").play();
+        // document.getElementById("my-audio-player").play();
+        document.getElementById("my-audio-player").volume = this.audioTagVolume;
       }
     },
     isObj(variable) {

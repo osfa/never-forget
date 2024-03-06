@@ -1,13 +1,9 @@
 aws s3 cp /Users/jbe/static-sites/never-forget-vite-vue2/public/dzi/\_local s3://jpeg.matrix.surf/dzi/v0 --recursive
 
-- audio subs tests (SRT to VTT)
-
-  - browser device test?
-
 - cleaner dims and res mix
 
 - scroll fix
-- reapply gettilulr
+- audio and srt in bucket?
 
 - LLM test: ollama script fiddling
 

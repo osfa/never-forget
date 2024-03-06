@@ -7,10 +7,13 @@
     <!-- <img id="overlay" src="/grid2.svg" :style="{ scale: `${currentZoom * 150}%` }" /> -->
     <div id="subs-container">
       <div id="subs-text">{{ subtitles }}</div>
-      <audio id="my-audio-player" src="/audio/script-srt-test.mp3">
+      <audio
+        id="my-audio-player"
+        loop
+        src="/audio/narration/nf-test-feb5-h-v1-audio-bounce.mp3">
         <track
           kind="captions"
-          src="/audio/script-srt-test.vtt"
+          src="/audio/narration/nf-test-feb5-h-v1-audio-bounce.vtt"
           srclang="en"
           label="English"
           default />
@@ -56,17 +59,17 @@
       <a
         href="https://www.youtube.com/@NeverForgetNow"
         class="btn-platform youtube"
-        ><img src="/yt.svg"
+        ><img src="/img/icons/yt.svg"
       /></a>
       <a
         href="https://www.tiktok.com/@neverforgetnow"
         class="btn-platform tiktok"
-        ><img src="/tiktok.svg"
+        ><img src="/img/icons/tiktok.svg"
       /></a>
       <a
         href="https://www.instagram.com/neverforgetnow1"
         class="btn-platform instagram"
-        ><img src="/insta.svg"
+        ><img src="/img/icons/insta.svg"
       /></a>
     </div>
     <div id="filter-bar">
@@ -607,7 +610,7 @@ body {
   left: 0;
   height: 100%;
   width: 100%;
-  background-image: url("/grid2.svg");
+  background-image: url("/img/grid.svg");
   pointer-events: none;
   z-index: 2000;
   object-fit: contain;
