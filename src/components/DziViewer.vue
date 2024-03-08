@@ -114,18 +114,20 @@
           @click="infoModalOpen = !infoModalOpen">
           ⓘ
         </div>
+        <div class="btn-layer" @click="zoomInCall()">+</div>
+        <div class="btn-layer" @click="zoomOutCall()">-</div>
         <!-- <div class="btn-layer btn-right" @click="pan(5, 0)">⇉</div>
         <div class="btn-layer btn-left" @click="pan(-5, 0)">⇇</div> -->
       </div>
     </div>
-    <div id="zoom-bar">
+    <!-- <div id="zoom-bar">
       <div
         v-for="(zoom, idx) in zoomLevels"
         class="btn-zoom"
         :class="{ active: idx === selectedZoomLevelIdx }"
         @click="selectedZoomLevelIdx = idx"
         :style="{ backgroundColor: ZOOM_COLORS[idx] }"></div>
-    </div>
+    </div> -->
   </div>
 </template>
 <script>
@@ -167,8 +169,9 @@ export default {
       currentZoom: 0.2,
       selectedZoomLevelIdx: 0,
       zoomLevels: [2, 4, 6, 8, 12, 16, 18, 24],
+      zoomSteps: 4,
       startZoom: 3,
-      minZoom: 3, // how far you can zoom out, the smaller the more
+      minZoom: 2, // how far you can zoom out, the smaller the more
       maxZoom: 28, // how far you can zoom in, the higher the more
 
       driftStep: 0.025,
@@ -190,7 +193,6 @@ export default {
       tickInterval: 1000,
       slideTickInterval: 8,
       tickDown: 8,
-      // selectedModel: "aniverse_v15Pruned",
       selectedModels: [Object.keys(MODEL_META_MAP).random()],
       MODEL_META_MAP,
       ZOOM_COLORS,
@@ -203,10 +205,7 @@ export default {
         this.selectedZoomLevelIdx,
         this.zoomLevels[this.selectedZoomLevelIdx]
       );
-      // doesnt center?
-      // need to take viewport width in account somehow?
       this.viewer.viewport.zoomTo(this.zoomLevels[this.selectedZoomLevelIdx]);
-      // this.viewer.viewport.zoomBy(this.zoomPerScroll);
     },
     plateFried() {
       this.viewer.addTiledImage({
@@ -329,6 +328,16 @@ export default {
       );
       return coord;
     },
+    zoomOutCall() {
+      if (this.selectedZoomLevelIdx >= 1) {
+        this.selectedZoomLevelIdx -= 1;
+      }
+    },
+    zoomInCall() {
+      if (this.selectedZoomLevelIdx < this.zoomLevels.length - 1) {
+        this.selectedZoomLevelIdx += 1;
+      }
+    },
     triggerZoom(e) {
       console.log("trigg", this.selectedZoomLevelIdx);
       if (
@@ -449,7 +458,7 @@ export default {
         defaultZoomLevel: this.startZoom,
         minZoomLevel: this.minZoom, // HOW FAR YOU CAN ZOOM OUT
         // maxZoomLevel: this.maxZoom, // HOW FAR YOU CAN ZOOM IN
-        maxZoomPixelRatio: 0.5, // default 1.1 The maximum ratio to allow a zoom-in to affect the highest level pixel ratio.
+        maxZoomPixelRatio: 1, // default 1.1 The maximum ratio to allow a zoom-in to affect the highest level pixel ratio.
         // This can be set to Infinity to allow 'infinite' zooming into the image
         wrapHorizontal: this.wrap,
         wrapVertical: this.wrap,
@@ -468,24 +477,6 @@ export default {
         const fullZoom = this.viewer.viewport.imageToViewportZoom(0.5);
         console.log("fullZoom:", fullZoom);
 
-        //   const zoomTo = Math.max(
-        //   maxZoom,
-        //   this.zoomLevels[this.selectedZoomLevelIdx]
-        // );
-        // this.maxZoom = fullZoom;
-
-        // [2, 4, 6, 8, 12, 16, 18, 24]
-        // const generateSequentialIntegers = (min, max, n) => {
-        //   if (max - min + 1 < n) {
-        //     throw new Error(
-        //       "Range is too small for the requested number of sequential integers"
-        //     );
-        //   }
-
-        //   const start = Math.floor(Math.random() * (max - min - n + 2)) + min;
-        //   return Array.from({ length: n }, (_, i) => start + i);
-        // };
-
         const generateSequentialFloats = (min, max, n) => {
           if (n < 2) {
             throw new Error("Need at least 2 points for a range");
@@ -494,11 +485,15 @@ export default {
           const step = (max - min) / (n - 1);
           return Array.from({ length: n }, (_, i) => min + step * i);
         };
-        // this.zoomLevels = generateSequentialIntegers(2, fullZoom, 8);
 
-        this.zoomLevels = generateSequentialFloats(this.minZoom, fullZoom, 8);
+        this.zoomLevels = generateSequentialFloats(
+          this.minZoom,
+          fullZoom,
+          this.zoomSteps
+        );
         console.log("zoomLevels", this.zoomLevels);
-
+        this.selectedZoomLevelIdx = 2;
+        // this.viewer.viewport.startZoom = this.zoomLevels[1];
         // this.viewer.zoomPerClick = Math.cbrt(fullZoom / homeZoom); // cubed
         // this.zoomPerScroll = Math.cbrt(fullZoom / homeZoom); // cubed
 
@@ -534,7 +529,7 @@ export default {
       this.viewer.addHandler("canvas-scroll", (event) => {
         event.preventDefault = false;
         // this.triggerZoom(event);
-        console.log(event.scroll);
+        // console.log(event.scroll);
         if (event.scroll > 0) {
           this.panDown();
         } else {
@@ -597,8 +592,9 @@ body {
   height: 100vh;
   /* width: calc(100vw-var(--margins)); */
   width: 98vw;
+  width: 100vw;
   /* padding: 0 var(--margins); */
-  margin-left: 2vw;
+  /* margin-left: 2vw; */
   position: relative;
   cursor: wait;
   cursor: pointer;

@@ -1,9 +1,18 @@
 aws s3 cp /Users/jbe/static-sites/never-forget-vite-vue2/public/dzi/\_local s3://jpeg.matrix.surf/dzi/v0 --recursive
 
-- cleaner dims and res mix
+- Working on this sprawling project that never ends but we're almost there, here's some WIP jpegs #instantlore #neverforget
 
-- scroll fix
+---
+
+- mix models opt...
+
+- zoom buttons
+
+  - zoom hover, active
+  - pause button (with ios support)
+
 - audio and srt in bucket?
+- plate mixing bug: remove or fix with more plates?
 
 - LLM test: ollama script fiddling
 
@@ -11,25 +20,25 @@ aws s3 cp /Users/jbe/static-sites/never-forget-vite-vue2/public/dzi/\_local s3:/
 
 - single card test: vert hori...
 
-- posting:
-
-  - sel out some gui stuff
-
-- Working on this sprawling project that never ends but we're almost there, here's some WIP jpegs #instantlore #neverforget
-
-- feels?
-
 - save weighting
-- sel867 image series...
 
-- capcut fx and ffmpeg out for upscale
+- highres popup, dzi? alert modal with highresimgs? dzis in modal? modal popup: background css pos based on mouse? sometimes single iamge modals on top? as a weird reminder? and then ui element: ok embed youtube or video tags kinda nice? super fried on top? youtube embedfs in modal?
 
-  - make capcut shorts with just lossy audio
-  - rename accs?
+photo alubm sheet composer?
 
-- audio play
+fade in filter and top bar? more css anims?
 
-- highres popup
+completely black/green plates? diff sizes plates? make sure same size?
+
+landing page: popup that shows text and then enter?
+
+having diff filters in produces diff tones.js osc sounds? so like a synth?
+
+have some sort of scale at the bottom
+
+instant lore textmärke?
+
+formats overlay? dvd etc
 
 ---
 
@@ -38,6 +47,10 @@ aws s3 cp /Users/jbe/static-sites/never-forget-vite-vue2/public/dzi/\_local s3:/
 - random fit, black plates?
 
 ---
+
+have mouse cursor draw? tracking path? multiple audio tracks? colorpicker+zoomer fx tock click sounds when siwtching dirs?
+
+--
 
 - POV you're a variational autoencoder
 

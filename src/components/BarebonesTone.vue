@@ -103,7 +103,8 @@ export default {
     },
     muteIcon() {
       // return this.isPlaying ? "🔇" : "🕳️";
-      return this.isPlaying ? "🔇" : "⅏";
+      // return this.isPlaying ? "🔇" : "⅏";
+      return this.isPlaying ? "🔇" : "↕";
     },
     initAudio() {
       const context = new Tone.Context();
