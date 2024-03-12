@@ -266,8 +266,10 @@ export default {
           xmlns: "http://schemas.microsoft.com/deepzoom/2008",
           Url: "",
         },
-        width: dims[plateCellSize][0] * grid_dims,
-        height: dims[plateCellSize][1] * grid_dims,
+        width: 28800,
+        height: 64800,
+        // width: dims[plateCellSize][0] * grid_dims,
+        // height: dims[plateCellSize][1] * grid_dims,
         tileSize: 512,
         tileOverlap: 1,
         plates: this.selectedModels,
@@ -287,10 +289,11 @@ export default {
               ? "q10"
               : "q50";
 
-          const baseUrl = "jpeg.matrix.surf/dzi/v0";
-          // const baseUrl = "localhost:3000/dzi/_local"
+          // const baseUrl = "jpeg.matrix.surf/dzi/v0";
+          const baseUrl = "localhost:3000/dzi/_local";
 
-          return `http://${baseUrl}/${selectedModel}-15x15-${this.plateCellSize}-${fried}${fry_cells}fit-${q}_files/${level}/${x}_${y}.jpeg`;
+          return `http://${baseUrl}/png-test_files/${level}/${x}_${y}-cmyk-8c-Jarvis-x1-dithered.png`;
+          // return `http://${baseUrl}/${selectedModel}-15x15-${this.plateCellSize}-${fried}${fry_cells}fit-${q}_files/${level}/${x}_${y}.jpeg`;
         },
       };
     },
