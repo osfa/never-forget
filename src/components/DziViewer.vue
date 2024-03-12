@@ -289,8 +289,8 @@ export default {
               ? "q10"
               : "q50";
 
-          // const baseUrl = "jpeg.matrix.surf/dzi/v0";
-          const baseUrl = "localhost:3000/dzi/_local";
+          const baseUrl = "jpeg.matrix.surf/dzi/v0";
+          // const baseUrl = "localhost:3000/dzi/_local";
 
           return `http://${baseUrl}/png-test_files/${level}/${x}_${y}-cmyk-8c-Jarvis-x1-dithered.png`;
           // return `http://${baseUrl}/${selectedModel}-15x15-${this.plateCellSize}-${fried}${fry_cells}fit-${q}_files/${level}/${x}_${y}.jpeg`;
