@@ -135,7 +135,9 @@ import OpenSeadragon from "openseadragon";
 import { availableSchemas } from "../schemas.js";
 import BarebonesTone from "./BarebonesTone.vue";
 import { MODEL_META_MAP } from "../maps";
-console.log("load.");
+// import { Ollama } from "ollama";
+// import ollama from "ollama";
+import ollama from "ollama/browser";
 
 Array.prototype.random = function () {
   return this[Math.floor(Math.random() * this.length)];
@@ -161,6 +163,7 @@ export default {
   },
   data() {
     return {
+      isChatResponding: false,
       idx: 0,
       active_schema: this.generateTileUrl(),
       wrap: true,
@@ -240,17 +243,44 @@ export default {
     console.log("dzi mounted");
     this.initViewer();
     this.frame();
+    console.log("load.");
     document
       .getElementById("my-audio-player")
       .textTracks[0].addEventListener("cuechange", (event) => {
-        console.log("cuechange", event.target.activeCues);
+        // console.log("cuechange", event.target.activeCues);
         if (event.target.activeCues.length > 0) {
           this.subtitles = event.target.activeCues[0].text;
-          this.pan(0.5, 0);
+          // this.pan(0.5, 0); // invert?
+          // if (!this.isChatResponding) {
+          //   this.chatResponds(event.target.activeCues[0].text);
+          // }
         }
       });
   },
   methods: {
+    async chatResponds(textToRespondTo) {
+      console.log("chatResponds:", textToRespondTo);
+      this.isChatResponding = true;
+      const response = await ollama.chat({
+        model: "llama2",
+        messages: [
+          {
+            role: "user",
+            content:
+              "react to this text as if you're a twitch chat: " +
+              textToRespondTo,
+          },
+        ],
+      });
+      console.log(response.message.content);
+      this.isChatResponding = false;
+      // const ollama = new Ollama({ host: "http://localhost:11434" });
+      // const response = await ollama.chat({
+      //   model: "llama2",
+      //   messages: [{ role: "user", content: "Why is the sky blue?" }],
+      // });
+      // console.log(response.message.content);
+    },
     generateTileUrl() {
       const grid_dims = 15;
       const dims = {
@@ -270,8 +300,10 @@ export default {
         height: 64800,
         // width: dims[plateCellSize][0] * grid_dims,
         // height: dims[plateCellSize][1] * grid_dims,
+        // tileSize: 510,
+        // tileOverlap: 1,
         tileSize: 512,
-        tileOverlap: 1,
+        tileOverlap: 0,
         plates: this.selectedModels,
         plateCellSize: plateCellSize,
         plateFried: this.plateFried || false,
@@ -289,10 +321,21 @@ export default {
               ? "q10"
               : "q50";
 
-          const baseUrl = "jpeg.matrix.surf/dzi/v0";
-          // const baseUrl = "localhost:3000/dzi/_local";
+          // const baseUrl = "jpeg.matrix.surf/dzi/v0";
+          const baseUrl = "localhost:3000/dzi/_local";
 
-          return `http://${baseUrl}/png-test_files/${level}/${x}_${y}-cmyk-8c-Jarvis-x1-dithered.png`;
+          // return `http://${baseUrl}/png-test-overlap_files/${level}/${x}_${y}-cmykPlus-8c-Jarvis-x1-dithered-idx0.png`;
+          // return `http://${baseUrl}/png-test-overlap_files/${level}/${x}_${y}-auto-16c-Jarvis-x1-dithered-idx0.png`;
+          // return `http://${baseUrl}/png-test-overlap_files/${level}/${x}_${y}-websafe-16c-Jarvis-x1-dithered-idx0`;
+
+          // 512, overlap 0
+          // seams without
+          return `http://${baseUrl}/png-test_files/${level}/${x}_${y}-cmykPlus-8c-Jarvis-x1-dithered.png`;
+          return `http://${baseUrl}/png-test_files/${level}/${x}_${y}-auto-16c-Jarvis-x1-dithered.png`;
+          // return `http://${baseUrl}/png-test_files/${level}/${x}_${y}-cmyk-8c-Jarvis-x1-dithered.png`;
+          // return `http://${baseUrl}/png-test_files/${level}/${x}_${y}-c32-32c-Jarvis-x1-dithered.png`;
+          // return `http://${baseUrl}/png-test_files/${level}/${x}_${y}-websafe-32c-Jarvis-x1.0-dithered`;
+          return `http://${baseUrl}/png-test_files/${level}/${x}_${y}-websafe-16c-Jarvis-x1-dithered.png`;
           // return `http://${baseUrl}/${selectedModel}-15x15-${this.plateCellSize}-${fried}${fry_cells}fit-${q}_files/${level}/${x}_${y}.jpeg`;
         },
       };
@@ -622,6 +665,7 @@ body {
   opacity: 5%;
   /* mix-blend-mode: difference; */
   /* background-color: transparent; */
+  display: none;
 }
 .hidden {
   display: none !important;

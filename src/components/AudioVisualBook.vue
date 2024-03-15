@@ -9,8 +9,13 @@
     </div>
 
     <div v-if="showBlacklist" class="main-sequence-container">
-      <div class="fade-in-image chapter-bkg" v-for="(imgPath, idx) in blackList" :style="{ backgroundImage: 'url(' + imgPath + ')' }">
-        <div class="action-bar"><span @click="reinstate(idx)" class="action">🟢</span></div>
+      <div
+        class="fade-in-image chapter-bkg"
+        v-for="(imgPath, idx) in blackList"
+        :style="{ backgroundImage: 'url(' + imgPath + ')' }">
+        <div class="action-bar">
+          <span @click="reinstate(idx)" class="action">🟢</span>
+        </div>
       </div>
     </div>
     <!-- <div class="tick-info">{{ tickDown }}</div> -->
@@ -26,7 +31,9 @@
         :key="`${chapter.imgPath}-${idx}`"
         :style="{ backgroundImage: 'url(' + chapter.imgPath + ')' }">
         <div v-if="showControls" class="action-bar">
-          <span @click="blackListCard(idx)" class="action">⚫</span><span @click="superStarCard(idx)" class="action">✨</span><span v-if="isRatingMode">{{ chapter.stars || "not rated" }}</span>
+          <span @click="blackListCard(idx)" class="action">⚫</span
+          ><span @click="superStarCard(idx)" class="action">✨</span
+          ><span v-if="isRatingMode">{{ chapter.stars || "not rated" }}</span>
         </div>
         <div v-if="showControls" class="meta-bar">
           <span class="action">{{ imgIdx }} / {{ batch.length }}</span>
@@ -52,13 +59,22 @@ import Clock from "./Clock.vue";
 import Subtitles from "./Subtitles.vue";
 
 const parseInputs = (array, subdir) => {
-  return array[subdir].map((x) => "./memories/" + x.replace(subdir + "/", subdir + "/_fried-q10-sharpen0/") + "-fried.jpg");
+  return array[subdir].map(
+    (x) =>
+      "./memories/" +
+      x.replace(subdir + "/", subdir + "/_fried-q10-sharpen0/") +
+      "-fried.jpg"
+  );
 };
 
 // 911
-const batch1 = parseInputs(imgLibrary2, "911-anime-500k").concat(parseInputs(imgLibrary2, "911-anime-500k")).concat(parseInputs(imgLibrary2, "911-anime-500k")); // ✅
+const batch1 = parseInputs(imgLibrary2, "911-anime-500k")
+  .concat(parseInputs(imgLibrary2, "911-anime-500k"))
+  .concat(parseInputs(imgLibrary2, "911-anime-500k")); // ✅
 const batch2 = []; // parseInputs(imgLibrary2, "911-caspar-500k").concat(parseInputs(imgLibrary2, "911-caspar-500k"));
-const batch3 = parseInputs(imgLibrary2, "911-secondlife-500k").concat(parseInputs(imgLibrary2, "911-secondlife-500k")).concat(parseInputs(imgLibrary2, "911-secondlife-500k")); // ✅
+const batch3 = parseInputs(imgLibrary2, "911-secondlife-500k")
+  .concat(parseInputs(imgLibrary2, "911-secondlife-500k"))
+  .concat(parseInputs(imgLibrary2, "911-secondlife-500k")); // ✅
 
 console.log("911 count", batch1.length + batch3.length);
 
@@ -71,8 +87,12 @@ console.log("ava count", batch4.length + batch6.length);
 
 // vip
 const batch7 = []; //parseInputs(imgLibrary2, "vip-caspar-500k").concat(parseInputs(imgLibrary2, "vip-caspar-500k"));
-const batch8 = parseInputs(imgLibrary2, "vip-secondlife-500k").concat(parseInputs(imgLibrary2, "vip-secondlife-500k")); // ✅
-const batch9 = parseInputs(imgLibrary2, "vip-anime-500k").concat(parseInputs(imgLibrary2, "vip-anime-500k")); // ✅
+const batch8 = parseInputs(imgLibrary2, "vip-secondlife-500k").concat(
+  parseInputs(imgLibrary2, "vip-secondlife-500k")
+); // ✅
+const batch9 = parseInputs(imgLibrary2, "vip-anime-500k").concat(
+  parseInputs(imgLibrary2, "vip-anime-500k")
+); // ✅
 
 console.log("vip count", batch8.length + batch9.length);
 
@@ -84,7 +104,15 @@ console.log("vip count", batch8.length + batch9.length);
 // const concatted = variationFiltered; //
 // const concatted = batch5.concat(batch7);
 
-const concatted = batch1.concat(batch2).concat(batch3).concat(batch4).concat(batch5).concat(batch6).concat(batch7).concat(batch8).concat(batch9);
+const concatted = batch1
+  .concat(batch2)
+  .concat(batch3)
+  .concat(batch4)
+  .concat(batch5)
+  .concat(batch6)
+  .concat(batch7)
+  .concat(batch8)
+  .concat(batch9);
 
 const texts = [
   "After the man completes his voice-over, he takes a moment to collect himself. \n He gazes about the motion capture studio, his mind struggling to comprehend the depth of the experience.",

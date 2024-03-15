@@ -7,6 +7,7 @@
     "serve": "vite preview"
   },
   "dependencies": {
+    "ollama": "^0.4.9",
     "openseadragon": "^3.0.0",
     "tone": "^14.7.77",
     "vue": "^2.7",

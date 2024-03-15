@@ -26,6 +26,7 @@ body {
   display: flex;
   /* place-items: center; */
   width: 100%;
+  image-rendering: pixelated !important;
   /* height: 100vh; */
   /* background-image: url('/lombardi-bkg.jpg');
   background-size: contain; */

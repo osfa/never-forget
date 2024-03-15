@@ -5,6 +5,7 @@ import VueRouter from "vue-router";
 import RatingBook from "./components/RatingBook.vue";
 // import Landing from "./components/Landing.vue";
 import DziViewer from "./components/DziViewer.vue";
+import CardWorld from "./components/CardWorld.vue";
 
 Vue.use(VueRouter);
 
@@ -13,6 +14,7 @@ const routes = [
   // { path: "/landing", component: Landing },
   // { path: "/legacy", component: AudioVisualBook },
   { path: "/console", component: RatingBook },
+  { path: "/cards", component: CardWorld },
 ];
 
 const router = new VueRouter({
