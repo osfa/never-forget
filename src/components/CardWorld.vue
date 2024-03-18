@@ -2,12 +2,16 @@
   <div
     tabindex="-1"
     :class="{
-      '1-1': rows == 1 && cols == 1,
-      '2-2': rows == 2 && cols == 2,
-      '3-3': rows == 3 && cols == 3,
+      'one-one': rows == 1 && cols == 1,
+      'two-two': rows == 2 && cols == 2,
+      'three-three': rows == 3 && cols == 3,
     }">
     <img class="formats" src="/formats2.png" />
-    <div id="grid-bar"></div>
+    <div id="grid-bar">
+      <div @click="setGrid(1, 1)">Ⅰ</div>
+      <div @click="setGrid(2, 2)">Ⅱ</div>
+      <div @click="setGrid(3, 3)">Ⅲ</div>
+    </div>
     <div class="grid-container">
       <!-- <div class="grid-row" v-for="(r, i) in rows" :key="`${r}-${i}`"> -->
       <div class="grid-item" v-for="(c, i) in cols * rows" :key="`${c}-${i}`">
@@ -15,7 +19,7 @@
       </div>
       <!-- </div> -->
     </div>
-    <BarebonesTone ref="audioModule" automaticFade :debug="false" />
+    <BarebonesTone ref="audioModule" automaticFade :debug="true" />
     <div id="subs-container">
       <div id="subs-text">
         <div id="typewriter"></div>
@@ -39,6 +43,7 @@
 </template>
 <script>
 import { pngLibrary } from "../data/pngLibrary.js";
+import { zalgofy } from "../zalgo.js";
 import BarebonesTone from "./BarebonesTone.vue";
 import CardImage from "./CardImage.vue";
 import SmallClock from "./SmallClock.vue";
@@ -140,8 +145,12 @@ export default {
       } else {
         this.cols = 1;
         this.rows = 1;
-        // this.rows = 3;
+        this.rows = 3;
       }
+    },
+    setGrid(cols, rows) {
+      this.cols = cols;
+      this.rows = rows;
     },
     resizeHandler(e) {
       this.windowWidth = window.innerWidth;
@@ -202,7 +211,7 @@ export default {
           //   })
           //   .start();
 
-          this.subtitles = srtText;
+          this.subtitles = zalgofy(srtText);
           if (this.ticks % 3 === 0) {
             const cardIdx = this.randomInt(0, this.cols * this.rows);
             this.items[cardIdx] += 1;

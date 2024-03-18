@@ -232,8 +232,8 @@ export default {
         this.audioCtx.suspend().then(function () {});
       } else if (this.audioCtx.state === "suspended") {
         this.audioCtx.resume().then(function () {});
-        // document.getElementById("my-audio-player").play();
-        document.getElementById("my-audio-player").volume = this.audioTagVolume;
+        document.getElementById("my-audio-player").play();
+        // document.getElementById("my-audio-player").volume = this.audioTagVolume;
       }
     },
     isObj(variable) {

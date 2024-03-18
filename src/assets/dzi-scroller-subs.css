@@ -37,17 +37,26 @@
 
   display: flex;
   justify-content: center;
+  /* mix-blend-mode: difference; */
+  mix-blend-mode: difference;
+  mix-blend-mode: exclusion;
+  /* mix-blend-mode: hard-light; */
+  /* mix-blend-mode: overlay; */
+  /* mix-blend-mode: screen; */
+  /* mix-blend-mode: luminosity; */
+
 }
 
 #subs-text {
-  margin-bottom: 4rem;
+  margin-bottom: 3rem;
+  text-align: center;
 }
 
 #subs-text span {
-  background-color: rgba(0, 0, 0, 0.2);
+  /* background-color: rgba(0, 0, 0, 0.2); */
   /* background-color: rgba(255, 255, 255, 0.4); */
-
-
+  display: block;
+  word-wrap: anywhere;
 }
 
 #subs-text span.animated {
@@ -87,7 +96,7 @@
 
 @media (orientation: portrait) {
   #subs-container {
-    font-size: 1.4rem;
+    font-size: 1.2rem;
   }
 
   #subs-text {
