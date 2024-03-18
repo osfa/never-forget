@@ -1,7 +1,13 @@
 <template>
-  <div tabindex="-1">
+  <div
+    tabindex="-1"
+    :class="{
+      '1-1': rows == 1 && cols == 1,
+      '2-2': rows == 2 && cols == 2,
+      '3-3': rows == 3 && cols == 3,
+    }">
     <img class="formats" src="/formats2.png" />
-
+    <div id="grid-bar"></div>
     <div class="grid-container">
       <!-- <div class="grid-row" v-for="(r, i) in rows" :key="`${r}-${i}`"> -->
       <div class="grid-item" v-for="(c, i) in cols * rows" :key="`${c}-${i}`">
@@ -11,7 +17,10 @@
     </div>
     <BarebonesTone ref="audioModule" automaticFade :debug="false" />
     <div id="subs-container">
-      <div id="subs-text">{{ subtitles }}</div>
+      <div id="subs-text">
+        <div id="typewriter"></div>
+        <span>{{ subtitles }}</span>
+      </div>
       <audio
         id="my-audio-player"
         loop
@@ -24,20 +33,31 @@
           default />
       </audio>
     </div>
+    <SmallClock :offset="randomInt(-25, 25) * offsetSeed" />
+    <!-- <Clock :offset="randomInt(-25, 25) * offsetSeed" /> -->
   </div>
 </template>
 <script>
 import { pngLibrary } from "../data/pngLibrary.js";
 import BarebonesTone from "./BarebonesTone.vue";
 import CardImage from "./CardImage.vue";
+import SmallClock from "./SmallClock.vue";
+import Clock from "./Clock.vue";
+import Typewriter from "typewriter-effect/dist/core";
 
-const DEFAULT_COLS = 2;
-const DEFAULT_ROWS = 2;
+// analog clock?
+// capcut timecode?
+// 1 cell video? in corner? for desktop?
+
+const DEFAULT_COLS = 1;
+const DEFAULT_ROWS = 1;
 
 export default {
   components: {
     BarebonesTone,
     CardImage,
+    SmallClock,
+    Clock,
   },
   data() {
     return {
@@ -64,6 +84,9 @@ export default {
       tickDown: 8,
 
       isLoading: false,
+      offsetSeed: 1,
+
+      typewriter: null,
     };
   },
   methods: {
@@ -116,7 +139,8 @@ export default {
         this.rows = DEFAULT_ROWS;
       } else {
         this.cols = 1;
-        this.rows = 3;
+        this.rows = 1;
+        // this.rows = 3;
       }
     },
     resizeHandler(e) {
@@ -132,11 +156,57 @@ export default {
     document
       .getElementById("my-audio-player")
       .textTracks[0].addEventListener("cuechange", (event) => {
-        // console.log("cuechange", event.target.activeCues);
+        // console.log("cuechange", event.target);
+
+        // console.log("cuechange", event.target.cues);
+        // console.log("cuechange", event.target.cues.length);
+        const typewriterSpeed = 25;
+        if (this.typewriter === null) {
+          console.log("init typewriter");
+          this.typewriter = new Typewriter("#typewriter", {
+            delay: typewriterSpeed,
+            deleteSpeed: 1,
+            cursor: "",
+            // loop: false,
+            // autoStart: true,
+            // strings: ["Hello", "World"],
+          });
+        }
+
         if (event.target.activeCues.length > 0) {
-          this.subtitles = event.target.activeCues[0].text;
-          const cardIdx = this.randomInt(0, this.cols * this.rows);
-          this.items[cardIdx] += 1;
+          this.ticks += 1;
+          const srtText = event.target.activeCues[0].text;
+
+          // const starttime = event.target.cues[0].startTime * 1000;
+          // const endtime = event.target.cues[0].endTime * 1000;
+
+          // const duration = endtime - starttime;
+
+          // const textPrintTime =
+          //   event.target.activeCues[0].text.length * typewriterSpeed;
+          // console.log("textPrintTime", textPrintTime);
+          // console.log(event.target.activeCues[0].text.length);
+          // const pauseFor = duration - textPrintTime;
+          // console.log("pauseFor:", pauseFor);
+
+          // get next queue item here to understand how long to pause? here?
+          // this.typewriter
+          //   .typeString(srtText)
+          //   .pauseFor(pauseFor)
+          //   .callFunction(() => {
+          //     console.log("All strings were typed out");
+          //     const typewriterEl = document.getElementsByClassName(
+          //       "Typewriter__wrapper"
+          //     )[0];
+          //     if (typewriterEl) typewriterEl.innerHTML = "";
+          //   })
+          //   .start();
+
+          this.subtitles = srtText;
+          if (this.ticks % 3 === 0) {
+            const cardIdx = this.randomInt(0, this.cols * this.rows);
+            this.items[cardIdx] += 1;
+          }
           // this.pan(0.5, 0); // invert?
           // if (!this.isChatResponding) {
           //   this.chatResponds(event.target.activeCues[0].text);
@@ -155,43 +225,7 @@ export default {
 
 <style scoped>
 @import "../assets/dzi-scroller-subs.css";
-
-.grid-container {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(2, 1fr);
-  gap: 0px;
-  height: 100vh;
-  width: 100vw;
-}
-
-.grid-item {
-  overflow: hidden;
-  position: relative;
-}
-
-.grid-item img {
-  /* position: absolute;
-  top: 50%;
-  left: 50%;
-  height: 100%;
-  width: auto;
-  transform: translate(-50%, -50%); */
-  object-fit: cover;
-  width: 100%;
-  height: 100%;
-}
-
-.grid-item img.portrait {
-  width: 100%;
-  height: auto;
-}
-
-@media (orientation: portrait) {
-  .grid-container {
-    grid-template-columns: repeat(1, 1fr);
-  }
-}
+@import "../assets/grid-layouts.css";
 
 /* OLD BELOW  */
 

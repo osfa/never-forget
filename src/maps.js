@@ -24,7 +24,8 @@ export const MODEL_META_MAP = {
   //   hexColor: "#DB7093",
   //   unicode: "ↂ",
   // }, // Pale Violet Red
-  dreamlike: {
+  // dreamlike: {
+  "dreamlike-photoreal-2.0": {
     friendlyName: "Dreamlike",
     hexColor: "#ADD8E6",
     unicode: "∑",

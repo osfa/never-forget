@@ -126,9 +126,9 @@
               <div
                 class="badge"
                 :style="{
-                  backgroundColor: MODEL_META_MAP[image.model].hexColor,
+                  backgroundColor: MODEL_META_MAP[image.model]?.hexColor,
                 }">
-                {{ MODEL_META_MAP[image.model].friendlyName }}
+                {{ MODEL_META_MAP[image.model]?.friendlyName }}
               </div>
               <div
                 class="badge"

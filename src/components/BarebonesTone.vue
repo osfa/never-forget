@@ -34,7 +34,7 @@ export default {
       baseVolume: -6,
       // narrationVolume: -9,
       // narrationVolume: -3,
-      narrationVolume: -9,
+      narrationVolume: -12,
       narrationVolumeMin: -32,
       audioTagVolume: 0.5,
       noiseMaker: null,
@@ -102,9 +102,9 @@ export default {
       return Math.floor(Math.random() * (max - min)) + min;
     },
     muteIcon() {
-      // return this.isPlaying ? "🔇" : "🕳️";
+      return this.isPlaying ? "🔇" : "🕳️";
       // return this.isPlaying ? "🔇" : "⅏";
-      return this.isPlaying ? "🔇" : "↕";
+      // return this.isPlaying ? "🔇" : "↕";
     },
     initAudio() {
       const context = new Tone.Context();
@@ -226,8 +226,8 @@ export default {
         return;
       }
       if (this.audioCtx.state === "running") {
-        // document.getElementById("my-audio-player").pause();
-        document.getElementById("my-audio-player").volume = 0;
+        document.getElementById("my-audio-player").pause();
+        // document.getElementById("my-audio-player").volume = 0;
 
         this.audioCtx.suspend().then(function () {});
       } else if (this.audioCtx.state === "suspended") {

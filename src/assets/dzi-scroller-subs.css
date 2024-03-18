@@ -3,22 +3,78 @@
   width: 100%;
 }
 
+@font-face {
+  font-family: "papyrus_pixel_monoregular";
+  src: url("/fonts/papyrus-pixel-mono-webfont.woff2") format("woff2"),
+    url("/fonts/papyrus-pixel-mono-webfont.woff") format("woff");
+    
+  /* src: url("/fonts/papyrus-pixel_1-webfont.woff2") format("woff2"),
+    url("/fonts/papyrus-pixel_1-webfont.woff") format("woff"); */
+
+  font-weight: normal;
+  font-style: normal;
+}
+
 #subs-container {
   z-index: 4000;
   position: absolute;
   bottom: 0;
   font-size: 2rem;
+
   font-family: Papyrus, fantasy;
+
+
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  font-family: "papyrus_pixel_monoregular";
+
   width: 100%;
-  text-align: center;
+  /* text-align: center; */
+  
   color: #ff0;
   text-shadow: #000 1px 1px 3px; 
   pointer-events: none;
+
+  display: flex;
+  justify-content: center;
 }
 
 #subs-text {
   margin-bottom: 4rem;
 }
+
+#subs-text span {
+  background-color: rgba(0, 0, 0, 0.2);
+  /* background-color: rgba(255, 255, 255, 0.4); */
+
+
+}
+
+#subs-text span.animated {
+  display: block;
+  overflow: hidden; /* Ensures the content is not revealed until the animation */
+  border-right: .15em solid yellow; /* The typwriter cursor */
+
+   /* Keeps the content on a single line */
+  white-space: nowrap;
+
+  margin: 0 auto; /* Gives that scrolling effect as the typing happens */
+
+  letter-spacing: .15em; /* Adjust as needed */
+  animation: typing 3.5s steps(40, end), blink-caret .75s step-end infinite;
+}
+
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+/* The typewriter cursor effect */
+@keyframes blink-caret {
+  from, to { border-color: transparent }
+  50% { border-color: yellow; }
+}
+
 
 #scroller {
   z-index: 4000;

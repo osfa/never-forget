@@ -66,6 +66,9 @@ export default {
 
   /* non-kiosk */
   text-shadow: 0px 0px 3px rgb(0, 0, 0);
+  text-shadow: none;
+  mix-blend-mode: difference;
+  /* font-family: Papyrus, "Roboto", "Arial", sans-serif; */
 }
 .clock-inner {
   /* background-color: rgba(00, 00, 00, 0.25); */
@@ -93,5 +96,8 @@ export default {
 
 .text-red {
   color: red;
+}
+.text-white {
+  mix-blend-mode: difference;
 }
 </style>
