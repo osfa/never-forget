@@ -19,7 +19,7 @@
       </div>
       <!-- </div> -->
     </div>
-    <BarebonesTone ref="audioModule" automaticFade :debug="true" />
+    <BarebonesTone ref="audioModule" automaticFade :debug="false" />
     <div id="subs-container">
       <div id="subs-text">
         <div id="typewriter"></div>
@@ -38,6 +38,7 @@
       </audio>
     </div>
     <SmallClock :offset="randomInt(-25, 25) * offsetSeed" />
+    <Chat />
     <!-- <Clock :offset="randomInt(-25, 25) * offsetSeed" /> -->
   </div>
 </template>
@@ -48,6 +49,7 @@ import BarebonesTone from "./BarebonesTone.vue";
 import CardImage from "./CardImage.vue";
 import SmallClock from "./SmallClock.vue";
 import Clock from "./Clock.vue";
+import Chat from "./Chat.vue";
 import Typewriter from "typewriter-effect/dist/core";
 
 // analog clock?
@@ -63,6 +65,7 @@ export default {
     CardImage,
     SmallClock,
     Clock,
+    Chat,
   },
   data() {
     return {

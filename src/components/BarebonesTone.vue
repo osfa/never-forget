@@ -222,6 +222,7 @@ export default {
         this.initAudio();
         this.hasInit = true;
         document.getElementById("my-audio-player").volume = this.audioTagVolume;
+        document.getElementById("my-audio-player").playbackRate = 0.5;
         document.getElementById("my-audio-player").play();
         return;
       }

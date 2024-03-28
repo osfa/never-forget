@@ -15,8 +15,14 @@
   font-style: normal;
 }
 
+::selection {
+  color: red;
+  background: yellow;
+}
+
+
 #subs-container {
-  z-index: 4000;
+  z-index: 3000;
   position: absolute;
   bottom: 0;
   font-size: 2rem;
@@ -33,7 +39,8 @@
   
   color: #ff0;
   text-shadow: #000 1px 1px 3px; 
-  pointer-events: none;
+  /* pointer-events: none; */
+
 
   display: flex;
   justify-content: center;
