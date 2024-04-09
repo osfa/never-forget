@@ -72,7 +72,10 @@
       <div
         v-for="(image, idx) in viewportImages"
         :key="`${idx}-${image.id}`"
-        :class="{ selected: selectedImages.includes(image) }">
+        :class="{
+          selected: selectedImages.includes(image),
+          in_selection: imageSelection.includes(image),
+        }">
         <div class="card-container">
           <div v-show="currentMode !== 'blacklist'" class="card-actions">
             <button
@@ -220,6 +223,7 @@
           <option value="random">random</option>
           <option value="triples">triples</option>
           <option value="blacklist">blacklist</option>
+          <option value="selection">selection</option>
         </select>
         <button @click="isVertical = !isVertical">
           {{ isVertical ? "portrait" : "landscape" }}
@@ -254,7 +258,7 @@ export default {
   },
   data() {
     return {
-      writeProtected: false,
+      writeProtected: true,
       hasInit: false,
       debug: true,
       batch: [],
@@ -281,6 +285,8 @@ export default {
       viewportImages: [],
       filteredImages: [],
       filteredImagesPool: [],
+
+      imageSelection: [],
       // ##
       blackList: [],
       ratedImages: [],
@@ -348,9 +354,16 @@ export default {
         });
       }
 
-      if (this.currentMode !== "blacklist") {
+      if (
+        this.currentMode !== "blacklist" &&
+        this.currentMode !== "selection"
+      ) {
         console.log("filtering: excluding blackList:", this.blackList.length);
         images = images.filter((image) => !this.blackList.includes(image.id));
+      } else if (this.currentMode === "selection") {
+        console.log("filtering: selection only:", this.imageSelection.length);
+        // images = images.filter((image) => this.imageSelection.includes(image.id));
+        images = this.imageSelection;
       } else {
         console.log("filtering: showing only blackList");
         images = images.filter((image) => this.blackList.includes(image.id));
@@ -561,16 +574,32 @@ export default {
       });
     },
     addToVip() {
-      console.log("addToVip");
-      const onlyUnique = (value, index, array) => {
-        return array.indexOf(value) === index;
-      };
+      // const onlyUnique = (value, index, array) => {
+      //   return array.indexOf(value) === index;
+      // };
       this.selectedImages.forEach((image) => {
         const image_obj = this.batch.find((img) => img.id === image.id);
         if (image_obj) {
-          this.imageSelection.push(image_obj);
-          this.imageSelection = this.imageSelection.filter(onlyUnique);
+          if (this.imageSelection.includes(image_obj)) {
+            // this.imageSelection.indexOf(image_obj);
+            console.log("already here, removing", this.imageSelection.length);
+
+            this.imageSelection.splice(
+              this.imageSelection.indexOf(image_obj),
+              1
+            );
+            // this.imageSelection = this.imageSelection.filter(
+            //   (img) => img.id === image_obj.id
+            // );
+            console.log("already here, removing", this.imageSelection.length);
+          } else {
+            console.log("new", this.imageSelection.length);
+            this.imageSelection.push(image_obj);
+            console.log("new", this.imageSelection.length);
+          }
+          // this.imageSelection = this.imageSelection.filter(onlyUnique);
         }
+        // this.imageSelection = [];
         localStorage.setItem(
           "imageSelection.selection1", // add key to have multiple series?
           JSON.stringify(this.imageSelection)
@@ -897,19 +926,23 @@ export default {
     ).filter((n) => n);
     this.ratedImages = JSON.parse(localStorage.getItem("imageRatings") || "[]");
     this.includedTriples = JSON.parse(localStorage.getItem("triples") || "[]");
+    this.imageSelection = JSON.parse(
+      localStorage.getItem("imageSelection.selection1") || "[]"
+    );
+
     console.log("loaded rated:", this.ratedImages.length);
     console.log("blacklist length", this.blackList.length);
     console.log("triples", this.includedTriples);
 
-    console.log("fetching and mapping rated.");
+    // console.log("fetching and mapping rated.");
 
-    this.batch = this.batch.map((img) => {
-      const ratedImage = this.ratedImages.find((i) => i.id === img.id);
-      img.rating = ratedImage?.rating || null;
-      return img;
-    });
+    // this.batch = this.batch.map((img) => {
+    //   const ratedImage = this.ratedImages.find((i) => i.id === img.id);
+    //   img.rating = ratedImage?.rating || null;
+    //   return img;
+    // });
 
-    console.log("rated fetched.");
+    // console.log("rated fetched.");
 
     this.currentMode = localStorage.getItem("currentMode")
       ? JSON.parse(localStorage.getItem("currentMode"))
@@ -1017,10 +1050,17 @@ button {
 .selected .meta-bar {
   visibility: visible;
 }
+
 .selected {
   box-sizing: border-box;
   padding: 0.1rem;
   background-color: #0f0;
+}
+
+.in_selection {
+  box-sizing: border-box;
+  padding: 0.1rem;
+  background-color: #00f;
 }
 
 /* CARD HEADER  */

@@ -1,52 +1,22 @@
-# - jpeg/dither from inputs
-
 - glitch from inputs
 
   - chk old glitches, setup which to use
+  - add to pipe
 
-- hackers series pick
-- reg series pick
-
-- upscale flow : clean or new batched?
+- upscale flow to run : clean or new batched?
 
   - gallery-sel:
+
     - reg (autofilled?)
     - dither + capcut
-
-- chk dithered version? what settings?
-
-  - cmyk vs cmyk plus?
-
-- just 15 x 20 dith?
-
----
-
-meme
-
----
-
-- new upscale flow...
-
-  - CLEANER FILENAMES, functions to extract meta etc..
-
-  - compare 4x vs 2x2x, think masking, more prompt model crawl?
-
-    - mukbang?
-
-  - fried test/upscaling, in pipeline?
-
-  - masking nah? maybe dithered + capcut + upscale?
-
-  # on single
-
-  - batch fry etc quick test.
-  - mask test: capcut, fried, dithered, glitched?
+    - fried + capcut?
+    - glitched?
 
   - none compare?
+
     - need none 4 hackers?
+
   - 9/11 support prompt?
-  - capcut gleam queue
-    - glitched?
 
 - 20 sel hackers only? (gui, 9/11, hackers?)
 
@@ -56,9 +26,6 @@ meme
   - 1.5 paint style? chk existing one? that look painterly
 
 - datestamp for album stuff? watermark?
-
-- blender podium test
-- skriv till lisa
 
 ---
 
