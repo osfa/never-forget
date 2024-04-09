@@ -1,6 +1,7 @@
 // import { parsePathCrawl, CATEGORY_MAP } from "../maps";
 // import * as allImgs from "src/data/pics-versioned.json";
 // import { parse } from 'node-html-parser';
+const fs = require("fs");
 
 const CATEGORY_MAP = {
   avatar: { hexColor: "#2df1b5", weight: 0.3 },
@@ -273,55 +274,56 @@ const parsePathCrawl = (path_object_array, category_map) => {
 const allImgs = require("/Users/jbe/static-sites/never-forget-vite-vue2/src/data/pics-versioned-ts.json"); // { path: string, ts: number }[]
 // const allImgs = require("/Users/jbe/static-sites/never-forget-vite-vue2/src/data/pics-versioned-ts-tiny.json");
 
-// const parseResult = parsePathCrawl(allImgs, CATEGORY_MAP);
-// var json = JSON.stringify(parseResult);
-const fs = require("fs");
-// fs.writeFile(
-//   "/Users/jbe/static-sites/never-forget-vite-vue2/src/data/pics-parsed.json",
-//   json,
-//   "utf8",
-//   () => console.log("done")
+const parseResult = parsePathCrawl(allImgs, CATEGORY_MAP);
+var json = JSON.stringify(parseResult);
+fs.writeFile(
+  "/Users/jbe/static-sites/never-forget-vite-vue2/src/data/pics-parsed.json",
+  json,
+  "utf8",
+  () => console.log("done")
+);
+
+// CODE TO FIX FAVS AND STUFF?
+
+// backup_rating_path =
+//   "/Users/jbe/Dropbox/stabdiff-ui-v2/_sorted-outputs/never-forget/_selections/backups/_rated-no-ratings-lol/jbe-favs-jan-14.json"; // flat array
+// localstorage_path =
+//   "/Users/jbe/Dropbox/stabdiff-ui-v2/_sorted-outputs/never-forget/_selections/backups/jbe-favs-feb-13-raw-localstorage.json"; // {id: string, rating: number}[]
+// consolidated_path =
+//   "/Users/jbe/Dropbox/stabdiff-ui-v2/_sorted-outputs/never-forget/_selections/backups/favorites-combined-for-localstorage.json";
+// consolidated_path_full_meta =
+//   "/Users/jbe/Dropbox/stabdiff-ui-v2/_sorted-outputs/never-forget/_selections/backups/favorites-with-meta.json";
+
+// const oldRatedArray = require(backup_rating_path); // []
+// const localStorageArray = require(localstorage_path); // {id: string, rating: number}[]
+
+// const localStorageArrayIds = localStorageArray.map((item) => item.id);
+// let combinedIdRatingArray = oldRatedArray
+//   .map((id) => {
+//     if (!localStorageArrayIds.includes(id)) {
+//       return { id, rating: 4 };
+//     }
+//   })
+//   .concat(localStorageArray);
+
+// combinedIdRatingArray = combinedIdRatingArray.filter((n) => n);
+
+// console.log(
+//   oldRatedArray.length,
+//   localStorageArray.length,
+//   combinedIdRatingArray.length
 // );
 
-backup_rating_path =
-  "/Users/jbe/Dropbox/stabdiff-ui-v2/_sorted-outputs/never-forget/_selections/backups/_rated-no-ratings-lol/jbe-favs-jan-14.json"; // flat array
-localstorage_path =
-  "/Users/jbe/Dropbox/stabdiff-ui-v2/_sorted-outputs/never-forget/_selections/backups/jbe-favs-feb-13-raw-localstorage.json"; // {id: string, rating: number}[]
-consolidated_path =
-  "/Users/jbe/Dropbox/stabdiff-ui-v2/_sorted-outputs/never-forget/_selections/backups/favorites-combined-for-localstorage.json";
-consolidated_path_full_meta =
-  "/Users/jbe/Dropbox/stabdiff-ui-v2/_sorted-outputs/never-forget/_selections/backups/favorites-with-meta.json";
+// // var json = JSON.stringify(combinedIdRatingArray);
+// // fs.writeFile(consolidated_path, json, "utf8", () => console.log("done"));
 
-const oldRatedArray = require(backup_rating_path); // []
-const localStorageArray = require(localstorage_path); // {id: string, rating: number}[]
-
-const localStorageArrayIds = localStorageArray.map((item) => item.id);
-let combinedIdRatingArray = oldRatedArray
-  .map((id) => {
-    if (!localStorageArrayIds.includes(id)) {
-      return { id, rating: 4 };
-    }
-  })
-  .concat(localStorageArray);
-
-combinedIdRatingArray = combinedIdRatingArray.filter((n) => n);
-
-console.log(
-  oldRatedArray.length,
-  localStorageArray.length,
-  combinedIdRatingArray.length
-);
-
-// var json = JSON.stringify(combinedIdRatingArray);
-// fs.writeFile(consolidated_path, json, "utf8", () => console.log("done"));
-
-const parseResult = parsePathCrawl(
-  combinedIdRatingArray.map((img) => {
-    return { path: img.id, ts: 0 };
-  }),
-  CATEGORY_MAP
-);
-var json = JSON.stringify(parseResult);
-fs.writeFile(consolidated_path_full_meta, json, "utf8", () =>
-  console.log("done")
-);
+// const parseResult = parsePathCrawl(
+//   combinedIdRatingArray.map((img) => {
+//     return { path: img.id, ts: 0 };
+//   }),
+//   CATEGORY_MAP
+// );
+// var json = JSON.stringify(parseResult);
+// fs.writeFile(consolidated_path_full_meta, json, "utf8", () =>
+//   console.log("done")
+// );

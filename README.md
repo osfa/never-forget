@@ -1,3 +1,178 @@
+# - jpeg/dither from inputs
+
+- glitch from inputs
+
+  - chk old glitches, setup which to use
+
+- hackers series pick
+- reg series pick
+
+- upscale flow : clean or new batched?
+
+  - gallery-sel:
+    - reg (autofilled?)
+    - dither + capcut
+
+- chk dithered version? what settings?
+
+  - cmyk vs cmyk plus?
+
+- just 15 x 20 dith?
+
+---
+
+meme
+
+---
+
+- new upscale flow...
+
+  - CLEANER FILENAMES, functions to extract meta etc..
+
+  - compare 4x vs 2x2x, think masking, more prompt model crawl?
+
+    - mukbang?
+
+  - fried test/upscaling, in pipeline?
+
+  - masking nah? maybe dithered + capcut + upscale?
+
+  # on single
+
+  - batch fry etc quick test.
+  - mask test: capcut, fried, dithered, glitched?
+
+  - none compare?
+    - need none 4 hackers?
+  - 9/11 support prompt?
+  - capcut gleam queue
+    - glitched?
+
+- 20 sel hackers only? (gui, 9/11, hackers?)
+
+  - how many vimmel in hacker fives?
+  - miro?
+  - weirder hackers? weirder prompts?
+  - 1.5 paint style? chk existing one? that look painterly
+
+- datestamp for album stuff? watermark?
+
+- blender podium test
+- skriv till lisa
+
+---
+
+- OTG?
+- go through hackers and 9/11 and memorial and do last upscale crrawl?
+
+- ipa tracker queue?
+- gui queu?
+- find better jetee?
+
+- find good vert input?
+
+- DRONES queue?
+
+- IPA black pad?
+- ipa opt in upscaler?
+
+- !!! rating stats? which cats have been looked through? dump all to files and filter count? which inputs?
+
+---
+
+- blender sel:
+
+  - view on screen to get size feel!
+
+  - !!! select out
+
+  - select out missing ones
+  - add some hackers...
+
+- find better mission accomplished?
+- furry gui?
+- more colorful 9/11? with 9/11 promtp?
+
+  ***
+
+  - ss 10,15,20 - 2x2 upscale test - new flow
+
+    - queue up ipas around?
+    - ## wakeup in new flow
+
+  - !!! fried/dither/glitch everything on sel32-64 - 2k, 4k, 8k - all fives?
+  - collage masking with the dif types
+
+  ***
+
+  - ipa trackers upscale isolate and test. also gui ipa?
+
+!!
+
+- crimson tiny test for dibond / skyltplast / vs montering on dibond? --- what motif?!
+  - test feel of fried/dithered on dibond? mask?
+
+--
+
+- dzi canvas cube for site?
+
+- feels ipa?
+
+- db quickie test?
+  - just need to have tiniery file and write protect?
+
+---
+
+hackers:
+
+- sleeping on chair hackers...
+- hackers jungle stage...
+- grid green hat hackers?
+- dark desk hackers?
+
+img picking:
+
+- much larger hackers?
+- trackers arc? tells story somehow?
+- think "beauty?"
+
+---
+
+---
+
+- crimson album ordering... make 200 count plates for five models? or mix? sharpen first or no? not needed?
+
+---
+
+- after all processing : insta prepp : reel
+- capcut fx test / masking?
+
+- notes/dump struct upp check (focus queue)
+- jetee ipas
+- hackers ipas?
+
+---
+
+--
+
+- audio bucket?
+- db query?
+- input image step filtering...
+
+## Update rated db
+
+0. backup favs etc..
+
+1. /Users/jbe/Dropbox/MLREPOS/comfy-scripts/scripts/path_crawl.py Updates pics-versioned-ts.json
+
+2. path_crawl_parse.js to write to data/pics-parsed.json
+
+3. hit http://localhost:3000/#/console
+
+4. export selection, take viewport?
+
+---
+
 aws s3 cp /Users/jbe/static-sites/never-forget-vite-vue2/public/dzi/\_local s3://jpeg.matrix.surf/dzi/v0 --recursive
 
 - Working on this sprawling project that never ends but we're almost there, here's some WIP jpegs #instantlore #neverforget

@@ -233,8 +233,8 @@
 </template>
 <script>
 // BING BONG BUILD
-import parsedBatch from "../data/pics-dummy.json";
-// import parsedBatch from "../data/pics-parsed.json";
+// import parsedBatch from "../data/pics-dummy.json";
+import parsedBatch from "../data/pics-parsed.json";
 // import parsedBatch from "../data/pics-parsed-tiny.json";
 import { CATEGORY_MAP, MODEL_META_MAP, PROMPT_MAP } from "../maps";
 // import {
@@ -243,7 +243,7 @@ import { CATEGORY_MAP, MODEL_META_MAP, PROMPT_MAP } from "../maps";
 //   insertDataIntoDatabase,
 // } from "../dbInterface.js";
 
-console.log("ratingBook hit");
+console.log("ratingBook hit, image count:", parsedBatch.imageObjs.length);
 
 export default {
   components: {
@@ -254,6 +254,7 @@ export default {
   },
   data() {
     return {
+      writeProtected: false,
       hasInit: false,
       debug: true,
       batch: [],
@@ -559,6 +560,23 @@ export default {
         this.rateImage(image.id, rating);
       });
     },
+    addToVip() {
+      console.log("addToVip");
+      const onlyUnique = (value, index, array) => {
+        return array.indexOf(value) === index;
+      };
+      this.selectedImages.forEach((image) => {
+        const image_obj = this.batch.find((img) => img.id === image.id);
+        if (image_obj) {
+          this.imageSelection.push(image_obj);
+          this.imageSelection = this.imageSelection.filter(onlyUnique);
+        }
+        localStorage.setItem(
+          "imageSelection.selection1", // add key to have multiple series?
+          JSON.stringify(this.imageSelection)
+        );
+      });
+    },
     rateImage(id, rating) {
       const image = this.batch.find((img) => img.id === id);
       if (image) {
@@ -577,7 +595,13 @@ export default {
           .map((image) => {
             return { id: image.id, rating: image.rating };
           });
-        localStorage.setItem("imageRatings", JSON.stringify(this.ratedImages));
+
+        if (!this.writeProtected) {
+          localStorage.setItem(
+            "imageRatings",
+            JSON.stringify(this.ratedImages)
+          );
+        }
       }
     },
     selectImage(id, shiftClick = false, ctrlClick = false) {
@@ -713,6 +737,9 @@ export default {
       } else if (e.key === "5") {
         this.rateSelected(5);
         return;
+      } else if (e.key === "f") {
+        this.addToVip();
+        return;
       }
     },
     randomInt(min, max) {
@@ -821,7 +848,10 @@ export default {
       );
     },
   },
-  async created() {
+  mounted() {
+    console.log("mounted fire.");
+  },
+  created() {
     console.log("created fire.");
 
     // if (!("indexedDB" in window)) {
@@ -871,11 +901,15 @@ export default {
     console.log("blacklist length", this.blackList.length);
     console.log("triples", this.includedTriples);
 
+    console.log("fetching and mapping rated.");
+
     this.batch = this.batch.map((img) => {
       const ratedImage = this.ratedImages.find((i) => i.id === img.id);
       img.rating = ratedImage?.rating || null;
       return img;
     });
+
+    console.log("rated fetched.");
 
     this.currentMode = localStorage.getItem("currentMode")
       ? JSON.parse(localStorage.getItem("currentMode"))
