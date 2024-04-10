@@ -238,7 +238,8 @@
 <script>
 // BING BONG BUILD
 // import parsedBatch from "../data/pics-dummy.json";
-import parsedBatch from "../data/pics-parsed.json";
+// import parsedBatch from "../data/pics-parsed.json";
+import parsedBatch from "../data/pics-parsed-favs-jbe-090424.json";
 // import parsedBatch from "../data/pics-parsed-tiny.json";
 import { CATEGORY_MAP, MODEL_META_MAP, PROMPT_MAP } from "../maps";
 // import {
@@ -882,33 +883,6 @@ export default {
   },
   created() {
     console.log("created fire.");
-
-    // if (!("indexedDB" in window)) {
-    //   console.error("This browser does not support IndexedDB");
-    //   return;
-    // }
-    // this.loadingDB = true;
-    // openDatabase(
-    //   this.dbName,
-    //   this.storeName,
-    //   (db) => {
-    //     this.db = db;
-    //     fetchDataFromDatabase(
-    //       db,
-    //       this.storeName,
-    //       (data) => {
-    //         this.items = data;
-    //         this.loadingDB = false;
-    //       },
-    //       (error) => {
-    //         console.error("Error fetching data from database", error);
-    //       }
-    //     );
-    //   },
-    //   (error) => {
-    //     console.error("Error opening database", error);
-    //   }
-    // );
 
     const parseResult = parsedBatch;
     this.batch = parseResult.imageObjs;

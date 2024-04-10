@@ -110,7 +110,7 @@ const CATEGORY_MAP = {
 //   }
 // };
 
-const parsePathCrawl = (path_object_array, category_map) => {
+const parsePathCrawl = (path_object_array, category_map, favs) => {
   // const path_array = path_object.map
   const availableModelsAll = [];
   const availableInputsAll = [];
@@ -222,6 +222,12 @@ const parsePathCrawl = (path_object_array, category_map) => {
       availableSupportPromptsAll.push(supportPrompt);
     if (model !== "divineelegancemix_V9") availableModelsAll.push(model);
 
+    let rating = null;
+    if (favs) {
+      const fav = favs.find((fav) => fav.id === imgPath);
+      if (fav) rating = fav.rating;
+    }
+
     return {
       fn,
       id: imgPath,
@@ -238,7 +244,7 @@ const parsePathCrawl = (path_object_array, category_map) => {
       isIpa: imgPath.includes("_ipa"),
       inputImage,
       prompt,
-      rating: null,
+      rating,
       ts: path_ts_tuple["ts"],
     };
   });
@@ -270,14 +276,20 @@ const parsePathCrawl = (path_object_array, category_map) => {
   };
 };
 
-// const allImgs = require("/Users/jbe/static-sites/never-forget-vite-vue2/src/data/pics-versioned.json");
+// outputted from /Users/jbe/Dropbox/MLREPOS/comfy-scripts/scripts/path_crawl.py
 const allImgs = require("/Users/jbe/static-sites/never-forget-vite-vue2/src/data/pics-versioned-ts.json"); // { path: string, ts: number }[]
 // const allImgs = require("/Users/jbe/static-sites/never-forget-vite-vue2/src/data/pics-versioned-ts-tiny.json");
 
-const parseResult = parsePathCrawl(allImgs, CATEGORY_MAP);
+const favs = require("/Users/jbe/static-sites/never-forget-vite-vue2/src/data/favs-jbe-090424.json");
+
+console.log("mapping to favs:", favs.length);
+const parseResult = parsePathCrawl(allImgs, CATEGORY_MAP, favs);
+
+// 228071 imgs
+
 var json = JSON.stringify(parseResult);
 fs.writeFile(
-  "/Users/jbe/static-sites/never-forget-vite-vue2/src/data/pics-parsed.json",
+  "/Users/jbe/static-sites/never-forget-vite-vue2/src/data/pics-parsed-favs-jbe-090424.json",
   json,
   "utf8",
   () => console.log("done")

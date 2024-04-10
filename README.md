@@ -120,10 +120,7 @@ img picking:
 
 ---
 
---
-
 - audio bucket?
-- db query?
 - input image step filtering...
 
 ## Update rated db
@@ -133,6 +130,8 @@ img picking:
 1. /Users/jbe/Dropbox/MLREPOS/comfy-scripts/scripts/path_crawl.py Updates pics-versioned-ts.json
 
 2. path_crawl_parse.js to write to data/pics-parsed.json
+
+2.1 path_crawl_parse.js withf aves? to write to data/pics-parsed.json
 
 3. hit http://localhost:3000/#/console
 
