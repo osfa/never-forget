@@ -58,37 +58,44 @@ export default {
   width: 98vw;
   height: auto;
   aspect-ratio: 16/9;
+  aspect-ratio: 3/2;
 }
 .chapter-card.third {
   width: 32vw;
   height: auto;
   aspect-ratio: 16/9;
+  aspect-ratio: 3/2;
   /* height: 50vh; */
 }
 .chapter-card.fourth {
   width: 24vw;
   height: auto;
   aspect-ratio: 16/9;
+  aspect-ratio: 3/2;
 }
 .chapter-card.fifth {
   width: 19vw;
   height: auto;
   aspect-ratio: 16/9;
+  aspect-ratio: 3/2;
 }
 .chapter-card.sixth {
   width: 15vw;
   height: auto;
   aspect-ratio: 16/9;
+  aspect-ratio: 3/2;
 }
 
 .chapter-card.vertical {
   aspect-ratio: 9/16;
+  aspect-ratio: 2/3;
   max-width: 540px;
 }
 
 .chapter-card {
   width: 49vw;
   aspect-ratio: 16/9;
+  aspect-ratio: 3/2;
 
   position: relative;
   cursor: pointer;
