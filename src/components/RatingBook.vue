@@ -259,7 +259,7 @@ export default {
   },
   data() {
     return {
-      writeProtected: true,
+      writeProtected: false,
       hasInit: false,
       debug: true,
       batch: [],
@@ -908,7 +908,7 @@ export default {
     console.log("blacklist length", this.blackList.length);
     console.log("triples", this.includedTriples);
 
-    // console.log("fetching and mapping rated.");
+    console.log("mapping rated.");
 
     // this.batch = this.batch.map((img) => {
     //   const ratedImage = this.ratedImages.find((i) => i.id === img.id);
@@ -916,7 +916,17 @@ export default {
     //   return img;
     // });
 
-    // console.log("rated fetched.");
+    this.ratedImages.forEach((ratedImage) => {
+      const image = this.batch.find((i) => i.id === ratedImage.id);
+      if (image) {
+        image.rating = ratedImage.rating;
+        const isSelectedImg = (img) => img.id === image.id;
+        const idx = this.batch.findIndex(isSelectedImg);
+        this.batch.splice(idx, 1, image);
+      }
+    });
+
+    console.log("rated fetched.");
 
     this.currentMode = localStorage.getItem("currentMode")
       ? JSON.parse(localStorage.getItem("currentMode"))
