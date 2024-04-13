@@ -916,15 +916,15 @@ export default {
     //   return img;
     // });
 
-    this.ratedImages.forEach((ratedImage) => {
-      const image = this.batch.find((i) => i.id === ratedImage.id);
-      if (image) {
-        image.rating = ratedImage.rating;
-        const isSelectedImg = (img) => img.id === image.id;
-        const idx = this.batch.findIndex(isSelectedImg);
-        this.batch.splice(idx, 1, image);
-      }
-    });
+    // this.ratedImages.forEach((ratedImage) => {
+    //   const image = this.batch.find((i) => i.id === ratedImage.id);
+    //   if (image) {
+    //     image.rating = ratedImage.rating;
+    //     const isSelectedImg = (img) => img.id === image.id;
+    //     const idx = this.batch.findIndex(isSelectedImg);
+    //     this.batch.splice(idx, 1, image);
+    //   }
+    // });
 
     console.log("rated fetched.");
 
