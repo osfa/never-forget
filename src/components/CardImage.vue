@@ -59,6 +59,7 @@ export default {
       this.imagePath = pngLibrary.indigoPlateComplete.sample();
     },
     newFormat() {
+      console.log('hm?')
       this.URI_IDX = (this.URI_IDX + 1) % this.URI_SUFFIXES.length;
     },
   },

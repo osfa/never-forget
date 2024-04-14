@@ -21,6 +21,7 @@ body {
 #log {
   display: none;
 }
+
 #log > div {
     animation: fadeInUp .3s ease forwards, fadeOut 0.5s ease 1.5s forwards;
     /* animation: fadeInUp .3s ease forwards, fadeOut 0.5s ease {message_hide_delay} forwards; */
@@ -69,6 +70,7 @@ body {
 }
 
 #log {
+    pointer-events: none;
     display: block;
     position: absolute;
     bottom: 0;

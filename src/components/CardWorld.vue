@@ -19,7 +19,7 @@
       </div>
       <!-- </div> -->
     </div>
-    <BarebonesTone ref="audioModule" automaticFade :debug="false" />
+    <BarebonesTone ref="audioModule" automaticFade :debug="true" />
     <div id="subs-container">
       <div id="subs-text">
         <div id="typewriter"></div>
@@ -214,7 +214,8 @@ export default {
           //   })
           //   .start();
 
-          this.subtitles = zalgofy(srtText);
+          // this.subtitles = zalgofy(srtText);
+          this.subtitles = srtText;
           if (this.ticks % 3 === 0) {
             const cardIdx = this.randomInt(0, this.cols * this.rows);
             this.items[cardIdx] += 1;

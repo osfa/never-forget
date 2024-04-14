@@ -23,7 +23,7 @@
     <div class="meta-bar">
       <div class="badge">{{ image.id }}</div>
     </div>
-    <div v-if="rating" class="rating-container">
+    <div v-if="rating && showRating" class="rating-container">
       <div v-for="n in parseInt(rating)" class="rating"></div>
     </div>
   </div>
@@ -34,6 +34,7 @@ export default {
   props: {
     image: Object,
     rating: Number,
+    showRating: Boolean,
     showFried: Boolean,
     show1pass: Boolean,
     fullSize: Boolean,
@@ -106,6 +107,7 @@ export default {
   width: 100%;
   height: 100%;
   object-fit: contain;
+  background-color: black;
 }
 .chapter-card img.cover {
   object-fit: cover;

@@ -164,7 +164,7 @@ export function zalgofy(input_txt) {
     // add the normal character
     zalgo_text += input_txt.substr(i, 1);
 
-    const roll = rand(9);
+    const roll = rand(9) - 4;
     // options
     if (roll > 5) {
       num_up = rand(8);

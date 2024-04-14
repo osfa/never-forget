@@ -62,13 +62,92 @@
           <!-- <button @click="isWeighted = !isWeighted">
             {{ isWeighted ? "💪" : "📈" }}
           </button> -->
-
+          <button @click="albumMode = !albumMode">
+            {{ albumMode ? "📖" : "🌐" }}
+          </button>
           <button @click="dumpFiles">📦</button>
         </div>
       </div>
     </div>
 
-    <div class="main-sequence-container">
+    <div class="album-sequence-container" v-show="albumMode">
+      <div
+        class="album-page"
+        v-for="(pageOfImages, page_index) in viewPortImagesAsPages">
+        <div
+          v-for="(image, idx) in pageOfImages"
+          :key="`${idx}-${image.id}`"
+          :class="{
+            selected: selectedImages.includes(image),
+            in_selection: imageSelection.includes(image),
+            'card-wrapper': true,
+          }">
+          <div
+            class="card-container"
+            :class="{
+              'left-page': idx % 2 === 0,
+              'right-page': idx % 2 !== 0,
+            }">
+            <div v-show="currentMode !== 'blacklist'" class="card-actions">
+              <button
+                class="save-triple card-action"
+                @click="reRoll(page_index * imgsPerAlbumPage + idx)">
+                Reroll
+              </button>
+            </div>
+            <div v-show="showMeta" class="card-header">
+              <div class="left">
+                <div
+                  class="badge"
+                  :style="{
+                    backgroundColor: MODEL_META_MAP[image.model]?.hexColor,
+                  }">
+                  {{ MODEL_META_MAP[image.model]?.friendlyName }}
+                </div>
+                <div
+                  class="badge"
+                  :style="{
+                    backgroundColor: PROMPT_MAP[image.prompt].hexColor,
+                  }">
+                  {{ image.prompt }}
+                </div>
+                <div class="badge static">{{ image.supportPrompt }}</div>
+                <div class="badge static">
+                  {{ image.cfg }} CFG : {{ image.ss }} SS
+                </div>
+                <div
+                  class="badge"
+                  :style="{
+                    backgroundColor: category_map[image.category]?.hexColor,
+                  }">
+                  {{ image.inputImage }}
+                </div>
+              </div>
+            </div>
+            <div
+              @dblclick="toggleLightBox(image)"
+              @click.shift="selectImage(image.id, true)"
+              @click.middle="selectImage(image.id, false, true)"
+              @click.exact="selectImage(image.id)"
+              :class="{ lightBoxed: lightBoxed?.id === image.id }">
+              <ImageCard
+                :showRating="!albumMode"
+                :rating="image.rating"
+                :image="image"
+                :image-display="imageCover ? 'cover' : 'contain'"
+                @rate="rateImage"
+                :showFried="imageQuality === 'fried'"
+                :show1pass="imageQuality === '1pass'"
+                :card-size="gridSize"
+                :is-vertical="isVertical"
+                :full-size="lightBoxed && lightBoxed.id === image.id" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-sequence-container" v-show="!albumMode">
       <div
         v-for="(image, idx) in viewportImages"
         :key="`${idx}-${image.id}`"
@@ -158,6 +237,7 @@
             @click.exact="selectImage(image.id)"
             :class="{ lightBoxed: lightBoxed?.id === image.id }">
             <ImageCard
+              :showRating="!albumMode"
               :rating="image.rating"
               :image="image"
               :image-display="imageCover ? 'cover' : 'contain'"
@@ -209,6 +289,7 @@
           <option value="64">64</option>
           <option value="128">128</option>
           <option value="256">256</option>
+          <option value="300">300</option>
           <option value="512">512</option>
           <option value="1024">1024</option>
           <option value="2048">2048</option>
@@ -259,6 +340,9 @@ export default {
   },
   data() {
     return {
+      albumMode: true,
+      imgsPerAlbumPage: 6,
+
       writeProtected: false,
       hasInit: false,
       debug: true,
@@ -330,6 +414,17 @@ export default {
     };
   },
   computed: {
+    viewPortImagesAsPages() {
+      const pages = [];
+      for (
+        let i = 0;
+        i < this.viewportImages.length;
+        i += this.imgsPerAlbumPage
+      ) {
+        pages.push(this.viewportImages.slice(i, i + this.imgsPerAlbumPage));
+      }
+      return pages;
+    },
     showControls() {
       return this.lightBoxed === null;
     },
@@ -1190,6 +1285,7 @@ footer {
 .cursor-label {
   margin: 0 1rem;
 }
+
 .main-sequence-container {
   width: 100%;
   /* width: 100vw; */
@@ -1205,6 +1301,63 @@ footer {
   margin-top: 3.5rem;
   margin-top: 1rem;
 }
+
+.album-sequence-container {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  overflow-x: hidden;
+  justify-content: center;
+  background-color: black;
+  margin-top: 1rem;
+}
+
+.album-page {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  overflow-x: hidden;
+  justify-content: center;
+  /* background-color: white; */
+  margin-bottom: 2rem;
+  scale: 75%;
+}
+
+.card-wrapper {
+  width: 49vw;
+}
+
+.album-sequence-container .chapter-card {
+  width: auto !important;
+  background-color: #eee;
+}
+
+.album-sequence-container .card-header {
+  display: none;
+  visibility: hidden !important;
+}
+
+.album-sequence-container .card-container {
+  height: auto;
+}
+
+.album-sequence-container .left-page {
+  border: 1px solid rgba(0, 0, 0, 0.25);
+}
+.album-sequence-container .right-page {
+  border: 1px solid rgba(0, 0, 0, 0.25);
+}
+
+.album-sequence-container .left-page .chapter-card {
+  padding: 0.5rem 17rem 0.5rem 0.5rem;
+}
+
+.album-sequence-container .right-page .chapter-card {
+  padding: 0.5rem 0.5rem 0.5rem 17rem;
+}
+
 .isLoading {
   opacity: 0.75;
   background-color: #0f0;
