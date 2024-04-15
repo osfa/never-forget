@@ -289,6 +289,7 @@ const parseResult = parsePathCrawl(allImgs, CATEGORY_MAP, favs);
 
 var json = JSON.stringify(parseResult);
 fs.writeFile(
+  // symlink instead? dropbox?
   "/Users/jbe/static-sites/never-forget-vite-vue2/src/data/pics-parsed-favs-jbe-090424.json",
   json,
   "utf8",

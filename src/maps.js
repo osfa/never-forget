@@ -79,6 +79,7 @@ export const PROMPT_MAP = {
   fractal: { hexColor: "#9400D3" }, // Dark Violet
   frutiger: { hexColor: "#FFA500" }, // Orange
   "makeup-mukbang": { hexColor: "#FFC0CB" }, // Pink
+  "mukbang-ringlight": { hexColor: "#FFC0FF" }, // Pink
   minecraft: { hexColor: "#008000" }, // Green
   mutation: { hexColor: "#B22222" }, // Firebrick
   "p-dim": { hexColor: "#808080" }, // Gray
@@ -103,9 +104,32 @@ export const PROMPT_MAP = {
   "server hall": { hexColor: "#20B2AA" }, // Light Sea Green
 };
 
+// export const CATEGORY_MAP = {
+//   avatar: { hexColor: "#2df1b5", weight: 0.2 },
+//   jetee: { hexColor: "#890add", weight: 0.2 },
+//   hack: { hexColor: "#cf6d73", weight: 0.1 },
+//   trackers: { hexColor: "#9e0912", weight: 0.1 },
+//   // 60%
+//   911: { hexColor: "#b8b1a6", weight: 0.075 },
+//   bts: { hexColor: "#e238f2", weight: 0.025 },
+//   // 70%
+//   memorial: { hexColor: "#000000", weight: 0.05 },
+//   otg: { hexColor: "#176017", weight: 0.05 },
+//   // 80%
+//   "ava-game": { hexColor: "#0000ff", weight: 0.05 },
+//   wow: { hexColor: "#424f9e", weight: 0.05 },
+//   // 90%
+//   fortnite: { hexColor: "#ba98a0", weight: 0.025 },
+//   starcraft: { hexColor: "#88409C", weight: 0.025 },
+//   // 95%
+//   diablo: { hexColor: "#ff0000", weight: 0.05 },
+//   cs: { hexColor: "#b751b1", weight: 0.05 },
+//   // 105%
+// };
+
 export const CATEGORY_MAP = {
-  avatar: { hexColor: "#2df1b5", weight: 0.2 },
-  jetee: { hexColor: "#890add", weight: 0.2 },
+  avatar: { hexColor: "#2df1b5", weight: 0.3 },
+  jetee: { hexColor: "#890add", weight: 0.3 },
   hack: { hexColor: "#cf6d73", weight: 0.1 },
   trackers: { hexColor: "#9e0912", weight: 0.1 },
   // 60%
@@ -115,14 +139,14 @@ export const CATEGORY_MAP = {
   memorial: { hexColor: "#000000", weight: 0.05 },
   otg: { hexColor: "#176017", weight: 0.05 },
   // 80%
-  "ava-game": { hexColor: "#0000ff", weight: 0.05 },
-  wow: { hexColor: "#424f9e", weight: 0.05 },
+  "ava-game": { hexColor: "#0000ff", weight: 0.025 },
+  wow: { hexColor: "#424f9e", weight: 0.025 },
   // 90%
   fortnite: { hexColor: "#ba98a0", weight: 0.025 },
   starcraft: { hexColor: "#88409C", weight: 0.025 },
   // 95%
-  diablo: { hexColor: "#ff0000", weight: 0.05 },
-  cs: { hexColor: "#b751b1", weight: 0.05 },
+  diablo: { hexColor: "#ff0000", weight: 0.025 },
+  cs: { hexColor: "#b751b1", weight: 0.025 },
   // 105%
 };
 

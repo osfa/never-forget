@@ -1,5 +1,19 @@
 <template>
-  <div tabindex="-1" @keyup="keyListener">
+  <div
+    :class="{
+      'hide-all-ui': hideAllUI,
+    }"
+    tabindex="-1"
+    @keyup="keyListener">
+    <button
+      @click="
+        {
+          hideAllUI = !hideAllUI;
+        }
+      "
+      class="toggle-ui">
+      {{ hideAllUI ? "⚫" : "🔘" }}
+    </button>
     <WeightingBar
       :category-map="category_map"
       @updateCategoryWeight="updateCategoryWeight" />
@@ -36,9 +50,17 @@
             id="imageQuality"
             v-model="imageQuality">
             <option value="fried">fried</option>
+            <option value="jpegged">jpegged</option>
             <option value="1pass">1pass</option>
             <option value="2pass">2pass</option>
           </select>
+          <select required name="BASE_URI" id="BASE_URI" v-model="BASE_URI">
+            <option value="">local</option>
+            <option value="DSK8/">DSK8</option>
+            <option value="http://jpeg.matrix.surf/">bucket</option>
+            <option value="http://localhost:5000/image?url=/">flask</option>
+          </select>
+
           <select
             required
             name="selectedSort"
@@ -107,7 +129,7 @@
                 <div
                   class="badge"
                   :style="{
-                    backgroundColor: PROMPT_MAP[image.prompt].hexColor,
+                    backgroundColor: PROMPT_MAP[image.prompt]?.hexColor,
                   }">
                   {{ image.prompt }}
                 </div>
@@ -131,13 +153,13 @@
               @click.exact="selectImage(image.id)"
               :class="{ lightBoxed: lightBoxed?.id === image.id }">
               <ImageCard
+                :BASE_URI="BASE_URI"
                 :showRating="!albumMode"
                 :rating="image.rating"
                 :image="image"
                 :image-display="imageCover ? 'cover' : 'contain'"
                 @rate="rateImage"
-                :showFried="imageQuality === 'fried'"
-                :show1pass="imageQuality === '1pass'"
+                :image-quality="imageQuality"
                 :card-size="gridSize"
                 :is-vertical="isVertical"
                 :full-size="lightBoxed && lightBoxed.id === image.id" />
@@ -214,7 +236,9 @@
               </div>
               <div
                 class="badge"
-                :style="{ backgroundColor: PROMPT_MAP[image.prompt].hexColor }">
+                :style="{
+                  backgroundColor: PROMPT_MAP[image.prompt]?.hexColor,
+                }">
                 {{ image.prompt }}
               </div>
               <div class="badge static">{{ image.supportPrompt }}</div>
@@ -237,13 +261,13 @@
             @click.exact="selectImage(image.id)"
             :class="{ lightBoxed: lightBoxed?.id === image.id }">
             <ImageCard
+              :BASE_URI="BASE_URI"
               :showRating="!albumMode"
               :rating="image.rating"
               :image="image"
+              :image-quality="imageQuality"
               :image-display="imageCover ? 'cover' : 'contain'"
               @rate="rateImage"
-              :showFried="imageQuality === 'fried'"
-              :show1pass="imageQuality === '1pass'"
               :card-size="gridSize"
               :is-vertical="isVertical"
               :full-size="lightBoxed && lightBoxed.id === image.id" />
@@ -340,6 +364,7 @@ export default {
   },
   data() {
     return {
+      hideAllUI: false,
       albumMode: true,
       imgsPerAlbumPage: 6,
 
@@ -362,8 +387,9 @@ export default {
       forceWeights: true,
       gridSize: "3",
       lightBoxed: null,
-      imageQuality: "fried",
-      ipaFilter: "all",
+      imageQuality: "jpegged",
+      BASE_URI: "",
+      ipaFilter: "no_ipa",
 
       cursorPosition: 0,
       selectedImages: [],
@@ -580,6 +606,8 @@ export default {
     updateCategoryWeight(category, newWeight) {
       console.log("updatinng map:", category, newWeight);
       this.category_map[category].weight = newWeight;
+      localStorage.setItem("category_map", JSON.stringify(this.category_map));
+
       // for (const category in this.category_map) {
       //   const cat = this.category_map[category];
       //   // cat.weight = cat.count / cat.inputs;
@@ -775,6 +803,12 @@ export default {
     reRoll(idx) {
       const newImage = this.getRandomElements(this.filteredImagesPool, 1)[0];
       this.viewportImages.splice(idx, 1, newImage);
+      if (this.albumMode) {
+        localStorage.setItem(
+          "albumBackup",
+          JSON.stringify(this.viewportImages)
+        );
+      }
     },
     blackListAction(image, type) {
       console.log("blacklist", image, type);
@@ -909,6 +943,12 @@ export default {
     },
   },
   watch: {
+    // albumMode() {
+    //   const backup = localStorage.getItem("albumBackup");
+    //   if (this.albumMode && backup) {
+    //     this.viewportImages = JSON.parse(backup);
+    //   }
+    // },
     filterOpts() {
       console.log("filterOpts");
       this.filteredImages = this.filterImages();
@@ -950,9 +990,9 @@ export default {
       );
     },
     filterInputs() {
-      if (this.currentMode === "random") {
-        this.currentMode = "sequence";
-      }
+      // if (this.currentMode === "random") {
+      //   this.currentMode = "sequence";
+      // }
       localStorage.setItem("filterInputs", JSON.stringify(this.filterInputs));
       this.currentPage = 1;
     },
@@ -964,6 +1004,12 @@ export default {
     },
     isWeighted() {
       localStorage.setItem("isWeighted", JSON.stringify(this.isWeighted));
+    },
+    BASE_URI() {
+      localStorage.setItem("isWeighted", JSON.stringify(this.BASE_URI));
+    },
+    imageQuality() {
+      localStorage.setItem("imageQuality", JSON.stringify(this.imageQuality));
     },
     selectedSorting() {
       this.currentPage = 1;
@@ -998,6 +1044,11 @@ export default {
     this.imageSelection = JSON.parse(
       localStorage.getItem("imageSelection.selection1") || "[]"
     );
+
+    const storedMap = localStorage.getItem("category_map");
+    if (storedMap) {
+      this.category_map = JSON.parse(storedMap);
+    }
 
     console.log("loaded rated:", this.ratedImages.length);
     console.log("blacklist length", this.blackList.length);
@@ -1038,6 +1089,12 @@ export default {
     this.isWeighted = localStorage.getItem("isWeighted")
       ? JSON.parse(localStorage.getItem("isWeighted"))
       : false;
+    this.BASE_URI = localStorage.getItem("BASE_URI")
+      ? JSON.parse(localStorage.getItem("BASE_URI"))
+      : "";
+    this.imageQuality = localStorage.getItem("imageQuality")
+      ? JSON.parse(localStorage.getItem("imageQuality"))
+      : "";
 
     this.hasInit = true;
   },
@@ -1323,6 +1380,7 @@ footer {
   /* background-color: white; */
   margin-bottom: 2rem;
   scale: 75%;
+  border: 10px solid darkblue;
 }
 
 .card-wrapper {
@@ -1332,6 +1390,7 @@ footer {
 .album-sequence-container .chapter-card {
   width: auto !important;
   background-color: #eee;
+  background-color: #e8e8e8;
 }
 
 .album-sequence-container .card-header {
@@ -1344,22 +1403,39 @@ footer {
 }
 
 .album-sequence-container .left-page {
-  border: 1px solid rgba(0, 0, 0, 0.25);
+  border-right: 1px solid #ccc;
 }
 .album-sequence-container .right-page {
-  border: 1px solid rgba(0, 0, 0, 0.25);
+  border-left: 1px solid #ccc;
 }
 
 .album-sequence-container .left-page .chapter-card {
-  padding: 0.5rem 17rem 0.5rem 0.5rem;
+  padding: 0.25rem 17rem 0.25rem 0.25rem;
 }
 
 .album-sequence-container .right-page .chapter-card {
-  padding: 0.5rem 0.5rem 0.5rem 17rem;
+  padding: 0.25rem 0.25rem 0.25rem 17rem;
 }
 
 .isLoading {
   opacity: 0.75;
   background-color: #0f0;
+}
+
+.hide-all-ui {
+  #filter-bar,
+  .weights,
+  .controls,
+  .rating-container,
+  footer {
+    display: none;
+  }
+}
+
+.toggle-ui {
+  z-index: 4000;
+  position: fixed;
+  bottom: 0;
+  right: 0;
 }
 </style>

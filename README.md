@@ -129,17 +129,29 @@ img picking:
 
 1. /Users/jbe/Dropbox/MLREPOS/comfy-scripts/scripts/path_crawl.py Updates pics-versioned-ts.json
 
-2. path_crawl_parse.js to write to data/pics-parsed.json
+2. path_crawl_parse.js with favs to write to data/pics-parsed.json
 
-2.1 path_crawl_parse.js withf aves? to write to data/pics-parsed.json
+python /Users/jbe/Dropbox/MLREPOS/comfy-scripts/scripts/path_crawl.py && node path_crawl_parse.js
 
-3. hit http://localhost:3000/#/console
+3. rsync -rt /Users/jbe/Dropbox/stabdiff-ui-v2/comfyui-outs/\_NF/NF-03-5 /Volumes/DSK8/never-forget
 
-4. export selection, take viewport?
+4. create jpegged python /Users/jbe/Dropbox/vid-bench/EDL/src/batch-jpg.py
 
----
+5. `aws s3 sync /Volumes/DSK8/never-forget/NF-03-5 s3://jpeg.matrix.surf/NF-03-5 --exclude "*" --include "*.jpg"`
+
+6. hit http://localhost:3000/#/console
+
+7. export selection, take viewport
+
+## CP to aws bukcet
 
 aws s3 cp /Users/jbe/static-sites/never-forget-vite-vue2/public/dzi/\_local s3://jpeg.matrix.surf/dzi/v0 --recursive
+
+aws s3 sync /Users/jbe/Dropbox/stabdiff-ui-v2/\_sorted-outputs/never-forget/\_\_never-forget_outs/\_nf-plate-out/indigoComic_v10withvae-2eed4fd6-d8a4-11ee-b9b5-120e0458f973 s3://jpeg.matrix.surf/png-jpeg-flat
+
+aws s3 sync /Volumes/DSK8/never-forget/NF-03-5 s3://jpeg.matrix.surf/NF-03-5 --exclude "_" --include "_.jpg"
+
+---
 
 - Working on this sprawling project that never ends but we're almost there, here's some WIP jpegs #instantlore #neverforget
 

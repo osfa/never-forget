@@ -11,18 +11,13 @@
       vertical: isVertical,
     }">
     <img
-      :src="
-        showFried
-          ? 'DSK8/' + image.srcFried.replace('MP-1.0', 'MP-1')
-          : show1pass
-          ? 'DSK8/' + image.src1pass.replace('MP-1.0', 'MP-1')
-          : 'DSK8/' + image.src.replace('MP-1.0', 'MP-1')
-      "
+      :src="imagePath"
       :alt="`Image ${image.id}`"
       :class="{ cover: imageDisplay === 'cover' }" />
     <div class="meta-bar">
       <div class="badge">{{ image.id }}</div>
     </div>
+    <div v-if="!showRating" class="date-bar">{{ date_stamp() }}</div>
     <div v-if="rating && showRating" class="rating-container">
       <div v-for="n in parseInt(rating)" class="rating"></div>
     </div>
@@ -35,12 +30,68 @@ export default {
     image: Object,
     rating: Number,
     showRating: Boolean,
-    showFried: Boolean,
-    show1pass: Boolean,
+    imageQuality: String,
     fullSize: Boolean,
     cardSize: String,
     isVertical: Boolean,
     imageDisplay: String,
+    BASE_URI: String,
+  },
+  data() {
+    return {
+      date_stamp() {
+        const startYear = 1997;
+        const endYear = 2024;
+        const year =
+          Math.floor(Math.random() * (endYear - startYear + 1)) + startYear;
+        const month = String(Math.floor(Math.random() * 12) + 1).padStart(
+          2,
+          "0"
+        );
+        const day = String(Math.floor(Math.random() * 28) + 1).padStart(2, "0");
+        const hour = String(Math.floor(Math.random() * 24)).padStart(2, "0");
+        const minute = String(Math.floor(Math.random() * 60)).padStart(2, "0");
+        return `${year}-${month}-${day} ${hour}:${minute}`;
+      },
+    };
+  },
+  computed: {
+    imagePath() {
+      let path = "";
+      switch (this.imageQuality) {
+        case "fried":
+          path = this.image.srcFried;
+          break;
+        case "1pass":
+          path = this.image.src1pass;
+          break;
+        case "jpegged":
+          path =
+            this.image.src.replace("2pass", "2passjpegged50").slice(0, -3) +
+            "jpg";
+          break;
+        default:
+          path = this.image.src;
+      }
+
+      const quality = 85;
+      // const operation_type = "fry";
+      const operation_type = "";
+      const size_multiplier = "1.0";
+
+      const saturation = 1.8;
+      const brightness = 1.0;
+      const sharpen = 2.0;
+      const contrast = 1.3;
+      const fry_conf = `&saturation=${saturation}&brightness=${brightness}&sharpen=${sharpen}&contrast=${contrast}`;
+      let qs = `?quality=${quality}&operation_type=${operation_type}&size_multiplier=${size_multiplier}${fry_conf}`;
+
+      if (!this.BASE_URI.includes("image?url=/")) {
+        qs = "";
+      }
+
+      return `${this.BASE_URI}${path.replace("MP-1.0", "MP-1")}${qs}`;
+    },
   },
   methods: {
     rate(rating) {
@@ -125,6 +176,20 @@ export default {
   display: flex;
   flex-direction: row;
   visibility: hidden;
+}
+
+.left-page .date-bar {
+  padding-right: 17rem;
+}
+.date-bar {
+  position: absolute;
+  color: rgb(255, 184, 52);
+  bottom: 1.5rem;
+  right: 1.5rem;
+  font-size: 0.75rem;
+  z-index: 1000;
+  mix-blend-mode: hard-light;
+  text-shadow: 0 0 3px rgb(255, 184, 52);
 }
 
 .meta-bar .badge {
