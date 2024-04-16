@@ -1006,7 +1006,7 @@ export default {
       localStorage.setItem("isWeighted", JSON.stringify(this.isWeighted));
     },
     BASE_URI() {
-      localStorage.setItem("isWeighted", JSON.stringify(this.BASE_URI));
+      localStorage.setItem("BASE_URI", JSON.stringify(this.BASE_URI));
     },
     imageQuality() {
       localStorage.setItem("imageQuality", JSON.stringify(this.imageQuality));
