@@ -45,8 +45,8 @@
   display: flex;
   justify-content: center;
   /* mix-blend-mode: difference; */
-  mix-blend-mode: difference;
-  mix-blend-mode: exclusion;
+  /* mix-blend-mode: difference;
+  mix-blend-mode: exclusion; */
   /* mix-blend-mode: hard-light; */
   /* mix-blend-mode: overlay; */
   /* mix-blend-mode: screen; */

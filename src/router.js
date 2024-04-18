@@ -10,11 +10,11 @@ import CardWorld from "./components/CardWorld.vue";
 Vue.use(VueRouter);
 
 const routes = [
-  { path: "/", component: DziViewer },
+  { path: "/dzi", component: DziViewer },
   // { path: "/landing", component: Landing },
   // { path: "/legacy", component: AudioVisualBook },
   { path: "/console", component: RatingBook },
-  { path: "/cards", component: CardWorld },
+  { path: "/", component: CardWorld },
 ];
 
 const router = new VueRouter({

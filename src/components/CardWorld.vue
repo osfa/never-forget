@@ -19,7 +19,7 @@
       </div>
       <!-- </div> -->
     </div>
-    <BarebonesTone ref="audioModule" automaticFade :debug="true" />
+    <BarebonesTone ref="audioModule" automaticFade :debug="false" />
     <div id="subs-container">
       <div id="subs-text">
         <div id="typewriter"></div>
@@ -56,8 +56,8 @@ import Typewriter from "typewriter-effect/dist/core";
 // capcut timecode?
 // 1 cell video? in corner? for desktop?
 
-const DEFAULT_COLS = 1;
-const DEFAULT_ROWS = 1;
+const DEFAULT_COLS = 3;
+const DEFAULT_ROWS = 3;
 
 export default {
   components: {
@@ -88,7 +88,7 @@ export default {
       lastNow: null,
       ticks: 0,
       tickInterval: 1000,
-      slideTickInterval: 8,
+      slideTickInterval: 4,
       tickDown: 8,
 
       isLoading: false,

@@ -13,7 +13,7 @@
     <img
       :src="imagePath"
       :alt="`Image ${image.id}`"
-      :class="{ cover: imageDisplay === 'cover' }" />
+      :class="{ cover: imageDisplay === 'cover', isPortrait }" />
     <div class="meta-bar">
       <div class="badge">{{ image.id }}</div>
     </div>
@@ -39,6 +39,7 @@ export default {
   },
   data() {
     return {
+      isPortrait: false,
       date_stamp() {
         const startYear = 1997;
         const endYear = 2024;
@@ -97,6 +98,16 @@ export default {
     rate(rating) {
       this.$emit("rate", this.image.id, rating);
     },
+  },
+  mounted() {
+    let img = new Image();
+    img.src = this.imagePath;
+    // console.log(img.naturalWidth, img.naturalHeight);
+    if (img.naturalWidth >= img.naturalHeight) {
+      this.isPortrait = false;
+    } else {
+      this.isPortrait = true;
+    }
   },
 };
 </script>
@@ -229,4 +240,9 @@ export default {
   display: flex;
   flex-direction: row;
 }
+
+/* .album-sequence-container .isPortrait { */
+/* transform: rotate(90deg) translateY(-100%);
+  transform-origin: top left; */
+/* } */
 </style>
