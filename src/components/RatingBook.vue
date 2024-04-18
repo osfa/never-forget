@@ -353,7 +353,7 @@ import { CATEGORY_MAP, MODEL_META_MAP, PROMPT_MAP } from "../maps";
 //   insertDataIntoDatabase,
 // } from "../dbInterface.js";
 
-console.log("ratingBook hit, image count:", parsedBatch.imageObjs.length);
+// console.log("ratingBook hit, image count:", parsedBatch.imageObjs.length);
 
 export default {
   components: {
@@ -1026,9 +1026,9 @@ export default {
     console.log("created fire.");
 
     const parseResult = parsedBatch;
-    this.batch = parseResult.imageObjs;
-    console.log(parseResult);
-    console.log(parseResult.imageObjs[0]);
+    this.batch = parseResult?.imageObjs;
+    // console.log(parseResult);
+    // console.log(parseResult.imageObjs[0]);
 
     this.availableModels = parseResult.availableModels;
     this.availableInputs = parseResult.availableInputs;
