@@ -1050,6 +1050,17 @@ export default {
       this.category_map = JSON.parse(storedMap);
     }
 
+    this.sideloaded = JSON.parse(localStorage.getItem("sideloaded") || "[]");
+    console.log("loaded sideloaded:", this.sideloaded.length);
+    if (this.sideloaded.length > 0) {
+      this.imageSelection = this.sideloaded.map((sideloadedImage) => {
+        const image = this.batch.find((i) => i.id === sideloadedImage);
+        if (image) {
+          return image;
+        }
+      });
+    }
+
     console.log("loaded rated:", this.ratedImages.length);
     console.log("blacklist length", this.blackList.length);
     console.log("triples", this.includedTriples);
