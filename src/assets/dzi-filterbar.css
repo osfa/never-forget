@@ -1,6 +1,6 @@
-#filter-bar {
+#filter-bar, .filter-bar {
   position: fixed;
-  right: 0;
+  left: 0;
   bottom: 0;
   display: flex;
   justify-content: center;
@@ -9,8 +9,19 @@
   flex-direction: column;
 }
 
-#model-section {
+.filter-bar.right {
+  left: auto;
+  right: 0;
+}
+
+.filter-bar.right .model-section {
   height: 60vh;
+  left: auto;
+  right: 0;
+}
+
+#model-section, .model-section {
+  height: 70vh;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
@@ -30,7 +41,11 @@
   text-shadow: #fff 0 0 5px;
 }
 
-#action-section {
+.btn-layer:hover {
+  background-color: rgba(0,0,0,0.50)!important;
+}
+
+#action-section, .action-section {
   height: 30vh;
   display: flex;
   flex-direction: column;
@@ -52,9 +67,10 @@
   .btn-right {
     color: white;
     background-color: rgba(0,0,255,0.5)!important;
-
   }
-  
+  .btn-layer:hover {
+    background-color: rgba(0,0,0,0.70)!important;
+  }
 }
 
 .btn-layer.active {

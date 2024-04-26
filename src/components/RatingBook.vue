@@ -917,22 +917,22 @@ export default {
       console.log(this.filteredImages.map((x) => x.id));
       console.log("viewportImages:");
       console.log(this.viewportImages.map((x) => x.id));
-      console.log("rated images 4 and above:");
-      console.log(
-        this.ratedImages
-          .filter((image) => image.rating > 3)
-          .map((x) => {
-            return { id: x.id, rating: x.rating };
-          })
-      ); // base on selected rating?
-      console.log("all rated:");
-      console.log(
-        this.ratedImages.map((x) => {
-          return { id: x.id, rating: x.rating };
-        })
-      ); // base on selected rating?
-      console.log("blacklist:");
-      console.log(this.blackList);
+      // console.log("rated images 4 and above:");
+      // console.log(
+      //   this.ratedImages
+      //     .filter((image) => image.rating > 3)
+      //     .map((x) => {
+      //       return { id: x.id, rating: x.rating };
+      //     })
+      // ); // base on selected rating?
+      // console.log("all rated:");
+      // console.log(
+      //   this.ratedImages.map((x) => {
+      //     return { id: x.id, rating: x.rating };
+      //   })
+      // ); // base on selected rating?
+      // console.log("blacklist:");
+      // console.log(this.blackList);
     },
     goTop() {
       window.scroll({

@@ -7,17 +7,104 @@
       'three-three': rows == 3 && cols == 3,
     }">
     <img class="formats" src="/formats2.png" />
-    <div id="grid-bar">
-      <div @click="setGrid(1, 1)">Ⅰ</div>
-      <div @click="setGrid(2, 2)">Ⅱ</div>
-      <div @click="setGrid(3, 3)">Ⅲ</div>
+    <div class="filter-bar right">
+      <div class="model-section">
+        <div
+          class="btn-layer"
+          :class="{ active: sizeMultiplier === s }"
+          @click="setS(s)"
+          v-for="s in [0.25, 0.5, 1.0, 2.0]">
+          {{ sizeLabelMap[s] }}
+        </div>
+        <div
+          v-if="showDitherOption"
+          class="btn-layer"
+          :class="{ active: ditherPalette === dp }"
+          @click="ditherPalette = dp"
+          v-for="dp in ['cmykPlus', 'auto', 'websafe', 'bw']">
+          {{ dp.slice(0, 1) }}
+        </div>
+        <div
+          v-if="showDitherOption"
+          class="btn-layer"
+          :class="{ active: ditherColors === cc }"
+          @click="ditherColors = cc"
+          v-for="cc in ['2', '4', '8', '16']">
+          {{ cc }}
+        </div>
+      </div>
+      <div class="action-section">
+        <div
+          class="btn-layer"
+          :class="{ active: jpegQuality === q }"
+          @click="setQ(q)"
+          v-for="q in [1, 5, 10, 25, 50]">
+          {{ q }}
+        </div>
+      </div>
+    </div>
+
+    <div class="filter-bar">
+      <div class="model-section">
+        <div
+          v-for="(model, idx) in Object.keys(MODEL_META_MAP)"
+          class="btn-layer"
+          :class="{ active: selectedModels.includes(model) }"
+          :style="{ backgroundColor: MODEL_META_MAP[model]?.hexColor }"
+          @click="setPlateFilter(model)">
+          {{ MODEL_META_MAP[model]?.unicode }}
+        </div>
+      </div>
+
+      <div id="action-section">
+        <div
+          v-if="false"
+          class="btn-layer"
+          :class="{ active: infoModalOpen }"
+          @click="infoModalOpen = !infoModalOpen">
+          ⓘ
+        </div>
+
+        <div
+          v-if="showDitherOption"
+          class="btn-layer"
+          :class="{ active: plateFried }"
+          @click="plateFried = !plateFried">
+          ◡
+        </div>
+
+        <div
+          @click="setGrid(1, 1)"
+          :class="{ active: cols === 1 && rows === 1 }"
+          class="btn-layer">
+          Ⅰ
+        </div>
+        <div
+          @click="setGrid(2, 2)"
+          :class="{ active: cols === 2 && rows === 2 }"
+          class="btn-layer">
+          Ⅱ
+        </div>
+        <div
+          @click="setGrid(3, 3)"
+          :class="{ active: cols === 3 && rows === 3 }"
+          class="btn-layer">
+          Ⅲ
+        </div>
+      </div>
     </div>
     <div class="grid-container">
-      <!-- <div class="grid-row" v-for="(r, i) in rows" :key="`${r}-${i}`"> -->
-      <div class="grid-item" v-for="(c, i) in cols * rows" :key="`${c}-${i}`">
-        <CardImage :step="items[i]" />
-      </div>
-      <!-- </div> -->
+      <!-- glithces due to grid? in caed image? -->
+      <CardImage
+        v-for="(c, i) in cols * rows"
+        :key="`${c}-${i}`"
+        :imageOperation="plateFried ? 'fry' : 'dither'"
+        :jpegQuality="jpegQuality"
+        :ditherPalette="ditherPalette"
+        :ditherColors="ditherColors"
+        :sizeMultiplier="String(sizeMultiplier)"
+        :modelName="selectedModels[0]"
+        :step="items[i]" />
     </div>
     <BarebonesTone ref="audioModule" automaticFade :debug="false" />
     <div id="subs-container">
@@ -38,7 +125,7 @@
       </audio>
     </div>
     <SmallClock :offset="randomInt(-25, 25) * offsetSeed" />
-    <Chat />
+    <!-- <Chat /> -->
     <!-- <Clock :offset="randomInt(-25, 25) * offsetSeed" /> -->
   </div>
 </template>
@@ -51,13 +138,14 @@ import SmallClock from "./SmallClock.vue";
 import Clock from "./Clock.vue";
 import Chat from "./Chat.vue";
 import Typewriter from "typewriter-effect/dist/core";
+import { MODEL_META_MAP } from "../plateMap.js";
 
 // analog clock?
 // capcut timecode?
 // 1 cell video? in corner? for desktop?
 
-const DEFAULT_COLS = 3;
-const DEFAULT_ROWS = 3;
+const DEFAULT_COLS = 1;
+const DEFAULT_ROWS = 1;
 
 export default {
   components: {
@@ -95,6 +183,18 @@ export default {
       offsetSeed: 1,
 
       typewriter: null,
+      infoModalOpen: false,
+      MODEL_META_MAP,
+
+      selectedModels: [Object.keys(MODEL_META_MAP).random()],
+
+      showDitherOption: false,
+      plateFried: true,
+      jpegQuality: 1,
+      ditherPalette: "cmykPlus",
+      ditherColors: "8",
+      sizeMultiplier: "1.0",
+      sizeLabelMap: { 0.25: "¼", 0.5: "½", 1.0: "1", 2.0: "2" },
     };
   },
   methods: {
@@ -105,7 +205,6 @@ export default {
       image.src = imgPath;
       image.onload = () => {
         // this.hotSwapCard(sequenceIdx, imgPath);
-
         this.slideTickInterval = this.randomInt(6, 16);
         this.tickDown = this.slideTickInterval;
       };
@@ -158,7 +257,22 @@ export default {
     resizeHandler(e) {
       this.windowWidth = window.innerWidth;
       this.windowHeight = window.innerHeight;
-      this.updateGridSize();
+      // this.updateGridSize();
+    },
+    setPlateFilter(model) {
+      console.log("setplatefilter", model);
+      this.selectedModels = [model];
+      // if (this.selectedModels.includes(model)) {
+      //   this.selectedModels = this.selectedModels.filter((m) => m !== model);
+      // } else {
+      //   this.selectedModels.push(model);
+      // }
+    },
+    setQ(q) {
+      this.jpegQuality = q;
+    },
+    setS(s) {
+      this.sizeMultiplier = s;
     },
   },
   mounted() {
@@ -239,6 +353,7 @@ export default {
 <style scoped>
 @import "../assets/dzi-scroller-subs.css";
 @import "../assets/grid-layouts.css";
+@import "../assets/dzi-filterbar.css";
 
 /* OLD BELOW  */
 
@@ -341,5 +456,9 @@ body {
 .isLoading {
   opacity: 0.75;
   background-color: #0f0;
+}
+
+.filter-bar {
+  z-index: 3001;
 }
 </style>
