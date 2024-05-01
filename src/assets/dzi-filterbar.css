@@ -120,7 +120,7 @@
 .btn-audio {
   position: fixed;
   top: 5vh;
-  left: 2vw;
+  left: 3vw;
 
   background-color: rgba(255, 255, 255, 0.5);
   background-color: rgba(0, 0, 0, 0.5);
@@ -135,7 +135,7 @@
   font-size: 5rem;
   z-index: 10000;
 
-  width: 95vw;
+  width: 94vw;
 
   height: 96vh;
 
@@ -176,10 +176,11 @@
 
 @media (orientation: portrait) {
   .btn-audio {
-    width: 88vw;
+    width: calc(100vw - 6rem);
     height: 96vh;
     left: 0;
     top: 4vh;
+    margin-left: 3rem;
   }
   .btn-audio.hasInit {
     width: 3rem;
@@ -195,14 +196,15 @@
 
 @media (orientation: portrait) {
   .filter-bar {
-    left: -1rem;
+    /* left: -1rem; */
+    left: 0;
   }
   .filter-bar:hover {
     left: 0;
   }
   .filter-bar.right {
     left: auto;
-    right: -1rem;
+    /* right: -1rem; */
   }
   .filter-bar.right:hover {
     right: 0;

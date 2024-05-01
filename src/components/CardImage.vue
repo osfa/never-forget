@@ -63,7 +63,7 @@ export default {
       if(this.isLoading) return
       console.log("newImage")
       this.poolImagePath =  MODEL_META_MAP[this.modelName].plate.sample()
-      this.loadFlaskImage()
+      this.loadCdnImage()
     },
     randomInt(min, max) {
       min = Math.ceil(min);
@@ -73,6 +73,35 @@ export default {
     randomFloat(min, max) {
       const r = Math.random() * (max - min) + min;
       return r;
+    },
+    loadCdnImage() {
+      const cdn_path ="https://jpeg.matrix.surf/"
+      let fullPath;
+      const sizeMultiplier = this.sizeMultiplier === '1' ? '1.0' : String(this.sizeMultiplier)
+
+      console.log("asfasfa", this.imageOperation)
+      if(this.imageOperation === 'fry'){
+        const jpegPath = `${this.poolImagePath.replace('2pass', 'jpegged').slice(0, -4)}-q${this.jpegQuality}x${sizeMultiplier}.jpg`;
+        fullPath = `${cdn_path}${jpegPath}`
+      }
+      else {
+        // _cmykPlusx1.0.png-cmykPlus-8c-Jarvis-x1.0-dith.png
+        // cmykPlusx0.25.png-cmykPlus-8c-Jarvis-x0.25-dith
+        const dithPath = `${this.poolImagePath.replace('2pass', 'dithered').slice(0, -4)}cmykPlusx${sizeMultiplier}.png-cmykPlus-8c-Jarvis-x${sizeMultiplier}-dith.png`;
+        fullPath = `${cdn_path}${dithPath}`
+      }
+      console.log('loading;', fullPath)
+      let img = new Image();
+      img.src = fullPath;
+      this.isLoading = true;
+
+      this.$refs.topProgress.start()
+      img.onload = (e) => {
+        console.log(e)
+        this.isLoading = false;
+        this.imagePathFlask = fullPath
+        this.$refs.topProgress.done()
+      };
     },
     loadFlaskImage() {
       const flask_path ="https://flask-fryer.vercel.app/image?url=/"
@@ -98,7 +127,6 @@ export default {
       img.src = fullPath;
       this.isLoading = true;
 
-      console.log(this.$refs)
       this.$refs.topProgress.start()
       img.onload = (e) => {
         console.log(e)
@@ -129,7 +157,7 @@ export default {
     },
   },
   mounted(){
-    this.loadFlaskImage()
+    this.loadCdnImage()
   }
 };
 </script>

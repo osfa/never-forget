@@ -342,17 +342,18 @@
 </template>
 <script>
 // BING BONG BUILD
-// import parsedBatch from "../data/pics-dummy.json";
+import parsedBatch from "../data/pics-dummy.json";
 // import parsedBatch from "../data/pics-parsed.json";
-import parsedBatch from "../data/pics-parsed-favs-jbe-090424.json";
+
+// import parsedBatch from "../data/pics-parsed-favs-jbe-090424.json";
 // import parsedBatch from "../data/pics-parsed-tiny.json";
+
 import { CATEGORY_MAP, MODEL_META_MAP, PROMPT_MAP } from "../maps";
 // import {
 //   openDatabase,
 //   fetchDataFromDatabase,
 //   insertDataIntoDatabase,
 // } from "../dbInterface.js";
-
 // console.log("ratingBook hit, image count:", parsedBatch.imageObjs.length);
 
 export default {

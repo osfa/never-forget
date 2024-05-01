@@ -66,7 +66,6 @@
         </div>
 
         <div
-          v-if="showDitherOption"
           class="btn-layer"
           :class="{ active: plateFried }"
           @click="plateFried = !plateFried">
@@ -106,7 +105,7 @@
         :modelName="selectedModels[0]"
         :step="items[i]" />
     </div>
-    <BarebonesTone ref="audioModule" automaticFade :debug="true" />
+    <BarebonesTone ref="audioModule" automaticFade :debug="false" />
     <div id="subs-container">
       <div id="subs-text">
         <div id="typewriter"></div>
@@ -248,7 +247,7 @@ export default {
       } else {
         this.cols = 1;
         this.rows = 1;
-        this.rows = 3;
+        // this.rows = 3;
       }
     },
     setGrid(cols, rows) {
