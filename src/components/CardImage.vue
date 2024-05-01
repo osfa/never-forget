@@ -1,6 +1,6 @@
 <template>
   <div class="grid-item">
-    <vue-topprogress color="#fff" :height=1 ref="topProgress"></vue-topprogress>
+    <vue-topprogress color="#fff" :height=1 ref="topProgress" :speed=200></vue-topprogress>
     <img
       @click="newImage()"
       class="neo-card"

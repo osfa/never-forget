@@ -6,14 +6,14 @@
       'two-two': rows == 2 && cols == 2,
       'three-three': rows == 3 && cols == 3,
     }">
-    <img class="formats" src="/formats2.png" />
+    <!-- <img class="formats" src="/formats2.png" /> -->
     <div class="filter-bar right">
       <div class="model-section">
         <div
           class="btn-layer"
           :class="{ active: sizeMultiplier === s }"
           @click="setS(s)"
-          v-for="s in [0.25, 0.5, 1.0]">
+          v-for="s in sizeMultipliers">
           {{ sizeLabelMap[s] }}
         </div>
         <div
@@ -38,7 +38,7 @@
           class="btn-layer"
           :class="{ active: jpegQuality === q }"
           @click="setQ(q)"
-          v-for="q in [1, 5, 10, 50]">
+          v-for="q in jpegQualities">
           {{ qLabelMap[q] }}
         </div>
       </div>
@@ -66,7 +66,7 @@
         </div>
 
         <div
-          class="btn-layer"
+          class="btn-layer fried"
           :class="{ active: plateFried }"
           @click="plateFried = !plateFried">
           ◡
@@ -189,10 +189,14 @@ export default {
 
       showDitherOption: false,
       plateFried: true,
+
       jpegQuality: 1,
+      jpegQualities: [1, 5, 10, 50],
+
       ditherPalette: "cmykPlus",
       ditherColors: "8",
       sizeMultiplier: 1.0,
+      sizeMultipliers: [0.25, 0.5, 1.0],
       sizeLabelMap: { 0.25: "∮", 0.5: "∬", 1.0: "∭", 2.0: "2" },
       qLabelMap: { 50: "⟚", 10: "⟐", 5: "⟈", 1: "⟥" },
     };
@@ -230,6 +234,11 @@ export default {
       requestAnimationFrame(() => {
         this.frame();
       });
+    },
+    rollNewSettings() {
+      this.jpegQuality = [1, 5, 10, 50].sample();
+      this.sizeMultiplier = [0.25, 0.5, 1.0, 1.0, 1.0, 1.0].sample();
+      this.plateFried = [true, true, false].sample();
     },
     randomInt(min, max) {
       min = Math.ceil(min);
@@ -333,6 +342,7 @@ export default {
           if (this.ticks % 3 === 0) {
             const cardIdx = this.randomInt(0, this.cols * this.rows);
             this.items[cardIdx] += 1;
+            this.rollNewSettings();
           }
           // this.pan(0.5, 0); // invert?
           // if (!this.isChatResponding) {

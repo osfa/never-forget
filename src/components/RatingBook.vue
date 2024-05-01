@@ -369,7 +369,7 @@ export default {
       albumMode: false,
       imgsPerAlbumPage: 6,
 
-      writeProtected: false,
+      writeProtected: true,
       hasInit: false,
       debug: true,
       batch: [],

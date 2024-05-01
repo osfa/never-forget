@@ -73,6 +73,10 @@
   }
 }
 
+.btn-layer.fried {
+  color: red;
+}
+
 .btn-layer.active {
   opacity: 1;
   border: 0.1px solid white;
