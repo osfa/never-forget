@@ -13,7 +13,7 @@
           class="btn-layer"
           :class="{ active: sizeMultiplier === s }"
           @click="setS(s)"
-          v-for="s in [0.25, 0.5, 1.0, 2.0]">
+          v-for="s in [0.25, 0.5, 1.0]">
           {{ sizeLabelMap[s] }}
         </div>
         <div
@@ -38,8 +38,8 @@
           class="btn-layer"
           :class="{ active: jpegQuality === q }"
           @click="setQ(q)"
-          v-for="q in [1, 5, 10, 25, 50]">
-          {{ q }}
+          v-for="q in [1, 5, 10, 50]">
+          {{ qLabelMap[q] }}
         </div>
       </div>
     </div>
@@ -85,12 +85,12 @@
           class="btn-layer">
           Ⅱ
         </div>
-        <div
+        <!-- <div
           @click="setGrid(3, 3)"
           :class="{ active: cols === 3 && rows === 3 }"
           class="btn-layer">
           Ⅲ
-        </div>
+        </div> -->
       </div>
     </div>
     <div class="grid-container">
@@ -106,7 +106,7 @@
         :modelName="selectedModels[0]"
         :step="items[i]" />
     </div>
-    <BarebonesTone ref="audioModule" automaticFade :debug="false" />
+    <BarebonesTone ref="audioModule" automaticFade :debug="true" />
     <div id="subs-container">
       <div id="subs-text">
         <div id="typewriter"></div>
@@ -115,10 +115,10 @@
       <audio
         id="my-audio-player"
         loop
-        src="/audio/narration/nf-test-feb5-h-v1-audio-bounce.mp3">
+        src="/audio/narration/bush-bad-video-streaming-66-amount.mp3">
         <track
           kind="captions"
-          src="/audio/narration/nf-test-feb5-h-v1-audio-bounce.vtt"
+          src="/audio/narration/bush.vtt"
           srclang="en"
           label="English"
           default />
@@ -130,7 +130,7 @@
   </div>
 </template>
 <script>
-import { pngLibrary } from "../data/pngLibrary.js";
+// import { pngLibrary } from "../data/pngLibrary.js";
 import { zalgofy } from "../zalgo.js";
 import BarebonesTone from "./BarebonesTone.vue";
 import CardImage from "./CardImage.vue";
@@ -162,7 +162,7 @@ export default {
 
       debug: true,
 
-      imgPool: pngLibrary.indigoPlate,
+      // imgPool: pngLibrary.indigoPlate,
 
       cols: DEFAULT_COLS,
       rows: DEFAULT_ROWS,
@@ -193,30 +193,31 @@ export default {
       jpegQuality: 1,
       ditherPalette: "cmykPlus",
       ditherColors: "8",
-      sizeMultiplier: "1.0",
-      sizeLabelMap: { 0.25: "¼", 0.5: "½", 1.0: "1", 2.0: "2" },
+      sizeMultiplier: 1.0,
+      sizeLabelMap: { 0.25: "∮", 0.5: "∬", 1.0: "∭", 2.0: "2" },
+      qLabelMap: { 50: "⟚", 10: "⟐", 5: "⟈", 1: "⟥" },
     };
   },
   methods: {
-    storyTick() {
-      // console.log("storyTick");
-      const image = new window.Image();
-      const imgPath = this.imgPool.sample();
-      image.src = imgPath;
-      image.onload = () => {
-        // this.hotSwapCard(sequenceIdx, imgPath);
-        this.slideTickInterval = this.randomInt(6, 16);
-        this.tickDown = this.slideTickInterval;
-      };
-    },
+    // storyTick() {
+    //   // console.log("storyTick");
+    //   const image = new window.Image();
+    //   const imgPath = this.imgPool.sample();
+    //   image.src = imgPath;
+    //   image.onload = () => {
+    //     // this.hotSwapCard(sequenceIdx, imgPath);
+    //     this.slideTickInterval = this.randomInt(6, 16);
+    //     this.tickDown = this.slideTickInterval;
+    //   };
+    // },
     tick() {
       this.ticks += 1;
       this.tickDown -= 1;
       if (this.$refs.audioModule) this.$refs.audioModule.playTick();
 
-      if (this.ticks % this.slideTickInterval === 0) {
-        this.storyTick();
-      }
+      // if (this.ticks % this.slideTickInterval === 0) {
+      //   this.storyTick();
+      // }
     },
     frame() {
       if (this.isPaused) {

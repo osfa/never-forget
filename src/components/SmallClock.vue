@@ -79,6 +79,7 @@ export default {
 @media (orientation: landscape) {
   .clock-container {
     letter-spacing: 0.7rem;
+    font-size: 1rem;
   }
 }
 /* .hour,

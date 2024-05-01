@@ -3,29 +3,43 @@
 // import { parse } from 'node-html-parser';
 const fs = require("fs");
 
+// const CATEGORY_MAP = {
+//   avatar: { hexColor: "#2df1b5", weight: 0.3 },
+//   jetee: { hexColor: "#890add", weight: 0.2 },
+//   hack: { hexColor: "#cf6d73", weight: 0.1 },
+//   // 50%
+
+//   otg: { hexColor: "#176017", weight: 0.05 },
+//   911: { hexColor: "#b8b1a6", weight: 0.05 },
+//   bts: { hexColor: "#e238f2", weight: 0.025 },
+//   memorial: { hexColor: "#e238f2", weight: 0.025 },
+
+//   trackers: { hexColor: "#9e0912", weight: 0.05 },
+//   // 70%
+
+//   "ava-game": { hexColor: "#0000ff", weight: 0.05 },
+//   wow: { hexColor: "#424f9e", weight: 0.05 },
+
+//   fortnite: { hexColor: "#ba98a0", weight: 0.05 },
+//   starcraft: { hexColor: "#88409C", weight: 0.05 },
+
+//   diablo: { hexColor: "#ff0000", weight: 0.05 },
+//   cs: { hexColor: "#b751b1", weight: 0.05 },
+//   // 90%
+// };
+
 const CATEGORY_MAP = {
-  avatar: { hexColor: "#2df1b5", weight: 0.3 },
+  avatar: { hexColor: "#2df1b5", weight: 0.2 },
   jetee: { hexColor: "#890add", weight: 0.2 },
   hack: { hexColor: "#cf6d73", weight: 0.1 },
-  // 50%
-
-  otg: { hexColor: "#176017", weight: 0.05 },
-  911: { hexColor: "#b8b1a6", weight: 0.05 },
+  trackers: { hexColor: "#9e0912", weight: 0.1 },
+  911: { hexColor: "#b8b1a6", weight: 0.075 },
   bts: { hexColor: "#e238f2", weight: 0.025 },
-  memorial: { hexColor: "#e238f2", weight: 0.025 },
-
-  trackers: { hexColor: "#9e0912", weight: 0.05 },
-  // 70%
-
-  "ava-game": { hexColor: "#0000ff", weight: 0.05 },
-  wow: { hexColor: "#424f9e", weight: 0.05 },
-
-  fortnite: { hexColor: "#ba98a0", weight: 0.05 },
-  starcraft: { hexColor: "#88409C", weight: 0.05 },
-
-  diablo: { hexColor: "#ff0000", weight: 0.05 },
-  cs: { hexColor: "#b751b1", weight: 0.05 },
-  // 90%
+  otg: { hexColor: "#176017", weight: 0.05 },
+  before: { hexColor: "#eeeeee", weight: 0.025 },
+  after: { hexColor: "#88409C", weight: 0.025 },
+  memorial: { hexColor: "#000000", weight: 0.05 },
+  online: { hexColor: "#0000ff", weight: 0.05 },
 };
 
 // const extractMetaFromPath = (imgPath) => {
@@ -153,54 +167,70 @@ const parsePathCrawl = (path_object_array, category_map, favs) => {
       prompt = imgPath.split("--")[2].split("_")[1].replace("prompt-", "");
     }
 
+    if (imgPath.includes("before") || imgPath.includes("nostalgia")) {
+      category = "before";
+    }
+
     if (imgPath.includes("911")) {
       category = "911";
     }
+
     if (imgPath.includes("jetee")) {
       category = "jetee";
     }
+
     if (imgPath.includes("trackers")) {
       category = "trackers";
     }
-    if (
-      imgPath.includes("--bts") ||
-      imgPath.includes("--davos") ||
-      imgPath.includes("--mission") ||
-      imgPath.includes("--poolc")
-    ) {
+
+    // mission accomplished hiding here?
+    if (imgPath.includes("--bts")) {
       category = "bts";
     }
+
+    if (
+      imgPath.includes("--davos") ||
+      imgPath.includes("--mission") ||
+      imgPath.includes("--after")
+    ) {
+      category = "after";
+    }
+
+    if (imgPath.includes("memorial") || imgPath.includes("--poolc")) {
+      category = "memorial";
+    }
+
     if (imgPath.includes("--hack")) {
       category = "hack";
     }
     if (imgPath.includes("--wow")) {
       category = "wow";
+      category = "online";
     }
     if (imgPath.includes("cs-2x")) {
       category = "cs";
+      category = "online";
     }
     if (imgPath.includes("fortnite")) {
       category = "fortnite";
+      category = "online";
     }
     if (imgPath.includes("starcraft")) {
       category = "starcraft";
+      category = "online";
     }
     if (imgPath.includes("diablo")) {
       category = "diablo";
+      category = "online";
     }
     if (imgPath.includes("ava-game")) {
       category = "ava-game";
+      category = "online";
     }
     if (imgPath.includes("--otg")) {
       category = "otg";
     }
 
-    if (imgPath.includes("--otg")) {
-      category = "otg";
-    }
-    if (imgPath.includes("memorial")) {
-      category = "memorial";
-    }
     if (category === null) throw new Error(imgPath);
 
     category_map[category][model] = category_map[category][model] || {

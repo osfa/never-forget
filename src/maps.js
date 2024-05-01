@@ -127,147 +127,161 @@ export const PROMPT_MAP = {
 //   // 105%
 // };
 
+// export const CATEGORY_MAP = {
+//   avatar: { hexColor: "#2df1b5", weight: 0.3 },
+//   jetee: { hexColor: "#890add", weight: 0.3 },
+//   hack: { hexColor: "#cf6d73", weight: 0.1 },
+//   trackers: { hexColor: "#9e0912", weight: 0.1 },
+//   // 60%
+//   911: { hexColor: "#b8b1a6", weight: 0.075 },
+//   bts: { hexColor: "#e238f2", weight: 0.025 },
+//   // 70%
+//   memorial: { hexColor: "#000000", weight: 0.05 },
+//   otg: { hexColor: "#176017", weight: 0.05 },
+//   // 80%
+//   "ava-game": { hexColor: "#0000ff", weight: 0.025 },
+//   wow: { hexColor: "#424f9e", weight: 0.025 },
+//   // 90%
+//   fortnite: { hexColor: "#ba98a0", weight: 0.025 },
+//   starcraft: { hexColor: "#88409C", weight: 0.025 },
+//   // 95%
+//   diablo: { hexColor: "#ff0000", weight: 0.025 },
+//   cs: { hexColor: "#b751b1", weight: 0.025 },
+//   // 105%
+// };
+
 export const CATEGORY_MAP = {
-  avatar: { hexColor: "#2df1b5", weight: 0.3 },
-  jetee: { hexColor: "#890add", weight: 0.3 },
+  avatar: { hexColor: "#2df1b5", weight: 0.2 },
+  jetee: { hexColor: "#890add", weight: 0.2 },
   hack: { hexColor: "#cf6d73", weight: 0.1 },
   trackers: { hexColor: "#9e0912", weight: 0.1 },
-  // 60%
   911: { hexColor: "#b8b1a6", weight: 0.075 },
-  bts: { hexColor: "#e238f2", weight: 0.025 },
-  // 70%
+  bts: { hexColor: "#e238f2", weight: 0.05 },
   memorial: { hexColor: "#000000", weight: 0.05 },
   otg: { hexColor: "#176017", weight: 0.05 },
-  // 80%
-  "ava-game": { hexColor: "#0000ff", weight: 0.025 },
-  wow: { hexColor: "#424f9e", weight: 0.025 },
-  // 90%
-  fortnite: { hexColor: "#ba98a0", weight: 0.025 },
-  starcraft: { hexColor: "#88409C", weight: 0.025 },
-  // 95%
-  diablo: { hexColor: "#ff0000", weight: 0.025 },
-  cs: { hexColor: "#b751b1", weight: 0.025 },
-  // 105%
+  before: { hexColor: "#88409C", weight: 0.025 },
+  after: { hexColor: "#88409C", weight: 0.05 },
+  online: { hexColor: "#0000ff", weight: 0.05 },
 };
 
-export const parsePathCrawl = (path_array, category_map) => {
-  const availableModelsAll = [];
-  const availableInputsAll = [];
-  const availablePromptsAll = [];
+// export const parsePathCrawl = (path_array, category_map) => {
+//   const availableModelsAll = [];
+//   const availableInputsAll = [];
+//   const availablePromptsAll = [];
 
-  const imageObjs = path_array.map((imgPath) => {
-    const srcFried = imgPath.replace(
-      "/Users/jbe/Dropbox/stabdiff-ui-v2/comfyui-outs/_NF/",
-      ""
-    );
-    imgPath = imgPath
-      .replace("/Users/jbe/Dropbox/stabdiff-ui-v2/comfyui-outs/_NF/", "")
-      .replace("/fried/", "/2pass/");
-    imgPath = imgPath.split("-fried_")[0] + "_00001_.png";
+//   const imageObjs = path_array.map((imgPath) => {
+//     const srcFried = imgPath.replace(
+//       "/Users/jbe/Dropbox/stabdiff-ui-v2/comfyui-outs/_NF/",
+//       ""
+//     );
+//     imgPath = imgPath
+//       .replace("/Users/jbe/Dropbox/stabdiff-ui-v2/comfyui-outs/_NF/", "")
+//       .replace("/fried/", "/2pass/");
+//     imgPath = imgPath.split("-fried_")[0] + "_00001_.png";
 
-    const model = imgPath.split("--")[1];
-    let inputImage;
-    let prompt;
-    let category = "?";
-    const fna = imgPath.split("/");
-    const fn = fna[fna.length - 1];
-    const cfg = fn.split("_cfg-")[1].split("_")[0];
-    const ss = fn.split("_ss-")[1].split("_")[0];
-    const supportPrompt = fn.split("_support_prompt-")[1].split("_")[0];
+//     const model = imgPath.split("--")[1];
+//     let inputImage;
+//     let prompt;
+//     let category = "?";
+//     const fna = imgPath.split("/");
+//     const fn = fna[fna.length - 1];
+//     const cfg = fn.split("_cfg-")[1].split("_")[0];
+//     const ss = fn.split("_ss-")[1].split("_")[0];
+//     const supportPrompt = fn.split("_support_prompt-")[1].split("_")[0];
 
-    if (imgPath.includes("avatar1") || imgPath.includes("avatar2")) {
-      category = "avatar";
-      inputImage = fn.split("--")[2].split(".jpg")[0] + ".jpg";
-      prompt = fn
-        .split("--")[2]
-        .split(".jpg")[1]
-        .split("_")[1]
-        .replace("prompt-", "");
-    } else {
-      inputImage = imgPath.split("--")[2].split("_")[0];
-      prompt = imgPath.split("--")[2].split("_")[1].replace("prompt-", "");
-    }
+//     if (imgPath.includes("avatar1") || imgPath.includes("avatar2")) {
+//       category = "avatar";
+//       inputImage = fn.split("--")[2].split(".jpg")[0] + ".jpg";
+//       prompt = fn
+//         .split("--")[2]
+//         .split(".jpg")[1]
+//         .split("_")[1]
+//         .replace("prompt-", "");
+//     } else {
+//       inputImage = imgPath.split("--")[2].split("_")[0];
+//       prompt = imgPath.split("--")[2].split("_")[1].replace("prompt-", "");
+//     }
 
-    if (imgPath.includes("911")) {
-      category = "911";
-    }
-    if (imgPath.includes("jetee")) {
-      category = "jetee";
-    }
-    if (imgPath.includes("trackers")) {
-      category = "trackers";
-    }
-    if (imgPath.includes("--bts")) {
-      category = "bts";
-    }
-    if (imgPath.includes("--hack")) {
-      category = "hack";
-    }
-    if (imgPath.includes("--wow")) {
-      category = "wow";
-    }
-    if (imgPath.includes("cs-2x")) {
-      category = "cs";
-    }
-    if (imgPath.includes("fortnite")) {
-      category = "fortnite";
-    }
-    if (imgPath.includes("starcraft")) {
-      category = "starcraft";
-    }
-    if (imgPath.includes("diablo")) {
-      category = "diablo";
-    }
-    if (imgPath.includes("ava-game")) {
-      category = "ava-game";
-    }
-    if (imgPath.includes("--otg")) {
-      category = "otg";
-    }
+//     if (imgPath.includes("911")) {
+//       category = "911";
+//     }
+//     if (imgPath.includes("jetee")) {
+//       category = "jetee";
+//     }
+//     if (imgPath.includes("trackers")) {
+//       category = "trackers";
+//     }
+//     if (imgPath.includes("--bts")) {
+//       category = "bts";
+//     }
+//     if (imgPath.includes("--hack")) {
+//       category = "hack";
+//     }
+//     if (imgPath.includes("--wow")) {
+//       category = "wow";
+//     }
+//     if (imgPath.includes("cs-2x")) {
+//       category = "cs";
+//     }
+//     if (imgPath.includes("fortnite")) {
+//       category = "fortnite";
+//     }
+//     if (imgPath.includes("starcraft")) {
+//       category = "starcraft";
+//     }
+//     if (imgPath.includes("diablo")) {
+//       category = "diablo";
+//     }
+//     if (imgPath.includes("ava-game")) {
+//       category = "ava-game";
+//     }
+//     if (imgPath.includes("--otg")) {
+//       category = "otg";
+//     }
 
-    if (category_map[category][model] === undefined) {
-      category_map[category][model] = {};
-      category_map[category][model]["count"] = 1;
-    } else {
-      category_map[category][model]["count"] += 1;
-    }
+//     if (category_map[category][model] === undefined) {
+//       category_map[category][model] = {};
+//       category_map[category][model]["count"] = 1;
+//     } else {
+//       category_map[category][model]["count"] += 1;
+//     }
 
-    if (model !== "divineelegancemix_V9") availableModelsAll.push(model);
-    availableInputsAll.push(inputImage);
-    availablePromptsAll.push(prompt);
+//     if (model !== "divineelegancemix_V9") availableModelsAll.push(model);
+//     availableInputsAll.push(inputImage);
+//     availablePromptsAll.push(prompt);
 
-    return {
-      fn,
-      id: imgPath,
-      src: imgPath,
-      src1pass: imgPath
-        .replace("/2pass/", "/1pass/")
-        .replace("_00001_.png", "-1x_00001_.png"),
-      srcFried,
-      model,
-      category,
-      supportPrompt,
-      cfg,
-      ss,
-      isIpa: imgPath.includes("_ipa"),
-      inputImage,
-      prompt,
-      rating: null,
-    };
-  });
+//     return {
+//       fn,
+//       id: imgPath,
+//       src: imgPath,
+//       src1pass: imgPath
+//         .replace("/2pass/", "/1pass/")
+//         .replace("_00001_.png", "-1x_00001_.png"),
+//       srcFried,
+//       model,
+//       category,
+//       supportPrompt,
+//       cfg,
+//       ss,
+//       isIpa: imgPath.includes("_ipa"),
+//       inputImage,
+//       prompt,
+//       rating: null,
+//     };
+//   });
 
-  const onlyUnique = (value, index, array) => {
-    return array.indexOf(value) === index;
-  };
-  const availableModels = availableModelsAll.filter(onlyUnique);
-  const availableInputs = availableInputsAll.filter(onlyUnique);
-  const availablePrompts = availablePromptsAll.filter(onlyUnique);
+//   const onlyUnique = (value, index, array) => {
+//     return array.indexOf(value) === index;
+//   };
+//   const availableModels = availableModelsAll.filter(onlyUnique);
+//   const availableInputs = availableInputsAll.filter(onlyUnique);
+//   const availablePrompts = availablePromptsAll.filter(onlyUnique);
 
-  return {
-    imageObjs,
-    category_map,
-    availableModels,
-    availableInputs,
-    availablePrompts,
-  };
-};
+//   return {
+//     imageObjs,
+//     category_map,
+//     availableModels,
+//     availableInputs,
+//     availablePrompts,
+//   };
+// };

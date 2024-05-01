@@ -54,6 +54,8 @@ export default {
       crossFadeInterval: undefined,
       crossFadeDuration: 10, // in seconds
       pauseTicks: 0,
+      BASE_URI: "",
+      // BASE_URI: "http://jpeg.matrix.surf", // @TODO SOMETHING WEIRD WITH APPENDING BASE URI SOMEHOW?
     };
   },
   methods: {
@@ -111,8 +113,8 @@ export default {
       Tone.setContext(context);
       this.audioCtx = context.rawContext;
       this.setVolume();
+      const file1 = this.BASE_URI + "/audio/cabin.mp3";
 
-      const file1 = "/audio/cabin.mp3";
       const ambiancePlayer = new Tone.Player(file1, () => {
         console.log("loaded into ambiancePlayer", file1);
         this.ambiancePlayer = ambiancePlayer;
@@ -129,7 +131,7 @@ export default {
       this.initAmbiance();
 
       const narrationUrls = audioLibrary.asmr.reduce(
-        (acc, curr) => ((acc[curr] = curr), acc),
+        (acc, curr) => ((acc[curr] = this.BASE_URI + curr), acc),
         {}
       );
       const narrationPlayer = new Tone.Players(narrationUrls, () => {
@@ -190,7 +192,7 @@ export default {
         .connect(autoFilter); // .toDestination()
       this.crossFade.fade.value = this.crossFadeVal; // 0-currently1, 1-currently2
 
-      this.currently1 = audioLibrary.availableReal.sample();
+      this.currently1 = this.BASE_URI + audioLibrary.availableReal.sample();
       this.ambianceChannel1 = new Tone.Player(this.currently1).connect(
         this.crossFade.a
       );
@@ -198,7 +200,7 @@ export default {
       this.ambianceChannel1.loop = true;
       this.ambianceChannel1.volume.value = this.ambianceVolume;
 
-      this.currently2 = audioLibrary.availableReal.sample();
+      this.currently2 = this.BASE_URI + audioLibrary.availableReal.sample();
       this.ambianceChannel2 = new Tone.Player(this.currently2).connect(
         this.crossFade.b
       );
@@ -248,13 +250,13 @@ export default {
       console.log("load1:", chosen);
       if (this.isObj(chosen)) {
         console.log(chosen.path);
-        this.currently1 = chosen.path;
+        this.currently1 = this.BASE_URI + chosen.path;
         this.ambianceChannel1.volume.rampTo(
           this.ambianceVolume + chosen.volume,
           3
         );
       } else {
-        this.currently1 = chosen;
+        this.currently1 = this.BASE_URI + chosen;
         this.ambianceChannel1.volume.rampTo(this.ambianceVolume, 3);
       }
       this.ambianceChannel1.load(this.currently1);
@@ -262,23 +264,27 @@ export default {
     load2(chosen) {
       console.log("load2:", chosen);
       if (this.isObj(chosen)) {
-        this.currently2 = chosen.path;
+        this.currently2 = this.BASE_URI + chosen.path;
         this.ambianceChannel2.volume.rampTo(
           this.ambianceVolume + chosen.volume,
           3
         );
       } else {
-        this.currently2 = chosen;
+        this.currently2 = this.BASE_URI + chosen;
         this.ambianceChannel2.volume.rampTo(this.ambianceVolume, 3);
       }
       this.ambianceChannel2.load(this.currently2);
     },
     hardFade1() {
-      this.load1(audioLibrary.realGrouped[this.audioCounter1].sample());
+      this.load1(
+        this.BASE_URI + audioLibrary.realGrouped[this.audioCounter1].sample()
+      );
       this.audioCounter1 += 1;
     },
     hardFade2() {
-      this.load2(audioLibrary.fakeGrouped[this.audioCounter2].sample());
+      this.load2(
+        this.BASE_URI + audioLibrary.fakeGrouped[this.audioCounter2].sample()
+      );
       this.audioCounter2 += 1;
     },
     doCrossFade() {
@@ -290,10 +296,12 @@ export default {
       ) {
         this.crossDirection = !this.crossDirection;
         if (this.crossFade.fade.value === 1.0) {
-          const chosen = audioLibrary.realGrouped.sample().sample();
+          const chosen =
+            this.BASE_URI + audioLibrary.realGrouped.sample().sample();
           this.load1(chosen);
         } else {
-          const chosen = audioLibrary.fakeGrouped.sample().sample();
+          const chosen =
+            this.BASE_URI + audioLibrary.fakeGrouped.sample().sample();
           this.load2(chosen);
         }
       }

@@ -14,7 +14,8 @@
     "vue": "^2.7",
     "vue-multiselect": "^2.1.8",
     "vue-router": "3",
-    "vue-template-compiler": "^2.7.14"
+    "vue-template-compiler": "^2.7.14",
+    "vue-top-progress": "^0.7.0"
   },
   "devDependencies": {
     "vite": "^2.0.5",

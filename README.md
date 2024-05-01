@@ -1,3 +1,5 @@
+- vue-top-progress
+
 ## Update rated db
 
 0. backup favs etc..

@@ -365,10 +365,10 @@ export default {
   data() {
     return {
       hideAllUI: false,
-      albumMode: true,
+      albumMode: false,
       imgsPerAlbumPage: 6,
 
-      writeProtected: true,
+      writeProtected: false,
       hasInit: false,
       debug: true,
       batch: [],
@@ -743,11 +743,14 @@ export default {
           this.reRoll(this.viewportImages.indexOf(image));
         }
 
-        this.ratedImages = this.batch
-          .filter((image) => image.rating !== null)
-          .map((image) => {
-            return { id: image.id, rating: image.rating };
-          });
+        // this.ratedImages = this.batch
+        //   .filter((image) => image.rating !== null)
+        //   .map((image) => {
+        //     return { id: image.id, rating: image.rating };
+        //   });
+
+        this.ratedImages.push({ id: image.id, rating: image.rating });
+        // this.ratedImagesAux.push({ id: image.id, rating: image.rating });
 
         if (!this.writeProtected) {
           localStorage.setItem(
@@ -1039,7 +1042,11 @@ export default {
     this.blackList = JSON.parse(
       localStorage.getItem("blackList") || "[]"
     ).filter((n) => n);
+
     this.ratedImages = JSON.parse(localStorage.getItem("imageRatings") || "[]");
+
+    // this.ratedImagesAux = JSON.parse(localStorage.getItem("imageRatingsAux") || "[]");
+
     this.includedTriples = JSON.parse(localStorage.getItem("triples") || "[]");
     this.imageSelection = JSON.parse(
       localStorage.getItem("imageSelection.selection1") || "[]"
@@ -1073,15 +1080,15 @@ export default {
     //   return img;
     // });
 
-    // this.ratedImages.forEach((ratedImage) => {
-    //   const image = this.batch.find((i) => i.id === ratedImage.id);
-    //   if (image) {
-    //     image.rating = ratedImage.rating;
-    //     const isSelectedImg = (img) => img.id === image.id;
-    //     const idx = this.batch.findIndex(isSelectedImg);
-    //     this.batch.splice(idx, 1, image);
-    //   }
-    // });
+    this.ratedImages.forEach((ratedImage) => {
+      const image = this.batch.find((i) => i.id === ratedImage.id);
+      if (image) {
+        image.rating = ratedImage.rating;
+        const isSelectedImg = (img) => img.id === image.id;
+        const idx = this.batch.findIndex(isSelectedImg);
+        this.batch.splice(idx, 1, image);
+      }
+    });
 
     console.log("rated fetched.");
 

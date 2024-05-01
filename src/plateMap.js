@@ -1,6 +1,6 @@
-import { aniversePlate } from "./data/aniverse-plate.js";
-import { epicPlate } from "./data/epic-plate.js";
-import { meinaPlate } from "./data/meina-plate.js";
+import { aniversePlate } from "./data/plates/aniverse-plate.js";
+import { epicPlate } from "./data/plates/epic-plate.js";
+import { meinaPlate } from "./data/plates/meina-plate.js";
 
 export const MODEL_META_MAP = {
   // "3dAnimationDiffusion_v10": {
@@ -35,23 +35,23 @@ export const MODEL_META_MAP = {
   //   hexColor: "#20B2AA",
   //   unicode: "≝",
   // }, // Light Sea Green
-  epicrealism_naturalSinRC1VAE: {
-    friendlyName: "Epic Realism",
-    hexColor: "#778899",
-    unicode: "‖",
-    plate: epicPlate,
-  }, // Light Slate Gray
+  // epicrealism_naturalSinRC1VAE: {
+  //   friendlyName: "Epic Realism",
+  //   hexColor: "#778899",
+  //   unicode: "‖",
+  //   plate: epicPlate,
+  // }, // Light Slate Gray
   // indigoComic_v10withvae: {
   //   friendlyName: "Indigo Comic",
   //   hexColor: "#4B0082",
   //   unicode: "∭",
   // }, // Indigo
-  meinamix_meinaV11: {
-    friendlyName: "Meinamix",
-    hexColor: "#FF69B4",
-    unicode: "ℳ",
-    plate: meinaPlate,
-  }, // Hot Pink
+  // meinamix_meinaV11: {
+  //   friendlyName: "Meinamix",
+  //   hexColor: "#FF69B4",
+  //   unicode: "ℳ",
+  //   plate: meinaPlate,
+  // }, // Hot Pink
   // realisticVisionV51_v51VAE: {
   //   friendlyName: "Realistic Vision",
   //   hexColor: "#2E8B57",
