@@ -6,7 +6,6 @@ import { anim3dPlate } from "./data/plates/3danim-512-possibly-with-unrated.js";
 import { counterfeitPlate } from "./data/plates/counterfeit-512-4-5.js";
 import { onefivePlate } from "./data/plates/v-1-5-512-4-5.js";
 import { indigoPlate } from "./data/plates/indigo-512-4-5.js";
-import { indigoPlate } from "./data/plates/indigo-512-4-5.js";
 import { revanimatedPlate } from "./data/plates/revanimated-512-4-5.js";
 import { dreamlikePlate } from "./data/plates/dreamlike-512-4-5.js";
 import { dreamshaperPlate } from "./data/plates/dreamshaper-512-4-5.js";
