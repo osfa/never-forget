@@ -8,9 +8,9 @@
       :key="imagePathFlask"
       :src="imagePathFlask">
     </img>
-    <div v-if="imageOperation ==='fry'" class="q-bar">
+    <!-- <div v-if="imageOperation ==='fry'" class="q-bar">
       <span @click=setQ(q) class="q-button" v-for="q in [1,5,25,50]">{{ q }}</span>
-    </div>
+    </div> -->
     <div class="date-bar">{{ date_stamp() }}</div>
   </div>
 </template>
@@ -87,7 +87,12 @@ export default {
       else {
         // _cmykPlusx1.0.png-cmykPlus-8c-Jarvis-x1.0-dith.png
         // cmykPlusx0.25.png-cmykPlus-8c-Jarvis-x0.25-dith
-        const dithPath = `${this.poolImagePath.replace('2pass', 'dithered').slice(0, -4)}cmykPlusx${sizeMultiplier}.png-cmykPlus-8c-Jarvis-x${sizeMultiplier}-dith.png`;
+
+        // NF-03-5--counterfeitV30_v30--911-00006-2x.jpg_prompt-deviant_support_prompt-blue_MP-1_cfg-12_ss-12_seed-1000195145_cnet_d-0.9_cnet_c-0_face-neg_00001_
+        // -cmykPlus-8c-Jarvis-x0.5-dith
+        // const s1 =`cmykPlusx${sizeMultiplier}.png-cmykPlus-8c-Jarvis-x${sizeMultiplier}-dith.png`
+        const dithSuffix = '-cmykPlusx0.25.png-cmykPlus-8c-Jarvis-x0.25-dith.png'
+        const dithPath = `${this.poolImagePath.replace('2pass', 'dithered').slice(0, -4)}${dithSuffix}`;
         fullPath = `${cdn_path}${dithPath}`
       }
       console.log('loading;', fullPath)
