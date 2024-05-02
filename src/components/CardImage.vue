@@ -91,7 +91,11 @@ export default {
         // NF-03-5--counterfeitV30_v30--911-00006-2x.jpg_prompt-deviant_support_prompt-blue_MP-1_cfg-12_ss-12_seed-1000195145_cnet_d-0.9_cnet_c-0_face-neg_00001_
         // -cmykPlus-8c-Jarvis-x0.5-dith
         // const s1 =`cmykPlusx${sizeMultiplier}.png-cmykPlus-8c-Jarvis-x${sizeMultiplier}-dith.png`
-        const dithSuffix = '-cmykPlusx0.25.png-cmykPlus-8c-Jarvis-x0.25-dith.png'
+
+        // Error
+        // https://jpeg.matrix.surf/NF-03-5/hackers/epicrealism_naturalSinRC1VAE/dithered/NF-03-5--epicrealism_naturalSinRC1VAE--hack-00001.jpg_prompt-deviant_support_prompt-9-11_MP-1_cfg-12_ss-18_seed-1000195145_cnet_d-0.9_cnet_c-0_00001_-cmykPlusx0.25.png-cmykPlus-8c-Jarvis-x0.25-dith.png
+        // const dithSuffix = '-cmykPlusx0.25.png-cmykPlus-8c-Jarvis-x0.25-dith.png'
+        const dithSuffix = `-cmykPlus-8c-Jarvis-x${sizeMultiplier}-dith.png`
         const dithPath = `${this.poolImagePath.replace('2pass', 'dithered').slice(0, -4)}${dithSuffix}`;
         fullPath = `${cdn_path}${dithPath}`
       }
