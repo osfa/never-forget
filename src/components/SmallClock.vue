@@ -41,7 +41,7 @@ export default {
   font-family: "Roboto", "Arial", sans-serif;
   font-family: "Papyrus", "Roboto", "Arial", sans-serif;
   font-family: monospace;
-  /* pointer-events: none; */
+  pointer-events: none;
 
   font-size: 1rem;
   font-size: 0.5rem;
