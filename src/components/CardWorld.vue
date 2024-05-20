@@ -8,7 +8,7 @@
     }">
     <!-- <img class="formats" src="/formats2.png" /> -->
     <div class="filter-bar right">
-      <div class="model-section">
+      <!-- <div class="model-section">
         <div
           class="btn-layer"
           :class="{ active: sizeMultiplier === s }"
@@ -32,14 +32,51 @@
           v-for="cc in ['2', '4', '8', '16']">
           {{ cc }}
         </div>
-      </div>
+      </div> -->
       <div class="action-section">
+        <div
+          class="btn-layer fried"
+          :class="{ active: plateFried }"
+          @click="plateFried = !plateFried">
+          ◡
+        </div>
         <div
           class="btn-layer"
           :class="{ active: jpegQuality === q }"
           @click="setQ(q)"
           v-for="q in jpegQualities">
           {{ qLabelMap[q] }}
+        </div>
+        <!-- <div
+          @click="setGrid(1, 1)"
+          :class="{ active: cols === 1 && rows === 1 }"
+          class="btn-layer">
+          Ⅰ
+        </div>
+        <div
+          @click="setGrid(2, 2)"
+          :class="{ active: cols === 2 && rows === 2 }"
+          class="btn-layer">
+          Ⅱ
+        </div> -->
+        <div
+          @click="setGrid(1, 1)"
+          :class="{ active: cols === 1 && rows === 1 }"
+          class="btn-layer">
+          Ⅰ
+        </div>
+        <div
+          @click="setGrid(2, 2)"
+          :class="{ active: cols === 2 && rows === 2 }"
+          class="btn-layer">
+          Ⅱ
+        </div>
+        <div
+          v-if="false"
+          class="btn-layer"
+          :class="{ active: infoModalOpen }"
+          @click="infoModalOpen = !infoModalOpen">
+          ⓘ
         </div>
       </div>
     </div>
@@ -55,66 +92,31 @@
           {{ MODEL_META_MAP[model]?.unicode }}
         </div>
       </div>
-
-      <div id="action-section">
-        <div
-          v-if="false"
-          class="btn-layer"
-          :class="{ active: infoModalOpen }"
-          @click="infoModalOpen = !infoModalOpen">
-          ⓘ
-        </div>
-
-        <div
-          class="btn-layer fried"
-          :class="{ active: plateFried }"
-          @click="plateFried = !plateFried">
-          ◡
-        </div>
-
-        <div
-          @click="setGrid(1, 1)"
-          :class="{ active: cols === 1 && rows === 1 }"
-          class="btn-layer">
-          Ⅰ
-        </div>
-        <div
-          @click="setGrid(2, 2)"
-          :class="{ active: cols === 2 && rows === 2 }"
-          class="btn-layer">
-          Ⅱ
-        </div>
-        <!-- <div
-          @click="setGrid(3, 3)"
-          :class="{ active: cols === 3 && rows === 3 }"
-          class="btn-layer">
-          Ⅲ
-        </div> -->
-      </div>
     </div>
     <div class="grid-container">
-      <!-- glithces due to grid? in caed image? -->
-      <CardImage
-        v-for="(c, i) in cols * rows"
-        :key="`${c}-${i}`"
-        :imageOperation="plateFried ? 'fry' : 'dither'"
-        :jpegQuality="jpegQuality"
-        :ditherPalette="ditherPalette"
-        :ditherColors="ditherColors"
-        :sizeMultiplier="String(sizeMultiplier)"
-        :modelName="selectedModels[0]"
-        :step="items[i]" />
+      <transition-group name="cards" tag="div">
+        <CardImage
+          v-for="(c, i) in cols * rows"
+          :key="`${c}-${i}`"
+          :imageOperation="plateFried ? 'fry' : 'dither'"
+          :jpegQuality="jpegQuality"
+          :ditherPalette="ditherPalette"
+          :ditherColors="ditherColors"
+          :sizeMultiplier="String(sizeMultiplier)"
+          :modelName="selectedModels[0]"
+          :step="items[i]" />
+      </transition-group>
     </div>
     <BarebonesTone ref="audioModule" automaticFade :debug="false" />
     <div id="subs-container">
-      <div id="subs-text">
+      <div id="subs-text" :class="{ fried: plateFried }">
         <div id="typewriter"></div>
         <span>{{ subtitles }}</span>
       </div>
       <audio
         id="my-audio-player"
         loop
-        src="/audio/narration/bush-bad-video-streaming-66-amount.mp3">
+        src="https://jpeg.matrix.surf/audio/narration/bush-bad-video-streaming-66-amount.mp3">
         <track
           kind="captions"
           src="/audio/narration/bush.vtt"
@@ -124,13 +126,16 @@
       </audio>
     </div>
     <SmallClock :offset="randomInt(-25, 25) * offsetSeed" />
-    <!-- <Chat /> -->
+    <Chat
+      @click.native="showChat = !showChat"
+      :class="{ active: showChat }"
+      :ticks="ticks"
+      :storyTicks="storyTicks" />
     <!-- <Clock :offset="randomInt(-25, 25) * offsetSeed" /> -->
   </div>
 </template>
 <script>
-// import { pngLibrary } from "../data/pngLibrary.js";
-import { zalgofy } from "../zalgo.js";
+// import { zalgofy } from "../zalgo.js";
 import BarebonesTone from "./BarebonesTone.vue";
 import CardImage from "./CardImage.vue";
 import SmallClock from "./SmallClock.vue";
@@ -160,6 +165,7 @@ export default {
       windowHeight: window.innerHeight,
 
       debug: true,
+      showChat: true,
 
       // imgPool: pngLibrary.indigoPlate,
 
@@ -169,12 +175,14 @@ export default {
       items: [0, 0, 0, 0, 0, 0, 0, 0, 0],
 
       subtitles: "",
+      currentSubs: [],
 
       isPaused: false,
 
       lastNow: null,
       ticks: 0,
-      tickInterval: 1000,
+      storyTicks: 0,
+      tickInterval: 2500,
       slideTickInterval: 4,
       tickDown: 8,
 
@@ -214,6 +222,7 @@ export default {
     //   };
     // },
     tick() {
+      // console.log("tick");
       this.ticks += 1;
       this.tickDown -= 1;
       if (this.$refs.audioModule) this.$refs.audioModule.playTick();
@@ -236,9 +245,19 @@ export default {
       });
     },
     rollNewSettings() {
+      this.setPlateFilter(Object.keys(MODEL_META_MAP).sample());
       this.jpegQuality = [1, 5, 10, 50].sample();
       this.sizeMultiplier = [0.25, 0.5, 1.0, 1.0, 1.0, 1.0].sample();
       this.plateFried = [true, true, false].sample();
+      // layout roll
+      const confs = [
+        [1, 1],
+        [1, 1],
+        [2, 2],
+      ];
+      const conf = confs.sample();
+      this.cols = conf[0];
+      this.rows = conf[1];
     },
     randomInt(min, max) {
       min = Math.ceil(min);
@@ -283,18 +302,23 @@ export default {
     setS(s) {
       this.sizeMultiplier = s;
     },
+    scrobble(position_in_seconds) {
+      document.getElementById("my-audio-player").currentTime =
+        position_in_seconds;
+    },
   },
   mounted() {
     window.addEventListener("resize", this.resizeHandler);
     this.updateGridSize();
+    this.frame();
     // this.$refs.card0.newImage();
+    this.currentSubs = [];
+
+    // have gradually spede up?
+    // document.getElementById("my-audio-player").playbackRate = 2;
     document
       .getElementById("my-audio-player")
       .textTracks[0].addEventListener("cuechange", (event) => {
-        // console.log("cuechange", event.target);
-
-        // console.log("cuechange", event.target.cues);
-        // console.log("cuechange", event.target.cues.length);
         const typewriterSpeed = 25;
         if (this.typewriter === null) {
           console.log("init typewriter");
@@ -308,13 +332,19 @@ export default {
           });
         }
 
+        if (this.currentSubs.length === 0) {
+          for (let i = 0; i < event.target.cues.length; i++) {
+            const cue = event.target.cues[i];
+            this.currentSubs.push(cue);
+          }
+        }
+
         if (event.target.activeCues.length > 0) {
-          this.ticks += 1;
+          this.storyTicks += 1;
           const srtText = event.target.activeCues[0].text;
 
           // const starttime = event.target.cues[0].startTime * 1000;
           // const endtime = event.target.cues[0].endTime * 1000;
-
           // const duration = endtime - starttime;
 
           // const textPrintTime =
@@ -344,10 +374,6 @@ export default {
             this.items[cardIdx] += 1;
             this.rollNewSettings();
           }
-          // this.pan(0.5, 0); // invert?
-          // if (!this.isChatResponding) {
-          //   this.chatResponds(event.target.activeCues[0].text);
-          // }
         }
       });
   },
@@ -364,6 +390,17 @@ export default {
 @import "../assets/dzi-scroller-subs.css";
 @import "../assets/grid-layouts.css";
 @import "../assets/dzi-filterbar.css";
+
+/* .cards-enter-active,
+.cards-leave-active {
+  transition: all 1s;
+}
+.cards-enter, .cards-leave-to
+ {
+  opacity: 0;
+  transform: translateY(30px);
+}
+*/
 
 /* OLD BELOW  */
 

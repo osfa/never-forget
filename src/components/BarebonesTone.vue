@@ -54,8 +54,8 @@ export default {
       crossFadeInterval: undefined,
       crossFadeDuration: 10, // in seconds
       pauseTicks: 0,
-      BASE_URI: "",
-      // BASE_URI: "http://jpeg.matrix.surf", // @TODO SOMETHING WEIRD WITH APPENDING BASE URI SOMEHOW?
+      // BASE_URI: "",
+      BASE_URI: "http://jpeg.matrix.surf",
     };
   },
   methods: {
@@ -104,7 +104,8 @@ export default {
       return Math.floor(Math.random() * (max - min)) + min;
     },
     muteIcon() {
-      return this.isPlaying ? "🔇" : "🕳️";
+      // return this.isPlaying ? "🔇" : "🕳️";
+      return this.isPlaying ? "🔇" : "▶";
       // return this.isPlaying ? "🔇" : "⅏";
       // return this.isPlaying ? "🔇" : "↕";
     },
@@ -250,13 +251,13 @@ export default {
       console.log("load1:", chosen);
       if (this.isObj(chosen)) {
         console.log(chosen.path);
-        this.currently1 = this.BASE_URI + chosen.path;
+        this.currently1 = chosen.path;
         this.ambianceChannel1.volume.rampTo(
           this.ambianceVolume + chosen.volume,
           3
         );
       } else {
-        this.currently1 = this.BASE_URI + chosen;
+        this.currently1 = chosen;
         this.ambianceChannel1.volume.rampTo(this.ambianceVolume, 3);
       }
       this.ambianceChannel1.load(this.currently1);
@@ -264,13 +265,13 @@ export default {
     load2(chosen) {
       console.log("load2:", chosen);
       if (this.isObj(chosen)) {
-        this.currently2 = this.BASE_URI + chosen.path;
+        this.currently2 = chosen.path;
         this.ambianceChannel2.volume.rampTo(
           this.ambianceVolume + chosen.volume,
           3
         );
       } else {
-        this.currently2 = this.BASE_URI + chosen;
+        this.currently2 = chosen;
         this.ambianceChannel2.volume.rampTo(this.ambianceVolume, 3);
       }
       this.ambianceChannel2.load(this.currently2);

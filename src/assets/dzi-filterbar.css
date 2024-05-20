@@ -7,38 +7,49 @@
   align-items: center;
   z-index: 2000;
   flex-direction: column;
+  mix-blend-mode: difference;
+  /* mix-blend-mode: hard-light; */
+  font-size: 2rem;
+  pointer-events: none;
+
 }
 
 .filter-bar.right {
-  cursor: pointer;
-  left: auto;
-  right: 0;
+  /* cursor: pointer; */
+  left: 5vw;
+  /* right: 0; */
+  display: none;
 }
 
 .filter-bar.right .model-section {
-  height: 60vh;
+  height: 50vh;
   left: auto;
 }
 
+.filter-bar.right .action-section {
+  height: 50vh;
+}
+
 #model-section, .model-section {
-  height: 70vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
 }
 
 .btn-layer {
-  width: 3vw;
+  width: 5vw;
   background-color: transparent !important;
   /* background-color: black !important; */
-  background-color: rgba(0,0,0,0.25)!important;
+  /* background-color: rgba(0,0,0,0)!important; */
 
-  cursor: pointer;
+  /* cursor: pointer; */
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   text-shadow: #fff 0 0 5px;
+  /* text-shadow: rgba(255, 255, 0, 0.75) 0 0 10px; */
 }
 
 .btn-layer:hover {
@@ -49,14 +60,14 @@
   height: 30vh;
   display: flex;
   flex-direction: column;
-  border-left: 1px dotted white;
+  /* border-left: 1px dotted white; */
   justify-content: space-evenly;
   color: yellow;
   .btn-layer {
-    background-color: rgba(0,0,0,0.5)!important;
+    background-color: rgba(0,0,0,0)!important;
   }
   .btn-layer.active {
-    border: 1px dotted white;
+    /* border: 1px dotted white; */
     border-left: none;
   }
   .btn-left {
@@ -79,9 +90,11 @@
 
 .btn-layer.active {
   opacity: 1;
-  border: 0.1px solid white;
-  border: 1px dashed white;
+  /* border: 0.1px solid white;
+  border: 1px dashed white; */
   box-sizing: border-box;
+  box-shadow: 0 0 75px rgba(255,255,255, 1.0);
+  mix-blend-mode: exclusion;
 }
 
 /* ZOOM BUTTON  */
@@ -101,7 +114,7 @@
 
 .btn-zoom {
   background-color: #333;
-  cursor: pointer;
+  /* cursor: pointer; */
   width: 2vw;
   box-sizing: border-box;
   flex: 1;
@@ -114,8 +127,9 @@
 
 .btn-zoom.active {
   opacity: 1;
-  border: 0.5px solid white;
+  /* border: 0.5px solid white; */
   /* border: 1px dotted red; */
+  box-shadow: #fff 0 0 5px;
 }
 
 
@@ -123,8 +137,10 @@
 
 .btn-audio {
   position: fixed;
-  top: 5vh;
+  top: 6vh;
   left: 3vw;
+
+  left: 6vw;
 
   background-color: rgba(255, 255, 255, 0.5);
   background-color: rgba(0, 0, 0, 0.5);
@@ -135,6 +151,7 @@
   box-shadow: 0 0 10px 10px rgba(0,0,0,0.25);
   /* box-shadow: 0 0 10px 10px rgba(0,0,0,1.0); */
   box-shadow: 0 0 10px 10px rgba(255,255,255, 0.15);
+  box-shadow: 0 0 75px rgba(255,255,255, 1.0);
 
   font-size: 5rem;
   z-index: 10000;
@@ -169,8 +186,8 @@
   background-color: rgba(0, 255, 0, 0.55);
   background-color: rgba(255, 255, 255, 0.55);
 
-  width: 3vw;
-  height: 10vh;
+  width: 5vw;
+  height: 8vh;
   font-size: 1rem;
 
   left: auto;
@@ -180,7 +197,7 @@
 
 @media (orientation: portrait) {
   .btn-audio {
-    width: calc(100vw - 6rem);
+    width: calc(100vw - 3rem);
     height: 96vh;
     left: 0;
     top: 4vh;
@@ -207,11 +224,14 @@
     left: 0;
   }
   .filter-bar.right {
-    left: auto;
+    left: 2rem;
     /* right: -1rem; */
   }
   .filter-bar.right:hover {
     right: 0;
+  }
+  #filter-bar, .filter-bar {
+    font-size: 1rem;
   }
   .btn-layer {
     width: 3rem;

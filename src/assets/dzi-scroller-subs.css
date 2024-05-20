@@ -20,13 +20,18 @@
   background: yellow;
 }
 
+#subs-text.fried {
+  text-transform: none;
+  font-family: 'Times New Roman', Times, serif;
+  font-family: 2rem;
+}
 
 #subs-container {
   z-index: 3000;
   position: absolute;
   bottom: 0;
-  font-size: 2rem;
 
+  font-size: 2rem;
   font-family: Papyrus, fantasy;
 
 
@@ -102,6 +107,9 @@
 }
 
 @media (orientation: portrait) {
+  #subs-container .fried {
+    font-size: 1.5rem;
+  }
   #subs-container {
     font-size: 1.2rem;
   }

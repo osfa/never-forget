@@ -22,10 +22,10 @@ body {
   display: none;
 }
 
-#log > div {
-    animation: fadeInUp .3s ease forwards, fadeOut 0.5s ease 1.5s forwards;
+/* #log > div { */
+    /* animation: fadeInUp .3s ease forwards, fadeOut 0.5s ease 1.5s forwards; */
     /* animation: fadeInUp .3s ease forwards, fadeOut 0.5s ease {message_hide_delay} forwards; */
-}
+/* } */
 
 @keyframes fadeInUp {
   from {
@@ -70,11 +70,11 @@ body {
 }
 
 #log {
-    pointer-events: none;
+    /* pointer-events: none; */
     display: block;
-    position: absolute;
-    bottom: 0;
-    left: 0;
+    /* position: absolute; */
+    /* bottom: 0; */
+    /* left: 0; */
     padding: 0 10px 10px;
     width: 100%;
 }

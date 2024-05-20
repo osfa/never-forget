@@ -1,16 +1,23 @@
 <template>
   <div class="grid-item">
-    <vue-topprogress color="#fff" :height=1 ref="topProgress" :speed=200></vue-topprogress>
-    <img
-      @click="newImage()"
-      class="neo-card"
-      :class="{ isLoading: isLoading, fried: imageOperation === 'fry', dithered: imageOperation === 'dither'}"
-      :key="imagePathFlask"
-      :src="imagePathFlask">
-    </img>
-    <!-- <div v-if="imageOperation ==='fry'" class="q-bar">
-      <span @click=setQ(q) class="q-button" v-for="q in [1,5,25,50]">{{ q }}</span>
-    </div> -->
+    <!-- <vue-topprogress color="#fff" :height=1 ref="topProgress" :speed=100></vue-topprogress> -->
+    <!-- <transition name="fade" mode="out-in">
+      <img
+          v-if="isLoading"
+          class="neo-card"
+          :key="bufferImagePath"
+          :src=bufferImagePath>
+        </img>
+    </transition> -->
+    <transition name="fade" mode="out-in">
+      <img
+        v-if="!isLoading"
+        class="neo-card"
+        :class="{ isLoading: isLoading, isLoaded: !isLoading, fried: imageOperation === 'fry', dithered: imageOperation === 'dither'}"
+        :key="remotePath"
+        :src="remotePath">
+      </img>
+    </transition>
     <div class="date-bar">{{ date_stamp() }}</div>
   </div>
 </template>
@@ -34,8 +41,10 @@ export default {
   },
   data() {
     return {
-      poolImagePath: MODEL_META_MAP[this.modelName].plate.sample(),
-      imagePathFlask: null,
+      placeHolderPath:  'https://placehold.co/600x400/EEE/31343C',
+      poolImagePath: MODEL_META_MAP[this.modelName].plate.sample().replace('MP-1.0', 'MP-1'),
+      bufferImagePath: MODEL_META_MAP[this.modelName].plate.sample().replace('MP-1.0', 'MP-1'),
+      remotePath: null,
       idx: 0,
       isLoading: false,
       palettes: ['cmykPlus', 'cmyk', 'auto', 'bw', 'websafe', 'rgbbw', 'c32'],
@@ -62,7 +71,7 @@ export default {
     newImage() {
       if(this.isLoading) return
       console.log("newImage")
-      this.poolImagePath =  MODEL_META_MAP[this.modelName].plate.sample()
+      this.poolImagePath =  MODEL_META_MAP[this.modelName].plate.sample().replace("MP-1.0", "MP-1")
       this.loadCdnImage()
     },
     randomInt(min, max) {
@@ -75,95 +84,83 @@ export default {
       return r;
     },
     loadCdnImage() {
+
+      console.log("loadCdnImage")
       const cdn_path ="https://jpeg.matrix.surf/"
       let fullPath;
-      const sizeMultiplier = this.sizeMultiplier === '1' ? '1.0' : String(this.sizeMultiplier)
 
-      console.log("asfasfa", this.imageOperation)
+      const sizeMultiplier = this.sizeMultiplier === '1' ? '1.0' : String(this.sizeMultiplier)
       if(this.imageOperation === 'fry'){
         const jpegPath = `${this.poolImagePath.replace('2pass', 'jpegged').slice(0, -4)}-q${this.jpegQuality}x${sizeMultiplier}.jpg`;
         fullPath = `${cdn_path}${jpegPath}`
       }
       else {
-        // _cmykPlusx1.0.png-cmykPlus-8c-Jarvis-x1.0-dith.png
-        // cmykPlusx0.25.png-cmykPlus-8c-Jarvis-x0.25-dith
-
-        // NF-03-5--counterfeitV30_v30--911-00006-2x.jpg_prompt-deviant_support_prompt-blue_MP-1_cfg-12_ss-12_seed-1000195145_cnet_d-0.9_cnet_c-0_face-neg_00001_
-        // -cmykPlus-8c-Jarvis-x0.5-dith
-        // const s1 =`cmykPlusx${sizeMultiplier}.png-cmykPlus-8c-Jarvis-x${sizeMultiplier}-dith.png`
-
-        // Error
-        // https://jpeg.matrix.surf/NF-03-5/hackers/epicrealism_naturalSinRC1VAE/dithered/NF-03-5--epicrealism_naturalSinRC1VAE--hack-00001.jpg_prompt-deviant_support_prompt-9-11_MP-1_cfg-12_ss-18_seed-1000195145_cnet_d-0.9_cnet_c-0_00001_-cmykPlusx0.25.png-cmykPlus-8c-Jarvis-x0.25-dith.png
-        // const dithSuffix = '-cmykPlusx0.25.png-cmykPlus-8c-Jarvis-x0.25-dith.png'
         const dithSuffix = `-cmykPlus-8c-Jarvis-x${sizeMultiplier}-dith.png`
         const dithPath = `${this.poolImagePath.replace('2pass', 'dithered').slice(0, -4)}${dithSuffix}`;
         fullPath = `${cdn_path}${dithPath}`
       }
-      console.log('loading;', fullPath)
       let img = new Image();
       img.src = fullPath;
       this.isLoading = true;
-
-      this.$refs.topProgress.start()
+      if(this.$refs.topProgress) this.$refs.topProgress.start()
       img.onload = (e) => {
-        console.log(e)
         this.isLoading = false;
-        this.imagePathFlask = fullPath
-        this.$refs.topProgress.done()
+        this.remotePath = fullPath
+        if(this.$refs.topProgress) this.$refs.topProgress.done()
       };
     },
-    loadFlaskImage() {
-      const flask_path ="https://flask-fryer.vercel.app/image?url=/"
-      const size_multiplier = this.sizeMultiplier
+    // loadFlaskImage() {
+    //   const flask_path ="https://flask-fryer.vercel.app/image?url=/"
+    //   const size_multiplier = this.sizeMultiplier
 
-      const color_count = this.ditherColors
-      const palette = this.ditherPalette
-      const dithermode = "Jarvis"
+    //   const color_count = this.ditherColors
+    //   const palette = this.ditherPalette
+    //   const dithermode = "Jarvis"
 
-      const saturation = 1.6
-      const brightness = 1.0
-      const sharpen = 2.0
-      const contrast = 1.3
+    //   const saturation = 1.6
+    //   const brightness = 1.0
+    //   const sharpen = 2.0
+    //   const contrast = 1.3
 
-      const fry_suffix = `&jpeg_quality=${this.jpegQuality}&operation_type=fry&size_multiplier=${size_multiplier}&saturation=${saturation}&brightness=${brightness}&sharpen=${sharpen}&contrast=${contrast}`
-      const dither_suffix = `&operation_type=dither&size_multiplier=${size_multiplier}&color_count=${color_count}&palette=${palette}&dithermode=${dithermode}`
+    //   const fry_suffix = `&jpeg_quality=${this.jpegQuality}&operation_type=fry&size_multiplier=${size_multiplier}&saturation=${saturation}&brightness=${brightness}&sharpen=${sharpen}&contrast=${contrast}`
+    //   const dither_suffix = `&operation_type=dither&size_multiplier=${size_multiplier}&color_count=${color_count}&palette=${palette}&dithermode=${dithermode}`
 
-      const jpegPath = this.poolImagePath.replace('2pass', '2passjpegged50').slice(0, -3) + "jpg";
-      const suffix = this.imageOperation === 'fry' ? fry_suffix : dither_suffix
-      const fullPath = `${flask_path}${jpegPath}${suffix}`
+    //   const jpegPath = this.poolImagePath.replace('2pass', '2passjpegged50').slice(0, -3) + "jpg";
+    //   const suffix = this.imageOperation === 'fry' ? fry_suffix : dither_suffix
+    //   const fullPath = `${flask_path}${jpegPath}${suffix}`
 
-      let img = new Image();
-      img.src = fullPath;
-      this.isLoading = true;
-
-      this.$refs.topProgress.start()
-      img.onload = (e) => {
-        console.log(e)
-        this.isLoading = false;
-        this.imagePathFlask = fullPath
-        this.$refs.topProgress.done()
-      };
-    },
+    //   let img = new Image();
+    //   img.src = fullPath;
+      
+    //   this.isLoading = true;
+    //   // this.$refs.topProgress.start()
+    //   img.onload = (e) => {
+    //     console.log(e)
+    //     this.isLoading = false;
+    //     this.imagePathFlask = fullPath
+    //     // this.$refs.topProgress.done()
+    //   };
+    // },
   },
   watch: {
     step() {
       this.newImage();
     },
-    jpegQuality() {
-      this.newImage();
-    },
-    imageOperation() {
-      this.newImage();
-    },
-    sizeMultiplier() {
-      this.newImage();
-    },
-    modelName() {
-      this.newImage();
-    },
-    imageOperation() {
-      this.newImage();
-    },
+    // jpegQuality() {
+    //   this.newImage();
+    // },
+    // imageOperation() {
+    //   this.newImage();
+    // },
+    // sizeMultiplier() {
+    //   this.newImage();
+    // },
+    // modelName() {
+    //   this.newImage();
+    // },
+    // imageOperation() {
+    //   this.newImage();
+    // },
   },
   mounted(){
     this.loadCdnImage()
@@ -200,10 +197,47 @@ export default {
   text-shadow: 0 0 3px rgb(255, 184, 52);
   opacity: 0.75
 }
+
 .top-progress {
   position: absolute !important;
 }
-img {
-  cursor: pointer;
+
+/* img.isLoading {
+  animation: fadeout 5000ms;
 }
+
+img {
+  animation: fadein 5000ms;
+} */
+
+/* img { */
+  /* opacity: 1 */
+/* } */
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 500ms;
+}
+
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+
+/* 
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeout {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+} */
 </style>

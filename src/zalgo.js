@@ -146,8 +146,9 @@ function is_zalgo_char(c) {
   return false;
 }
 
-export function zalgofy(input_txt) {
+export function zalgofy(input_txt, up_max, mid_max, down_max) {
   console.log("zalgofy", input_txt);
+
   let zalgo_text = "";
 
   const zalgo_opt_up = true;
@@ -164,22 +165,28 @@ export function zalgofy(input_txt) {
     // add the normal character
     zalgo_text += input_txt.substr(i, 1);
 
-    const roll = rand(9) - 4;
+    // const roll = rand(9) - 4;
     // options
-    if (roll > 5) {
-      num_up = rand(8);
-      num_mid = rand(2);
-      num_down = rand(8);
-    } else if (roll > 8) {
-      num_up = rand(16) / 2 + 1;
-      num_mid = rand(6) / 2;
-      num_down = rand(16) / 2 + 1;
-    } // maxi
-    else {
-      num_up = rand(64) / 4 + 3;
-      num_mid = rand(16) / 4 + 1;
-      num_down = rand(64) / 4 + 3;
-    }
+    // if (roll > 5) {
+
+    num_up = rand(up_max);
+    num_mid = rand(mid_max);
+    num_down = rand(down_max);
+
+    // } else if (roll > 8) {
+    // num_up = rand(16) / 2 + 1;
+    // num_mid = rand(6) / 2;
+    // num_down = rand(16) / 2 + 1;
+    // } // maxi
+    // else {
+    //   num_up = rand(64) / 4 + 3;
+    //   num_mid = rand(16) / 4 + 1;
+    //   num_down = rand(64) / 4 + 3;
+    // }
+
+    // num_up = rand(4);
+    // num_mid = rand(2);
+    // num_down = rand(4);
 
     if (zalgo_opt_up)
       for (var j = 0; j < num_up; j++) zalgo_text += rand_zalgo(zalgo_up);
