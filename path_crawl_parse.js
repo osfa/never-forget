@@ -28,18 +28,45 @@ const fs = require("fs");
 //   // 90%
 // };
 
+// const CATEGORY_MAP = {
+//   avatar: { hexColor: "#2df1b5", weight: 0.2 },
+//   jetee: { hexColor: "#890add", weight: 0.2 },
+//   hack: { hexColor: "#cf6d73", weight: 0.1 },
+//   trackers: { hexColor: "#9e0912", weight: 0.1 },
+//   911: { hexColor: "#b8b1a6", weight: 0.075 },
+//   bts: { hexColor: "#e238f2", weight: 0.025 },
+//   otg: { hexColor: "#176017", weight: 0.05 },
+//   before: { hexColor: "#eeeeee", weight: 0.025 },
+//   after: { hexColor: "#88409C", weight: 0.025 },
+//   memorial: { hexColor: "#000000", weight: 0.05 },
+//   online: { hexColor: "#0000ff", weight: 0.05 },
+//   //
+//   mission: { hexColor: "#ff0000", weight: 0.05 },
+//   davos: { hexColor: "#00ff00", weight: 0.05 },
+//   towers: { hexColor: "#ffff00", weight: 0.05 },
+//   technical: { hexColor: "#777777", weight: 0.05 },
+// };
+
 const CATEGORY_MAP = {
   avatar: { hexColor: "#2df1b5", weight: 0.2 },
   jetee: { hexColor: "#890add", weight: 0.2 },
   hack: { hexColor: "#cf6d73", weight: 0.1 },
   trackers: { hexColor: "#9e0912", weight: 0.1 },
-  911: { hexColor: "#b8b1a6", weight: 0.075 },
-  bts: { hexColor: "#e238f2", weight: 0.025 },
-  otg: { hexColor: "#176017", weight: 0.05 },
-  before: { hexColor: "#eeeeee", weight: 0.025 },
-  after: { hexColor: "#88409C", weight: 0.025 },
-  memorial: { hexColor: "#000000", weight: 0.05 },
   online: { hexColor: "#0000ff", weight: 0.05 },
+  //
+  bts: { hexColor: "#e238f2", weight: 0.05 },
+  memorial: { hexColor: "#000000", weight: 0.05 },
+  otg: { hexColor: "#176017", weight: 0.1 },
+
+  before: { hexColor: "#88409C", weight: 0.025 },
+  after: { hexColor: "#88409C", weight: 0.05 },
+
+  // mission: { hexColor: "#ff0000", weight: 0.01 },
+  davos: { hexColor: "#00ff00", weight: 0.01 },
+
+  911: { hexColor: "#555555", weight: 0.05 },
+  towers: { hexColor: "#666666", weight: 0.05 },
+  technical: { hexColor: "#777777", weight: 0.05 },
 };
 
 // const extractMetaFromPath = (imgPath) => {
@@ -175,6 +202,32 @@ const parsePathCrawl = (path_object_array, category_map, favs) => {
       category = "911";
     }
 
+    if (imgPath.includes("--wsj")) {
+      category = "911";
+    }
+
+    if (imgPath.includes("--sims")) {
+      category = "911";
+    }
+
+    if (
+      imgPath.includes("911c") ||
+      imgPath.includes("911c2") ||
+      imgPath.includes("911c3") ||
+      imgPath.includes("drawings") ||
+      imgPath.includes("tech-")
+    ) {
+      category = "technical";
+    }
+
+    if (
+      imgPath.includes("911glitch") ||
+      imgPath.includes("911tow") ||
+      imgPath.includes("tech-")
+    ) {
+      category = "towers";
+    }
+
     if (imgPath.includes("jetee")) {
       category = "jetee";
     }
@@ -183,26 +236,30 @@ const parsePathCrawl = (path_object_array, category_map, favs) => {
       category = "trackers";
     }
 
-    // mission accomplished hiding here?
     if (imgPath.includes("--bts")) {
       category = "bts";
-    }
-
-    if (
-      imgPath.includes("--davos") ||
-      imgPath.includes("--mission") ||
-      imgPath.includes("--after")
-    ) {
-      category = "after";
     }
 
     if (imgPath.includes("memorial") || imgPath.includes("--poolc")) {
       category = "memorial";
     }
 
+    if (
+      imgPath.includes("--mission") ||
+      imgPath.includes("mission-") ||
+      imgPath.includes("--after")
+    ) {
+      category = "after";
+    }
+
+    if (imgPath.includes("--davos") || imgPath.includes("mission-00001")) {
+      category = "davos";
+    }
+
     if (imgPath.includes("--hack")) {
       category = "hack";
     }
+
     if (imgPath.includes("--wow")) {
       category = "wow";
       category = "online";
@@ -310,8 +367,11 @@ const parsePathCrawl = (path_object_array, category_map, favs) => {
 const allImgs = require("/Users/jbe/static-sites/never-forget-vite-vue2/src/data/pics-versioned-ts.json"); // { path: string, ts: number }[]
 // const allImgs = require("/Users/jbe/static-sites/never-forget-vite-vue2/src/data/pics-versioned-ts-tiny.json");
 
-const favs = require("/Users/jbe/static-sites/never-forget-vite-vue2/src/data/favs-jbe-090424.json");
+const favs1 = require("/Users/jbe/static-sites/never-forget-vite-vue2/src/data/favs-jbe-090424.json");
+const favs2 = require("/Users/jbe/static-sites/never-forget-vite-vue2/src/data/favs-jbe-030624.json");
+const favs3 = require("/Users/jbe/static-sites/never-forget-vite-vue2/src/data/favs-jbe-050824.json"); // lots of jetee
 
+const favs = favs1.concat(favs2).concat(favs3);
 console.log("mapping to favs:", favs.length);
 const parseResult = parsePathCrawl(allImgs, CATEGORY_MAP, favs);
 
@@ -320,7 +380,8 @@ const parseResult = parsePathCrawl(allImgs, CATEGORY_MAP, favs);
 var json = JSON.stringify(parseResult);
 fs.writeFile(
   // symlink instead? dropbox?
-  "/Users/jbe/static-sites/never-forget-vite-vue2/src/data/pics-parsed-favs-jbe-090424.json",
+  // "/Users/jbe/static-sites/never-forget-vite-vue2/src/data/pics-parsed-favs-jbe-030624.json",
+  "/Users/jbe/static-sites/never-forget-vite-vue2/src/data/pics-parsed-favs-jbe-050824.json",
   json,
   "utf8",
   () => console.log("done")

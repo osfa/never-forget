@@ -250,13 +250,13 @@ export const audioLibrary = {
     // [{ path: '/audio/normalized/synth/laugh.mp3', volume: -6 }],
     [
       // '/audio/normalized/synth/templar1.mp3',
-      { path: "/audio/normalized/synth/templar1.mp3", volume: -18 },
-      { path: "/audio/normalized/synth/templar2.mp3", volume: -18 },
+      "/audio/normalized/synth/templar1.mp3",
+      "/audio/normalized/synth/templar2.mp3",
     ],
     [
-      { path: "/audio/normalized/synth/church1.mp3", volume: -16 },
-      { path: "/audio/normalized/synth/church2.mp3", volume: -16 },
-      { path: "/audio/normalized/synth/church2.mp3", volume: -16 },
+      "/audio/normalized/synth/church1.mp3",
+      "/audio/normalized/synth/church2.mp3",
+      "/audio/normalized/synth/church2.mp3",
     ],
 
     // '/audio/normalized/synth/tiktock.mp3',
@@ -317,10 +317,10 @@ export const audioLibrary = {
 
     ["/audio/normalized/natural/cave.mp3"],
 
-    // [
-    //   { path: "/audio/normalized/natural/cicada.mp3", volume: -12 },
-    //   { path: "/audio/normalized/natural/cicada-anime.mp3", volume: -6 },
-    // ],
+    [
+      "/audio/normalized/natural/cicada.mp3",
+      "/audio/normalized/natural/cicada-anime.mp3",
+    ],
     [
       "/audio/normalized/natural/cicada.mp3",
       "/audio/normalized/natural/cicada-anime.mp3",
@@ -526,7 +526,6 @@ export const audioLibrary = {
     "/audio/normalized/natural/underwater-2.mp3",
     "/audio/normalized/natural/underwater.mp3",
 
-    "/audio/normalized/natural/war.mp3",
     "/audio/normalized/natural/waves.mp3",
     "/audio/normalized/natural/whale-1.mp3",
     "/audio/normalized/natural/whale.mp3",

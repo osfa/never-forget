@@ -2,22 +2,22 @@
   <div class="grid-item">
     <!-- <vue-topprogress color="#fff" :height=1 ref="topProgress" :speed=100></vue-topprogress> -->
     <!-- <transition name="fade" mode="out-in">
-      <img
-          v-if="isLoading"
-          class="neo-card"
-          :key="bufferImagePath"
-          :src=bufferImagePath>
-        </img>
+      
     </transition> -->
-    <transition name="fade" mode="out-in">
+    <!-- <transition name="fade"> -->
+    <div v-if="isLoading" class="loading-card"></div>
+    <!-- </transition> -->
+    <!-- <transition name="fade" mode="out"> -->
       <img
-        v-if="!isLoading"
-        class="neo-card"
-        :class="{ isLoading: isLoading, isLoaded: !isLoading, fried: imageOperation === 'fry', dithered: imageOperation === 'dither'}"
-        :key="remotePath"
-        :src="remotePath">
+      v-if="!isLoading"
+      :class="{ fried: imageOperation === 'fry', dithered: imageOperation === 'dither'}"
+      :key="remotePath"
+      :src="remotePath">
       </img>
-    </transition>
+    <!-- </transition> -->
+
+    <img v-if="bufferImagePath !== undefined"  class="buffer-card" :src="bufferImagePath" :class="{ fried: imageOperation === 'fry', dithered: imageOperation === 'dither'}"/>
+
     <div class="date-bar">{{ date_stamp() }}</div>
   </div>
 </template>
@@ -41,9 +41,12 @@ export default {
   },
   data() {
     return {
+      transitionName: 'fade',
+      // transitions: ['fadeLeft', 'fadeRight', 'fadeUp', 'fadeDown'],
+      transitions: ['fade'],
       placeHolderPath:  'https://placehold.co/600x400/EEE/31343C',
       poolImagePath: MODEL_META_MAP[this.modelName].plate.sample().replace('MP-1.0', 'MP-1'),
-      bufferImagePath: MODEL_META_MAP[this.modelName].plate.sample().replace('MP-1.0', 'MP-1'),
+      bufferImagePath: null,
       remotePath: null,
       idx: 0,
       isLoading: false,
@@ -70,6 +73,7 @@ export default {
     },
     newImage() {
       if(this.isLoading) return
+      this.transitionName = this.transitions.sample()
       console.log("newImage")
       this.poolImagePath =  MODEL_META_MAP[this.modelName].plate.sample().replace("MP-1.0", "MP-1")
       this.loadCdnImage()
@@ -102,65 +106,21 @@ export default {
       let img = new Image();
       img.src = fullPath;
       this.isLoading = true;
-      if(this.$refs.topProgress) this.$refs.topProgress.start()
+      this.bufferImagePath = this.remotePath;
+      if(this.$refs.topProgress) this.$refs.topProgress.start();
       img.onload = (e) => {
         this.isLoading = false;
-        this.remotePath = fullPath
-        if(this.$refs.topProgress) this.$refs.topProgress.done()
+        this.remotePath = fullPath;
+        if(this.$refs.topProgress) this.$refs.topProgress.done();
       };
     },
-    // loadFlaskImage() {
-    //   const flask_path ="https://flask-fryer.vercel.app/image?url=/"
-    //   const size_multiplier = this.sizeMultiplier
 
-    //   const color_count = this.ditherColors
-    //   const palette = this.ditherPalette
-    //   const dithermode = "Jarvis"
-
-    //   const saturation = 1.6
-    //   const brightness = 1.0
-    //   const sharpen = 2.0
-    //   const contrast = 1.3
-
-    //   const fry_suffix = `&jpeg_quality=${this.jpegQuality}&operation_type=fry&size_multiplier=${size_multiplier}&saturation=${saturation}&brightness=${brightness}&sharpen=${sharpen}&contrast=${contrast}`
-    //   const dither_suffix = `&operation_type=dither&size_multiplier=${size_multiplier}&color_count=${color_count}&palette=${palette}&dithermode=${dithermode}`
-
-    //   const jpegPath = this.poolImagePath.replace('2pass', '2passjpegged50').slice(0, -3) + "jpg";
-    //   const suffix = this.imageOperation === 'fry' ? fry_suffix : dither_suffix
-    //   const fullPath = `${flask_path}${jpegPath}${suffix}`
-
-    //   let img = new Image();
-    //   img.src = fullPath;
-      
-    //   this.isLoading = true;
-    //   // this.$refs.topProgress.start()
-    //   img.onload = (e) => {
-    //     console.log(e)
-    //     this.isLoading = false;
-    //     this.imagePathFlask = fullPath
-    //     // this.$refs.topProgress.done()
-    //   };
-    // },
   },
   watch: {
     step() {
+      console.log('step re-render')
       this.newImage();
     },
-    // jpegQuality() {
-    //   this.newImage();
-    // },
-    // imageOperation() {
-    //   this.newImage();
-    // },
-    // sizeMultiplier() {
-    //   this.newImage();
-    // },
-    // modelName() {
-    //   this.newImage();
-    // },
-    // imageOperation() {
-    //   this.newImage();
-    // },
   },
   mounted(){
     this.loadCdnImage()
@@ -169,6 +129,53 @@ export default {
 </script>
 <style scoped>
 @import "../assets/grid-layouts.css";
+@import "@asika32764/vue-animate/dist/vue-animate.css";
+
+@keyframes gradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+
+@keyframes shine {
+  to {
+    background-position-x: -200%;
+  }
+}
+
+/* @import "@asika32764/vue-animate/dist/vue-animate.css"; */
+
+.buffer-card {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+.loading-card {
+  position: absolute;
+  /* background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background: linear-gradient(-45deg, #000, #111, #333, #666);
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite; */
+
+  background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
+  background: linear-gradient(110deg, #000 8%, #333 18%, #000 33%);
+  background: linear-gradient(110deg, #000 8%, #222 18%, #000 33%);
+  /* background: linear-gradient(110deg, #000 0%, #333 18%, #000 23%); */
+  background-size: 200% 100%;
+  animation: 2.5s shine linear infinite;
+  /* animation-delay: 2s; */
+  height: 100%;
+  width: 100%;
+  opacity: 0.5;
+}
 
 .q-bar {
   position: absolute;
@@ -215,7 +222,7 @@ img {
 /* } */
 
 .fade-enter-active, .fade-leave-active {
-  transition: opacity 500ms;
+  transition: opacity 150ms;
 }
 
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {

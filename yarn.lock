@@ -10,6 +10,11 @@
     "@jridgewell/gen-mapping" "^0.1.0"
     "@jridgewell/trace-mapping" "^0.3.9"
 
+"@asika32764/vue-animate@^3.0.2":
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/@asika32764/vue-animate/-/vue-animate-3.0.2.tgz#b40f514f1b8151d1068e86c1afc934e09a8f5960"
+  integrity sha512-VHfFDTVarHCvDlICgRl+4zOu0StstATMvr1dsPPxnfIefBIQFfxOCXtNu0xiNUMI4wPzhnaJIuRCYwT46PFpVw==
+
 "@babel/code-frame@^7.18.6":
   version "7.18.6"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.18.6.tgz#3b25d38c89600baa2dcc219edfa88a74eb2c427a"
@@ -552,6 +557,11 @@
   optionalDependencies:
     prettier "^1.18.2 || ^2.0.0"
 
+animate.css@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/animate.css/-/animate.css-4.1.1.tgz#614ec5a81131d7e4dc362a58143f7406abd68075"
+  integrity sha512-+mRmCTv6SbCmtYJCN4faJMNFVNN5EuCTTprDTAo7YzIGji2KADmakjVA3+8mVDkZ2Bf09vayB35lSQIex2+QaQ==
+
 ansi-styles@^3.2.1:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/ansi-styles/-/ansi-styles-3.2.1.tgz#41fbb20243e50b12be0f04b8dedbf07520ce841d"
@@ -839,6 +849,11 @@ graceful-fs@^4.1.6, graceful-fs@^4.2.0:
   version "4.2.10"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.10.tgz#147d3a006da4ca3ce14728c7aefc287c367d7a6c"
   integrity sha512-9ByhssR2fPVsNZj478qUUbKfmL0+t5BDVyjShtyZZLiK7ZDAArFFfopyOTj0M05wE2tJPisA4iTnnXl2YoPvOA==
+
+hammerjs@^2.0.8:
+  version "2.0.8"
+  resolved "https://registry.yarnpkg.com/hammerjs/-/hammerjs-2.0.8.tgz#04ef77862cff2bb79d30f7692095930222bf60f1"
+  integrity sha512-tSQXBXS/MWQOn/RKckawJ61vvsDpCom87JgxiYdGwHdOa0ht0vzUWDlfioofFCRU0L+6NGDt6XzbgoJvZkMeRQ==
 
 has-flag@^3.0.0:
   version "3.0.0"
@@ -1275,6 +1290,13 @@ vue-top-progress@^0.7.0:
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/vue-top-progress/-/vue-top-progress-0.7.0.tgz#44903cfc81425297065abf58cbd75ff05c3afbeb"
   integrity sha512-pkZQuT3yxkRtB3QvrL2eF1h/F01JbJaI3eqdiM4CGZbsexLKJctYRolGHzK87c11moyx+aK8lwzeq8aPPoNOqA==
+
+vue2-touch@^1.0.8:
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/vue2-touch/-/vue2-touch-1.0.8.tgz#e25523e8a2797701393391c642fcff97ab4d0557"
+  integrity sha512-RJymtbYP8jMCkPGvPtdbLLU8yYiNXMvD8emkHnfr7tKNwCMzeKR9vYsEqZokRmLdT6xgJmylFwN6WzT2DzoUeQ==
+  dependencies:
+    hammerjs "^2.0.8"
 
 vue@^2.7:
   version "2.7.14"

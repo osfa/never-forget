@@ -155,13 +155,21 @@ export const CATEGORY_MAP = {
   jetee: { hexColor: "#890add", weight: 0.2 },
   hack: { hexColor: "#cf6d73", weight: 0.1 },
   trackers: { hexColor: "#9e0912", weight: 0.1 },
-  911: { hexColor: "#b8b1a6", weight: 0.075 },
+  online: { hexColor: "#0000ff", weight: 0.05 },
+  //
   bts: { hexColor: "#e238f2", weight: 0.05 },
   memorial: { hexColor: "#000000", weight: 0.05 },
-  otg: { hexColor: "#176017", weight: 0.05 },
+  otg: { hexColor: "#176017", weight: 0.1 },
+
   before: { hexColor: "#88409C", weight: 0.025 },
   after: { hexColor: "#88409C", weight: 0.05 },
-  online: { hexColor: "#0000ff", weight: 0.05 },
+
+  mission: { hexColor: "#ff0000", weight: 0.01 },
+  davos: { hexColor: "#00ff00", weight: 0.01 },
+
+  911: { hexColor: "#555555", weight: 0.05 },
+  towers: { hexColor: "#666666", weight: 0.05 },
+  technical: { hexColor: "#777777", weight: 0.05 },
 };
 
 // export const parsePathCrawl = (path_array, category_map) => {

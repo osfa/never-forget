@@ -117,6 +117,7 @@ fieldset[disabled] .multiselect {
   box-sizing: border-box;
   margin-bottom: 8px;
   vertical-align: top;
+  color: black;
 }
 
 .multiselect__tag ~ .multiselect__input,

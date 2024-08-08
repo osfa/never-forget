@@ -47,18 +47,6 @@
           v-for="q in jpegQualities">
           {{ qLabelMap[q] }}
         </div>
-        <!-- <div
-          @click="setGrid(1, 1)"
-          :class="{ active: cols === 1 && rows === 1 }"
-          class="btn-layer">
-          Ⅰ
-        </div>
-        <div
-          @click="setGrid(2, 2)"
-          :class="{ active: cols === 2 && rows === 2 }"
-          class="btn-layer">
-          Ⅱ
-        </div> -->
         <div
           @click="setGrid(1, 1)"
           :class="{ active: cols === 1 && rows === 1 }"
@@ -93,20 +81,26 @@
         </div>
       </div>
     </div>
-    <div class="grid-container">
-      <transition-group name="cards" tag="div">
-        <CardImage
-          v-for="(c, i) in cols * rows"
-          :key="`${c}-${i}`"
-          :imageOperation="plateFried ? 'fry' : 'dither'"
-          :jpegQuality="jpegQuality"
-          :ditherPalette="ditherPalette"
-          :ditherColors="ditherColors"
-          :sizeMultiplier="String(sizeMultiplier)"
-          :modelName="selectedModels[0]"
-          :step="items[i]" />
-      </transition-group>
-    </div>
+
+    <!-- <div class="grid-container"> -->
+    <transition-group
+      :name="animationName"
+      tag="div"
+      class="grid-container"
+      mode="out-in">
+      <CardImage
+        @click.native="moveStory"
+        v-for="(c, i) in cols * rows"
+        :key="`${c}-${i}`"
+        :imageOperation="plateFried ? 'fry' : 'dither'"
+        :jpegQuality="jpegQuality"
+        :ditherPalette="ditherPalette"
+        :ditherColors="ditherColors"
+        :sizeMultiplier="String(sizeMultiplier)"
+        :modelName="selectedModels[0]"
+        :step="items[i]" />
+    </transition-group>
+    <!-- </div> -->
     <BarebonesTone ref="audioModule" automaticFade :debug="false" />
     <div id="subs-container">
       <div id="subs-text" :class="{ fried: plateFried }">
@@ -130,7 +124,7 @@
       @click.native="showChat = !showChat"
       :class="{ active: showChat }"
       :ticks="ticks"
-      :storyTicks="storyTicks" />
+      :storyTicks="ticks" />
     <!-- <Clock :offset="randomInt(-25, 25) * offsetSeed" /> -->
   </div>
 </template>
@@ -181,8 +175,8 @@ export default {
 
       lastNow: null,
       ticks: 0,
-      storyTicks: 0,
-      tickInterval: 2500,
+      cueTicks: 0,
+      tickInterval: 1000,
       slideTickInterval: 4,
       tickDown: 8,
 
@@ -207,20 +201,45 @@ export default {
       sizeMultipliers: [0.25, 0.5, 1.0],
       sizeLabelMap: { 0.25: "∮", 0.5: "∬", 1.0: "∭", 2.0: "2" },
       qLabelMap: { 50: "⟚", 10: "⟐", 5: "⟈", 1: "⟥" },
+      animationName: "fade",
     };
   },
   methods: {
-    // storyTick() {
-    //   // console.log("storyTick");
-    //   const image = new window.Image();
-    //   const imgPath = this.imgPool.sample();
-    //   image.src = imgPath;
-    //   image.onload = () => {
-    //     // this.hotSwapCard(sequenceIdx, imgPath);
-    //     this.slideTickInterval = this.randomInt(6, 16);
-    //     this.tickDown = this.slideTickInterval;
-    //   };
-    // },
+    moveStory() {
+      console.log("moveStory");
+      const nextSub = this.currentSubs[this.cueTicks + 1];
+      // this.cueTicks += 1;
+      this.scrobble(nextSub.startTime);
+    },
+    swipeStory(touchType, event) {
+      console.log("swipeStory", touchType, event);
+    },
+    storyTick() {
+      console.log("storyTick");
+      // const image = new window.Image();
+      // const imgPath = this.imgPool.sample();
+      // image.src = imgPath;
+      // image.onload = () => {
+      //   // this.hotSwapCard(sequenceIdx, imgPath);
+      //   this.slideTickInterval = this.randomInt(6, 16);
+      //   this.tickDown = this.slideTickInterval;
+      // };
+
+      if (this.cueTicks % 2 === 0) {
+        const cardIdx = this.randomInt(0, this.cols * this.rows);
+        this.items[cardIdx] += 1;
+        this.rollNewSettings();
+        return;
+      }
+      if (this.cols === 1 && this.rows === 1 && rolledNewLayout) {
+        this.items[0] += 1;
+      }
+      let rolledNewLayout = false;
+      if (this.cueTicks % 3 === 0) {
+        this.rollNewLayout();
+        rolledNewLayout = true;
+      }
+    },
     tick() {
       // console.log("tick");
       this.ticks += 1;
@@ -249,9 +268,10 @@ export default {
       this.jpegQuality = [1, 5, 10, 50].sample();
       this.sizeMultiplier = [0.25, 0.5, 1.0, 1.0, 1.0, 1.0].sample();
       this.plateFried = [true, true, false].sample();
+    },
+    rollNewLayout(cueTicks) {
       // layout roll
       const confs = [
-        [1, 1],
         [1, 1],
         [2, 2],
       ];
@@ -320,6 +340,7 @@ export default {
       .getElementById("my-audio-player")
       .textTracks[0].addEventListener("cuechange", (event) => {
         const typewriterSpeed = 25;
+
         if (this.typewriter === null) {
           console.log("init typewriter");
           this.typewriter = new Typewriter("#typewriter", {
@@ -340,8 +361,8 @@ export default {
         }
 
         if (event.target.activeCues.length > 0) {
-          this.storyTicks += 1;
           const srtText = event.target.activeCues[0].text;
+          console.log("cuechange: ", event.target.activeCues[0].text);
 
           // const starttime = event.target.cues[0].startTime * 1000;
           // const endtime = event.target.cues[0].endTime * 1000;
@@ -369,11 +390,9 @@ export default {
 
           // this.subtitles = zalgofy(srtText);
           this.subtitles = srtText;
-          if (this.ticks % 3 === 0) {
-            const cardIdx = this.randomInt(0, this.cols * this.rows);
-            this.items[cardIdx] += 1;
-            this.rollNewSettings();
-          }
+          // this.ticks += 1;
+          this.cueTicks += 1;
+          this.storyTick();
         }
       });
   },
@@ -390,17 +409,17 @@ export default {
 @import "../assets/dzi-scroller-subs.css";
 @import "../assets/grid-layouts.css";
 @import "../assets/dzi-filterbar.css";
+@import "@asika32764/vue-animate/dist/vue-animate.css";
 
-/* .cards-enter-active,
+.cards-enter-active,
 .cards-leave-active {
-  transition: all 1s;
+  transition: opacity 1s;
 }
-.cards-enter, .cards-leave-to
- {
+.cards-enter,
+.cards-leave-to {
   opacity: 0;
-  transform: translateY(30px);
+  /* transform: translateY(30px); */
 }
-*/
 
 /* OLD BELOW  */
 

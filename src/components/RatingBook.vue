@@ -342,10 +342,10 @@
 </template>
 <script>
 // BING BONG BUILD
-import parsedBatch from "../data/pics-dummy.json";
+// import parsedBatch from "../data/pics-dummy.json";
 // import parsedBatch from "../data/pics-parsed.json";
 
-// import parsedBatch from "../data/pics-parsed-favs-jbe-090424.json";
+import parsedBatch from "../data/pics-parsed-favs-jbe-090424.json";
 // import parsedBatch from "../data/pics-parsed-tiny.json";
 
 import { CATEGORY_MAP, MODEL_META_MAP, PROMPT_MAP } from "../maps";
@@ -369,7 +369,7 @@ export default {
       albumMode: false,
       imgsPerAlbumPage: 6,
 
-      writeProtected: true,
+      writeProtected: false,
       hasInit: false,
       debug: true,
       batch: [],
@@ -625,10 +625,12 @@ export default {
     getRandomWeightedElements(arr, n) {
       let selection = [];
       for (const category in this.category_map) {
-        // console.log(`${category}: ${this.category_map[category].weight}`);
+        console.log(`${category}: ${this.category_map[category].weight}`);
+
         const cat = this.category_map[category];
         const categoryImageCount = Math.floor(n * cat.weight);
-        // console.log("trying to get:", categoryImageCount);
+
+        console.log("trying to get:", categoryImageCount);
 
         const pool = arr.filter((image) => image.category === category);
         if (pool.length < 1) {
@@ -649,9 +651,11 @@ export default {
           singleInputPool,
           Math.min(singleInputPool.length, categoryImageCount)
         );
-        // console.log("got:", pulledImages.length);
+        console.log("got:", pulledImages.length);
 
         if (this.forceWeights && pulledImages.length < categoryImageCount) {
+          console.log("not enough, backfilling...");
+          // pull from rating 3 insteaD?
           while (pulledImages.length < categoryImageCount) {
             pulledImages = pulledImages.concat(pulledImages);
           }

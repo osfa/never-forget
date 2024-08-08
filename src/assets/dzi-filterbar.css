@@ -10,7 +10,7 @@
   mix-blend-mode: difference;
   /* mix-blend-mode: hard-light; */
   font-size: 2rem;
-  pointer-events: none;
+  /* pointer-events: none; */
 
 }
 
@@ -18,7 +18,7 @@
   /* cursor: pointer; */
   left: 5vw;
   /* right: 0; */
-  display: none;
+  /* display: none; */
 }
 
 .filter-bar.right .model-section {
@@ -59,6 +59,7 @@
 #action-section, .action-section {
   height: 30vh;
   display: flex;
+  display: none;
   flex-direction: column;
   /* border-left: 1px dotted white; */
   justify-content: space-evenly;

@@ -42,7 +42,7 @@ export default {
       let maxDown = [8, 4, 2, 0].sample();
       // zalgofy(chat, maxUp, maxMid, maxDown)
       this.messages.push(chat);
-      console.log(chat);
+      // console.log(chat);
 
       this.$nextTick(() => {
         this.$refs.chatWindow.scrollTop = this.$refs.chatWindow.scrollHeight;

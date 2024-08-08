@@ -1,3 +1,18 @@
+- app loader...
+
+- split fix for srts and audio files...
+
+- switch btween single grid less freq
+  - if still loading, dont grid swap?
+  - possibly layout corresponds to classes instead...1-3 etc
+
+choose:
+
+- image placeholder loader
+- dont render in grid until loaded
+- stagger render?
+- mobile grid?
+
 - vue-top-progress
 
 ## Update rated db
@@ -10,15 +25,15 @@
 
 python /Users/jbe/Dropbox/MLREPOS/comfy-scripts/scripts/path_crawl.py && node path_crawl_parse.js
 
-3. rsync -rt /Users/jbe/Dropbox/stabdiff-ui-v2/comfyui-outs/\_NF/NF-03-5 /Volumes/DSK8/never-forget
+3.  rsync -rt /Users/jbe/Dropbox/stabdiff-ui-v2/comfyui-outs/\_NF/NF-03-5 /Volumes/DSK8/never-forget rsync -aP /Volumes/DSK8/never-forget jbe@192.168.1.123:/volume1/homes/jbe
 
-4. create jpegged python /Users/jbe/Dropbox/vid-bench/EDL/src/batch-jpg.py
+4.  create jpegged python /Users/jbe/Dropbox/vid-bench/EDL/src/batch-jpg.py
 
-5. `aws s3 sync /Volumes/DSK8/never-forget/NF-03-5 s3://jpeg.matrix.surf/NF-03-5 --exclude "*" --include "*.jpg"`
+5.  `aws s3 sync /Volumes/DSK8/never-forget/NF-03-5 s3://jpeg.matrix.surf/NF-03-5 --exclude "*" --include "*.jpg"`
 
-6. hit http://localhost:3000/#/console
+6.  hit http://localhost:3000/#/console
 
-7. export selection, take viewport
+7.  export selection, take viewport
 
 ## CP to aws bukcet
 
@@ -173,3 +188,19 @@ node 16?
 ---
 
 ai arts distinct forms are appearing, but tis still most interestingly approached as "human machine interaction gestaltat"
+
+                   <meta name="twitter:image" content="http://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RE4Xbkl" />
+                        <meta name="twitter:description" content="Follow these trademark and brand guidelines when referring to Microsoft trademarks and the names of Microsoft software, products, and services." />
+                        <meta name="twitter:title" content="Trademark and Brand Guidelines | Microsoft Legal" />
+                        <meta name="twitter:url" content="https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks" />
+                        <meta name="twitter:creator" content="@Microsoft" />
+                        <meta name="twitter:site" content="@Microsoft" />
+                        <meta name="twitter:card" content="summary_large_image" />
+                        <meta property="og:image" content="http://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RE4Xbkl" />
+                        <meta property="og:description" content="Follow these trademark and brand guidelines when referring to Microsoft trademarks and the names of Microsoft software, products, and services." />
+                        <meta property="og:title" content="Trademark and Brand Guidelines | Microsoft Legal" />
+                        <meta property="og:url" content="https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks" />
+                        <meta property="og:locale" content="en_US" />
+                        <meta property="og:type" content="website" />
+                        <meta property="og:site_name" content="Microsoft Legal" />
+                        <meta name="robots" content="index,follow" />

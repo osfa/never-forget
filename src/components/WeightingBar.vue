@@ -8,7 +8,9 @@
         :value="category"
         :style="{
           backgroundColor: categoryMap[category]?.hexColor,
-          width: `${categoryMap[category]?.weight * 100}vw`,
+          // width: `${categoryMap[category]?.weight * 100}vw`,
+          width: `${100 / Object.keys(categoryMap).length}vw`,
+          // width: `10vw`,
         }">
         {{ category }}
         <input
@@ -19,6 +21,9 @@
           :id="category"
           @change="updateCategoryWeight(category, $event)"
           :value="categoryMap[category].weight" />
+        <span v-show="!isEditingMap">
+          : {{ categoryMap[category].weight }}</span
+        >
       </div>
     </div>
   </div>

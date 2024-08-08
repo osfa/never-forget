@@ -28,7 +28,9 @@
 .one-one .grid-container {
   grid-template-columns: repeat(1, 1fr);
   grid-template-rows: repeat(1, 1fr);
+  display: block;
 }
+
 .two-two .grid-container {
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(2, 1fr);
@@ -75,13 +77,17 @@
   height: 100%;
 }
 
-/* do on wrapper element! */
+
 .grid-item {
+  background-color: magenta;
+  background-color: black;
   animation: zoom-in-out 60s infinite;
-  /* overflow: hidden;
+
+  /* opacity: 1.0; */
+  /* overflow: hidden; */
   width: 100%;
   height: 100%;
-  object-fit: cover; */
+  /* object-fit: cover; */
 }
 
 /* .one-one .grid-item img{

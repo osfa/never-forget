@@ -44,7 +44,7 @@
   
   color: #ff0;
   text-shadow: #000 1px 1px 3px; 
-  /* pointer-events: none; */
+  pointer-events: none;
 
 
   display: flex;

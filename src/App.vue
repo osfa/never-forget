@@ -1,5 +1,5 @@
 <template>
-  <router-view></router-view>
+  <router-view><h2 clas="loader">LOADER</h2></router-view>
 </template>
 
 <script>
@@ -22,5 +22,10 @@ Array.prototype.sample = function () {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+
+:root {
+  --animate-duration: 350ms;
+  --animate-delay: 0;
 }
 </style>

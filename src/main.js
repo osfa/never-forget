@@ -1,6 +1,7 @@
 import Vue from "vue";
 import router from "./router";
 import App from "./App.vue";
+import Vue2Touch from "vue2-touch";
 
 import "./style.css";
 
@@ -17,6 +18,12 @@ import "./style.css";
 //   el: "#app",
 //   router: router,
 // }).$mount("#app");
+Vue.use(Vue2Touch, {
+  gestures: ["swipe"],
+  // directions: {
+  //   swipe: ['swipeleft']
+  // }
+});
 
 new Vue({
   el: "#app",
