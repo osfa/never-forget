@@ -20,6 +20,10 @@
   -webkit-text-size-adjust: 100%;
 }
 
+html {
+  background-color: black;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -31,6 +35,7 @@ body {
   /* background-image: url('/lombardi-bkg.jpg');
   background-size: contain; */
   overflow: hidden;
+  background-color: black;;
 }
 
 #app {

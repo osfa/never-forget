@@ -120,11 +120,11 @@
       </audio>
     </div>
     <SmallClock :offset="randomInt(-25, 25) * offsetSeed" />
-    <Chat
+    <!-- <Chat
       @click.native="showChat = !showChat"
       :class="{ active: showChat }"
       :ticks="ticks"
-      :storyTicks="ticks" />
+      :storyTicks="ticks" /> -->
     <!-- <Clock :offset="randomInt(-25, 25) * offsetSeed" /> -->
   </div>
 </template>
