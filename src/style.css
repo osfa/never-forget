@@ -30,6 +30,7 @@ body {
   /* height: 100vh; */
   /* background-image: url('/lombardi-bkg.jpg');
   background-size: contain; */
+  overflow: hidden;
 }
 
 #app {

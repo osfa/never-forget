@@ -625,12 +625,8 @@ export default {
     getRandomWeightedElements(arr, n) {
       let selection = [];
       for (const category in this.category_map) {
-        console.log(`${category}: ${this.category_map[category].weight}`);
-
         const cat = this.category_map[category];
         const categoryImageCount = Math.floor(n * cat.weight);
-
-        console.log("trying to get:", categoryImageCount);
 
         const pool = arr.filter((image) => image.category === category);
         if (pool.length < 1) {
@@ -638,8 +634,18 @@ export default {
           continue;
         }
 
+        // PASS 1
+
+        const rated_pool = pool.filter((image) => {
+          return [4, 5].includes(image.rating);
+        });
+
+        const unrated_pool = pool.filter((image) => {
+          return image.rating === null;
+        });
+
         let usedInputs = {};
-        const singleInputPool = pool.filter((image) => {
+        const singleInputPool = rated_pool.filter((image) => {
           usedInputs[image.inputImage] = usedInputs[image.inputImage] || {
             count: 0,
           };
@@ -651,15 +657,38 @@ export default {
           singleInputPool,
           Math.min(singleInputPool.length, categoryImageCount)
         );
-        console.log("got:", pulledImages.length);
+
+        console.log(
+          `${category}: ${this.category_map[category].weight}: trying to get ${categoryImageCount} and found ${pulledImages.length} with rating 4+5`
+        );
 
         if (this.forceWeights && pulledImages.length < categoryImageCount) {
-          console.log("not enough, backfilling...");
-          // pull from rating 3 insteaD?
-          while (pulledImages.length < categoryImageCount) {
-            pulledImages = pulledImages.concat(pulledImages);
-          }
+          console.log(`not enough ${category}, backfilling with unrated...`);
+
+          let usedInputs = {};
+          const singleInputPool = unrated_pool.filter((image) => {
+            usedInputs[image.inputImage] = usedInputs[image.inputImage] || {
+              count: 0,
+            };
+            usedInputs[image.inputImage]["count"] += 1;
+            return usedInputs[image.inputImage]["count"] <= 3;
+          });
+
+          let pulledUnrated = this.getRandomElements(
+            singleInputPool,
+            Math.min(
+              singleInputPool.length,
+              categoryImageCount - pulledImages.length
+            )
+          );
+          pulledImages = pulledImages.concat(pulledUnrated);
+
+          // console.log("with reused rated...");
+          // while (pulledImages.length < categoryImageCount) {
+          //   pulledImages = pulledImages.concat(pulledImages);
+          // }
         }
+
         selection = selection.concat(pulledImages.slice(0, categoryImageCount));
       }
       console.log("done:", selection.length);

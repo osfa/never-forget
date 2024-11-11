@@ -183,7 +183,7 @@ ffmpeg -i 192kbps.mp4 -i 2hours-audio.mp3 -c:v copy -c:a aac -map 0:v:0 -map 1:a
 
 ffmpeg -i 192kbps.mp4 -i 2hours-audio.mp3 -c copy combo.mkv
 
-node 16?
+node 16? node 18!
 
 ---
 
