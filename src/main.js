@@ -18,6 +18,7 @@ import "./style.css";
 //   el: "#app",
 //   router: router,
 // }).$mount("#app");
+
 Vue.use(Vue2Touch, {
   gestures: ["swipe"],
   // directions: {

@@ -138,10 +138,6 @@ import Chat from "./Chat.vue";
 import Typewriter from "typewriter-effect/dist/core";
 import { MODEL_META_MAP } from "../plateMap.js";
 
-// analog clock?
-// capcut timecode?
-// 1 cell video? in corner? for desktop?
-
 const DEFAULT_COLS = 1;
 const DEFAULT_ROWS = 1;
 
@@ -231,13 +227,15 @@ export default {
         this.rollNewSettings();
         return;
       }
-      if (this.cols === 1 && this.rows === 1 && rolledNewLayout) {
-        this.items[0] += 1;
-      }
+
       let rolledNewLayout = false;
       if (this.cueTicks % 3 === 0) {
         this.rollNewLayout();
         rolledNewLayout = true;
+      }
+
+      if (this.cols === 1 && this.rows === 1 && rolledNewLayout) {
+        this.items[0] += 1;
       }
     },
     tick() {
