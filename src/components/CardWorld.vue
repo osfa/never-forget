@@ -7,6 +7,23 @@
       'three-three': rows == 3 && cols == 3,
     }">
     <!-- <img class="formats" src="/formats2.png" /> -->
+    <div id="social-media-bar">
+      <a
+        href="https://www.youtube.com/@NeverForgetNow"
+        class="btn-platform youtube"
+        ><img src="/img/icons/yt.svg"
+      /></a>
+      <a
+        href="https://www.tiktok.com/@neverforgetnow"
+        class="btn-platform tiktok"
+        ><img src="/img/icons/tiktok.svg"
+      /></a>
+      <a
+        href="https://www.instagram.com/neverforget.pics"
+        class="btn-platform instagram"
+        ><img src="/img/icons/insta.svg"
+      /></a>
+    </div>
     <div class="filter-bar right">
       <!-- <div class="model-section">
         <div
@@ -408,6 +425,7 @@ export default {
 @import "../assets/grid-layouts.css";
 @import "../assets/dzi-filterbar.css";
 @import "@asika32764/vue-animate/dist/vue-animate.css";
+@import "../assets/dzi-socialmediabar.css";
 
 .cards-enter-active,
 .cards-leave-active {

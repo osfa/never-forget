@@ -159,7 +159,7 @@
   font-size: 5rem;
   z-index: 10000;
 
-  width: 94vw;
+  width: 95vw;
 
   height: 96vh;
   height: 100vh;
@@ -202,9 +202,10 @@
 @media (orientation: portrait) {
   .btn-audio {
     width: calc(100vw - 3rem);
-    height: 96vh;
+    height: 95vh;
+    height: 100vh;
     left: 0;
-    top: 4vh;
+    top: 0;
     margin-left: 3rem;
   }
   .btn-audio.hasInit {

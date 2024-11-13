@@ -2,10 +2,9 @@
   width: 25vw;
   width: 97vw;
   position: fixed;
-  display: none;
   /* bottom: 0; */
-  top: 0;
-  right: 3vw;
+  bottom: 0;
+  left: 5vw;
   z-index: 2000;
   display: flex;
   justify-content: space-evenly;
@@ -13,7 +12,7 @@
   font-family: Papyrus, fantasy;
   font-size: 0.5rem;
   border-bottom: 1px dashed white;
-  /* display: none; */
+  display: none;
 }
 
 #social-media-bar a {
@@ -32,6 +31,7 @@
 
 #social-media-bar a:hover {
   background-color: rgba(255, 255, 255, 0.3);
+  /* mix-blend-mode: exclusion; */
 }
 
 #social-media-bar a img {
@@ -68,6 +68,6 @@
 @media (orientation: portrait) {
   #social-media-bar  {
     right: 12vw;
-    width: 92vw;
+    width: 95vw;
   }
 }

@@ -67,7 +67,7 @@
         ><img src="/img/icons/tiktok.svg"
       /></a>
       <a
-        href="https://www.instagram.com/neverforgetnow1"
+        href="https://www.instagram.com/neverforget.pics"
         class="btn-platform instagram"
         ><img src="/img/icons/insta.svg"
       /></a>
