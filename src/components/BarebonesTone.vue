@@ -32,14 +32,11 @@ export default {
       narrationPlayer2: null,
 
       baseVolume: -6,
-      // narrationVolume: -9,
-      // narrationVolume: -3,
       narrationVolume: -12,
       narrationVolumeMin: -32,
-      audioTagVolume: 0.05,
+      audioTagVolume: 0.2,
       noiseMaker: null,
       noiserMakerVolume: -16,
-      // noiserMakerVolume: -32,
 
       ambianceVolume: -9,
       ambianceChannel1: undefined,
@@ -54,7 +51,6 @@ export default {
       crossFadeInterval: undefined,
       crossFadeDuration: 10, // in seconds
       pauseTicks: 0,
-      // BASE_URI: "",
       BASE_URI: "http://jpeg.matrix.surf",
     };
   },
@@ -105,10 +101,6 @@ export default {
     },
     muteIcon() {
       return this.isPlaying ? "🔇" : "🕳️";
-      return this.isPlaying ? "🔇" : "🚨";
-      // return this.isPlaying ? "🔇" : "▶";
-      // return this.isPlaying ? "🔇" : "⅏";
-      // return this.isPlaying ? "🔇" : "↕";
     },
     initAudio() {
       const context = new Tone.Context();

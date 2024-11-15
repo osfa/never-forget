@@ -260,16 +260,23 @@ export default {
 .date-bar {
   position: absolute;
   color: rgb(255, 184, 52);
+  color: white;
   bottom: 0.5rem;
   right: 0.5rem;
-  font-size: 1rem;
+  font-size: 3rem;
   z-index: 1000;
   mix-blend-mode: hard-light;
   text-shadow: 0 0 3px rgb(255, 184, 52);
   opacity: 0.75;
   display: none;
+  mix-blend-mode: difference;
 }
-
+@media (orientation: portrait) {
+  .date-bar {
+    display: block;
+    font-size: 2rem;
+  }
+}
 .image-list {
   margin: 0 auto;
   display: flex;
