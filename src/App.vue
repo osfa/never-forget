@@ -8,7 +8,7 @@ Array.prototype.sample = function () {
 };
 
 let isUserScrolling = false;
-
+let scrollTimeout;
 window.addEventListener("scroll", () => {
   isUserScrolling = true;
   clearTimeout(scrollTimeout);
