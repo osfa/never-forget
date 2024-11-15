@@ -6,15 +6,10 @@
 Array.prototype.sample = function () {
   return this[Math.floor(Math.random() * this.length)];
 };
-// import AudioVisualBook from "./components/AudioVisualBook.vue";
-// export default {
-//   components: {
-//     AudioVisualBook,
-//   },
-// };
 window.setInterval(() => {
-  // If at page bottom, scroll by to top
-  window.scrollBy(0, 1);
+  if (window.innerHeight + window.scrollY >= document.body.offsetHeight)
+    window.scrollTo(0, 0);
+  else window.scrollBy(0, 1);
 }, 25);
 </script>
 

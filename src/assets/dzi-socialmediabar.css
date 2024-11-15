@@ -1,8 +1,5 @@
 #social-media-bar {
-  /* width: 25vw; */
-  /* max-width: 5vw; */
   position: fixed;
-  /* bottom: 0; */
   bottom: 0;
   right: 0;
   z-index: 2000;
@@ -14,8 +11,8 @@
   border-bottom: 1px dashed white;
   mix-blend-mode: difference;
   height: 92vh;
-
-  /* display: none; */
+  width: 5rem;
+  flex-direction: column;
 }
 
 #social-media-bar a {
@@ -28,21 +25,38 @@
   display: flex;
   justify-content: center;
   height: 5vh;
-
   background-color: rgba(0, 0, 0, 0.3);
+  width: 100%;
+  cursor: pointer;
 }
 
 #social-media-bar a:hover {
-  background-color: rgba(255, 255, 255, 0.3);
-  /* mix-blend-mode: exclusion; */
+  background-color: rgba(255, 255, 255, 0.8);
+  text-shadow: #000 0 0 5px;
+  box-shadow: 0 0 75px rgba(255,255,255, 1.0);
 }
 
 #social-media-bar a img {
   width: 2rem;
 }
+
 .btn-platform {
-  width: 5rem
+  width: 3rem
 }
+
+@media (orientation: portrait) {
+  #social-media-bar { 
+    height: 90vh;
+    width: 3rem;
+  }
+  .btn-platform  {
+    width: 3rem;
+  }
+  #social-media-bar a img {
+    width: 1rem;
+  }
+}
+
 
 /* .youtube {
   background-color: rgba(255, 0, 0, 0.3);
@@ -71,12 +85,3 @@
   background-color: rgba(255, 0, 80, 1);
   color: black;
 } */
-@media (orientation: portrait) {
-  .btn-platform  {
-    /* right: 12vw; */
-    width: 3rem;
-  }
-  #social-media-bar a img {
-    width: 1rem;
-  }
-}

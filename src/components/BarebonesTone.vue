@@ -330,5 +330,5 @@ export default {
 };
 </script>
 <style scoped>
-@import "../assets/dzi-filterbar.css";
+@import "../assets/dzi-audio.css";
 </style>

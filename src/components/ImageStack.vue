@@ -1,8 +1,27 @@
 <template>
   <div class="image-list">
     <SmallClock :offset="randomInt(-25, 25) * offsetSeed" />
+    <div id="social-media-bar" class="model-section">
+      <a
+        href="https://www.youtube.com/@NeverForgetNow"
+        target="_blank"
+        class="btn-layer btn-platform youtube"
+        ><img src="/img/icons/yt.svg"
+      /></a>
+      <a
+        href="https://www.tiktok.com/@neverforgetnow"
+        target="_blank"
+        class="btn-layer btn-platform tiktok"
+        ><img src="/img/icons/tiktok.svg"
+      /></a>
+      <a
+        href="https://www.instagram.com/neverforget.pics"
+        target="_blank"
+        class="btn-layer btn-platform instagram"
+        ><img src="/img/icons/insta.svg"
+      /></a>
+    </div>
     <PrettyFilterBar @update:selectedModels="handleSelectedModelsUpdate" />
-
     <div
       v-for="(stack, index) in imageStacks"
       :key="index"
@@ -106,7 +125,7 @@ export default {
         .sample()
         .replace("MP-1.0", "MP-1");
 
-      const imageOperation = ["fry", "dither"].sample();
+      const imageOperation = ["fry", "fry", "dither"].sample();
 
       if (imageOperation === "fry") {
         const jpegPath = `${poolImagePath
@@ -197,7 +216,6 @@ export default {
             setTimeout(() => {
               stack.displayedImages.pop();
               stack.isTransitioning = false;
-
               const element = this.$refs.imageStacks[stackIndex];
               // element.scrollIntoView({ behavior: "smooth", block: "start" });
             }, 100);
@@ -222,11 +240,24 @@ export default {
 </script>
 
 <style scoped>
+@import "../assets/dzi-socialmediabar.css";
+
 .image-list {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   width: 100vw;
+  animation: oscillate 45s ease-in-out infinite;
+}
+
+@keyframes oscillate {
+  0%,
+  100% {
+    max-width: 100%;
+  }
+  50% {
+    max-width: 1440px;
+  }
 }
 
 .image-stack {
@@ -281,15 +312,6 @@ export default {
   pointer-events: none;
   mix-blend-mode: difference;
 }
-
-/* .spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  border-top-color: #fff;
-  animation: spin 1s ease-in-out infinite;
-} */
 
 .spinner {
   --spinner-size: 25vw;
