@@ -3,7 +3,7 @@
     class="btn-audio"
     :class="{ hasInit: hasInit || debug, isPlaying }"
     @click="toggleAudio">
-    <span>{{ muteIcon() }}</span>
+    <span class="icon">{{ muteIcon() }}</span>
   </div>
 </template>
 <script>
@@ -36,7 +36,7 @@ export default {
       // narrationVolume: -3,
       narrationVolume: -12,
       narrationVolumeMin: -32,
-      audioTagVolume: 0.5,
+      audioTagVolume: 0.05,
       noiseMaker: null,
       noiserMakerVolume: -16,
       // noiserMakerVolume: -32,
@@ -105,6 +105,7 @@ export default {
     },
     muteIcon() {
       return this.isPlaying ? "🔇" : "🕳️";
+      return this.isPlaying ? "🔇" : "🚨";
       // return this.isPlaying ? "🔇" : "▶";
       // return this.isPlaying ? "🔇" : "⅏";
       // return this.isPlaying ? "🔇" : "↕";
@@ -237,7 +238,7 @@ export default {
       } else if (this.audioCtx.state === "suspended") {
         this.audioCtx.resume().then(function () {});
         document.getElementById("my-audio-player").play();
-        // document.getElementById("my-audio-player").volume = this.audioTagVolume;
+        document.getElementById("my-audio-player").volume = this.audioTagVolume;
       }
     },
     isObj(variable) {

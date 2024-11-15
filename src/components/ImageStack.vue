@@ -1,14 +1,15 @@
 <template>
   <div class="image-list">
     <SmallClock :offset="randomInt(-25, 25) * offsetSeed" />
-    <PrettyFilterBar />
+    <PrettyFilterBar @update:selectedModels="handleSelectedModelsUpdate" />
+
     <div
       v-for="(stack, index) in imageStacks"
       :key="index"
       class="image-stack"
-      @click="loadNextImage(index)"
+      @click="loadNextImage(index, true)"
       ref="imageStacks">
-      <transition name="fade">
+      <transition name="fade" duration="500">
         <div class="loading-indicator" v-if="stack.isLoading">
           <div class="spinner"></div>
         </div>
@@ -33,7 +34,7 @@
         </div>
       </transition-group>
     </div>
-    <SubsPlayer />
+    <SubsPlayer ref="subsPlayer" @story-tick="autoSwap" />
     <BarebonesTone ref="audioModule" automaticFade :debug="false" />
   </div>
 </template>
@@ -55,8 +56,9 @@ export default {
   name: "ImageStack",
   data() {
     return {
-      modelName: "aniverse_v15Pruned",
+      selectedModels: [Object.keys(MODEL_META_MAP).random()],
       imageStacks: [],
+      currentModel: "",
       autoSwapInterval: null,
       currentAutoIndex: 0,
       heightTransitions: {},
@@ -74,12 +76,18 @@ export default {
       }))
     );
 
-    this.startAutoSwap();
+    // this.startAutoSwap();
   },
   beforeDestroy() {
     this.stopAutoSwap();
   },
   methods: {
+    // onStoryTick() {
+    //   this.loadNextImage(this.randomInt(0, 9));
+    // },
+    handleSelectedModelsUpdate(models) {
+      this.selectedModels = models;
+    },
     randomInt(min, max) {
       min = Math.ceil(min);
       max = Math.floor(max);
@@ -91,9 +99,9 @@ export default {
 
       // wip images get higher quality rolls?
       const sizeMultiplier = ["0.5", "0.25"].sample();
-      const jpegQuality = 5;
-      const modelName = "aniverse_v15Pruned";
-
+      const jpegQuality = [10, 5].sample();
+      const modelName = this.selectedModels.sample();
+      console.log("selected model:", modelName);
       const poolImagePath = MODEL_META_MAP[modelName].plate
         .sample()
         .replace("MP-1.0", "MP-1");
@@ -140,13 +148,14 @@ export default {
         wrapper.style.height = `${newHeight}px`;
       });
     },
+    autoSwap() {
+      if (!this.imageStacks[this.currentAutoIndex].isTransitioning) {
+        this.loadNextImage(this.currentAutoIndex);
+        this.currentAutoIndex = (this.currentAutoIndex + 1) % 9;
+      }
+    },
     startAutoSwap() {
-      this.autoSwapInterval = setInterval(() => {
-        if (!this.imageStacks[this.currentAutoIndex].isTransitioning) {
-          this.loadNextImage(this.currentAutoIndex);
-          this.currentAutoIndex = (this.currentAutoIndex + 1) % 9;
-        }
-      }, 1000);
+      this.autoSwapInterval = setInterval(this.autoSwap, 1000);
     },
     stopAutoSwap() {
       if (this.autoSwapInterval) {
@@ -165,7 +174,12 @@ export default {
       // if image fails to load, try loading a new one
       this.loadNextImage(index);
     },
-    async loadNextImage(stackIndex) {
+    async loadNextImage(stackIndex, scrobbleStory = false) {
+      if (scrobbleStory) {
+        // if (this.$refs.audioModule) this.$refs.audioModule.playTick();
+        if (this.$refs.subsPlayer) this.$refs.subsPlayer.scrobbleStory();
+      }
+
       const stack = this.imageStacks[stackIndex];
       if (stack.isTransitioning || stack.isLoading) return;
 
@@ -212,7 +226,6 @@ export default {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
   width: 100vw;
 }
 
@@ -227,6 +240,7 @@ export default {
 
 .transition-wrapper {
   position: relative;
+  height: 100%;
 }
 
 .image-container {
@@ -264,6 +278,8 @@ export default {
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 10;
+  pointer-events: none;
+  mix-blend-mode: difference;
 }
 
 /* .spinner {
@@ -276,14 +292,19 @@ export default {
 } */
 
 .spinner {
-  --spinner-size: 50px;
+  --spinner-size: 25vw;
   width: var(--spinner-size);
   height: var(--spinner-size);
   border: calc(var(--spinner-size) / 2) solid rgba(0, 0, 0, 0.75);
 
   border-radius: 50%;
-  border-top-color: #fff;
-  animation: spin 1s ease-in-out infinite;
+  border-top-color: rgba(255, 255, 255, 1);
+  animation: spin 5s ease-in-out infinite;
+  mix-blend-mode: difference;
+  background-image: url("/img/clock.svg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .fade-enter-active,

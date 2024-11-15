@@ -1,3 +1,4 @@
+
 #filter-bar, .filter-bar {
   position: fixed;
   left: 0;
@@ -16,7 +17,7 @@
 
 .filter-bar.right {
   /* cursor: pointer; */
-  left: 5vw;
+  /* left: 10vw; */
   /* right: 0; */
   /* display: none; */
 }
@@ -39,6 +40,7 @@
 
 .btn-layer {
   width: 5vw;
+  width: 10vw;
   background-color: transparent !important;
   /* background-color: black !important; */
   /* background-color: rgba(0,0,0,0)!important; */
@@ -89,7 +91,7 @@
   color: red;
 }
 
-.btn-layer.active {
+.btn-layer.active, .btn-platform:hover {
   opacity: 1;
   /* border: 0.1px solid white;
   border: 1px dashed white; */
@@ -140,10 +142,10 @@
   position: fixed;
   top: 6vh;
   left: 3vw;
-  left: 6vw;
+  left: 10vw;
 
   top: 0;
-  left: 5vw;
+  left: 10vw;
 
   background-color: rgba(255, 255, 255, 0.5);
   background-color: rgba(0, 0, 0, 0.5);
@@ -160,7 +162,8 @@
   z-index: 10000;
 
   width: 95vw;
-
+  /* width: calc(95vw-5px); */
+  /* margin-right: 5rem; */
   height: 96vh;
   height: 100vh;
 
@@ -175,7 +178,11 @@
   /* mix-blend-mode: exclusion; */
 
 }
-
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 /* .btn-audio:hover {
   text-decoration: underline;
 } */
@@ -206,7 +213,8 @@
     height: 100vh;
     left: 0;
     top: 0;
-    margin-left: 3rem;
+    margin-left: 6rem;
+    /* margin-right: 3rem; */
   }
   .btn-audio.hasInit {
     width: 3rem;
@@ -239,7 +247,7 @@
     font-size: 1rem;
   }
   .btn-layer {
-    width: 3rem;
+    width: 6rem;
   }
   .btn-zoom {
     display: none;

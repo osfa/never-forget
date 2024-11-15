@@ -33,16 +33,21 @@ export default {
     };
   },
   methods: {
-    moveStory() {
-      console.log("SubsPlayer moveStory");
+    scrobbleStory() {
+      console.log("scrobble");
       const nextSub = this.currentSubs[this.cueTicks + 1];
       // this.cueTicks += 1;
       this.scrobble(nextSub.startTime);
+    },
+    scrobble(position_in_seconds) {
+      document.getElementById("my-audio-player").currentTime =
+        position_in_seconds;
     },
   },
   mounted() {
     // have gradually speed up
     // document.getElementById("my-audio-player").playbackRate = 2;
+    document.getElementById("my-audio-player").volume = 0.1;
     document
       .getElementById("my-audio-player")
       .textTracks[0].addEventListener("cuechange", (event) => {

@@ -1,10 +1,10 @@
 #social-media-bar {
-  width: 25vw;
-  width: 97vw;
+  /* width: 25vw; */
+  /* max-width: 5vw; */
   position: fixed;
   /* bottom: 0; */
   bottom: 0;
-  left: 5vw;
+  right: 0;
   z-index: 2000;
   display: flex;
   justify-content: space-evenly;
@@ -12,7 +12,10 @@
   font-family: Papyrus, fantasy;
   font-size: 0.5rem;
   border-bottom: 1px dashed white;
-  display: none;
+  mix-blend-mode: difference;
+  height: 92vh;
+
+  /* display: none; */
 }
 
 #social-media-bar a {
@@ -26,7 +29,7 @@
   justify-content: center;
   height: 5vh;
 
-  background-color: rgba(0, 0, 0, 0.3)
+  background-color: rgba(0, 0, 0, 0.3);
 }
 
 #social-media-bar a:hover {
@@ -35,10 +38,13 @@
 }
 
 #social-media-bar a img {
-  width: 16px;
+  width: 2rem;
+}
+.btn-platform {
+  width: 5rem
 }
 
-.youtube {
+/* .youtube {
   background-color: rgba(255, 0, 0, 0.3);
   background-color: rgba(255, 0, 0, 1);
   color: white;
@@ -64,10 +70,13 @@
   background-color: rgba(255, 0, 80, 0.8);
   background-color: rgba(255, 0, 80, 1);
   color: black;
-}
+} */
 @media (orientation: portrait) {
-  #social-media-bar  {
-    right: 12vw;
-    width: 95vw;
+  .btn-platform  {
+    /* right: 12vw; */
+    width: 3rem;
+  }
+  #social-media-bar a img {
+    width: 1rem;
   }
 }
