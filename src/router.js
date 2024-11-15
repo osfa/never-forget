@@ -15,8 +15,8 @@ const routes = [
   // { path: "/landing", component: Landing },
   // { path: "/legacy", component: AudioVisualBook },
   // { path: "/console", component: RatingBook },
-  { path: "/", component: CardWorld },
-  { path: "/stack", component: ImageStack },
+  { path: "/", component: ImageStack },
+  // { path: "/stack", component: ImageStack },
 ];
 
 const router = new VueRouter({

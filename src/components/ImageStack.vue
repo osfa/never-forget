@@ -1,14 +1,18 @@
 <template>
   <div class="image-list">
+    <SmallClock :offset="randomInt(-25, 25) * offsetSeed" />
+    <PrettyFilterBar />
     <div
       v-for="(stack, index) in imageStacks"
       :key="index"
       class="image-stack"
       @click="loadNextImage(index)"
       ref="imageStacks">
-      <div class="loading-indicator" v-if="stack.isLoading">
-        <div class="spinner"></div>
-      </div>
+      <transition name="fade">
+        <div class="loading-indicator" v-if="stack.isLoading">
+          <div class="spinner"></div>
+        </div>
+      </transition>
       <transition-group
         name="fade"
         tag="div"
@@ -22,20 +26,32 @@
           <div class="image-wrapper">
             <img
               :src="image"
-              alt="Stack image"
+              alt="never forget"
               @load="handleImageLoad($event, index)"
               @error="handleImageError(index)" />
           </div>
         </div>
       </transition-group>
     </div>
+    <SubsPlayer />
+    <BarebonesTone ref="audioModule" automaticFade :debug="false" />
   </div>
 </template>
 
 <script>
 import { MODEL_META_MAP } from "../plateMap.js";
+import SubsPlayer from "./SubsPlayer.vue";
+import BarebonesTone from "./BarebonesTone.vue";
+import SmallClock from "./SmallClock.vue";
+import PrettyFilterBar from "./PrettyFilterBar.vue";
 
 export default {
+  components: {
+    SubsPlayer,
+    BarebonesTone,
+    SmallClock,
+    PrettyFilterBar,
+  },
   name: "ImageStack",
   data() {
     return {
@@ -44,11 +60,11 @@ export default {
       autoSwapInterval: null,
       currentAutoIndex: 0,
       heightTransitions: {},
-      jpegQuality: 10,
+      jpegQuality: 5,
+      offsetSeed: 1,
     };
   },
   async created() {
-    // Initialize stacks with initial images
     this.imageStacks = await Promise.all(
       Array.from({ length: 9 }, async () => ({
         displayedImages: [await this.getRandomImageUrl()],
@@ -58,26 +74,45 @@ export default {
       }))
     );
 
-    // this.startAutoSwap();
+    this.startAutoSwap();
   },
   beforeDestroy() {
     this.stopAutoSwap();
   },
   methods: {
+    randomInt(min, max) {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      return Math.floor(Math.random() * (max - min)) + min;
+    },
     getRandomImageUrl() {
-      // const width = Math.floor(Math.random() * 400) + 800; // Random width between 800-1200
-      // const height = Math.floor(Math.random() * 800) + 400; // Random height between 400-1200
-      // const random = Math.floor(Math.random() * 1000); // Random image seed
       const cdn_path = "https://jpeg.matrix.surf/";
-      const poolImagePath = MODEL_META_MAP[this.modelName].plate
+      let fullPath;
+
+      // wip images get higher quality rolls?
+      const sizeMultiplier = ["0.5", "0.25"].sample();
+      const jpegQuality = 5;
+      const modelName = "aniverse_v15Pruned";
+
+      const poolImagePath = MODEL_META_MAP[modelName].plate
         .sample()
         .replace("MP-1.0", "MP-1");
-      const sizeMultiplier = "1.0";
-      const jpegPath = `${poolImagePath
-        .replace("2pass", "jpegged")
-        .slice(0, -4)}-q${this.jpegQuality}x${sizeMultiplier}.jpg`;
-      return `${cdn_path}${jpegPath}`;
-      // return `https://picsum.photos/${width}/${height}?random=${random}`;
+
+      const imageOperation = ["fry", "dither"].sample();
+
+      if (imageOperation === "fry") {
+        const jpegPath = `${poolImagePath
+          .replace("2pass", "jpegged")
+          .slice(0, -4)}-q${jpegQuality}x${sizeMultiplier}.jpg`;
+        fullPath = `${cdn_path}${jpegPath}`;
+      } else {
+        const dithSuffix = `-cmykPlus-8c-Jarvis-x${sizeMultiplier}-dith.png`;
+        const dithPath = `${poolImagePath
+          .replace("2pass", "dithered")
+          .slice(0, -4)}${dithSuffix}`;
+        fullPath = `${cdn_path}${dithPath}`;
+      }
+      return fullPath;
     },
     onEnter(el) {
       const wrapper = el.closest(".image-stack");
@@ -111,7 +146,7 @@ export default {
           this.loadNextImage(this.currentAutoIndex);
           this.currentAutoIndex = (this.currentAutoIndex + 1) % 9;
         }
-      }, 5000);
+      }, 1000);
     },
     stopAutoSwap() {
       if (this.autoSwapInterval) {
@@ -127,7 +162,7 @@ export default {
     },
     handleImageError(index) {
       this.imageStacks[index].isLoading = false;
-      // If image fails to load, try loading a new one
+      // if image fails to load, try loading a new one
       this.loadNextImage(index);
     },
     async loadNextImage(stackIndex) {
@@ -150,15 +185,15 @@ export default {
               stack.isTransitioning = false;
 
               const element = this.$refs.imageStacks[stackIndex];
-              element.scrollIntoView({ behavior: "smooth", block: "center" });
-            }, 600);
+              // element.scrollIntoView({ behavior: "smooth", block: "start" });
+            }, 100);
           });
         };
 
         img.onerror = () => {
           stack.isLoading = false;
           stack.isTransitioning = false;
-          this.loadNextImage(stackIndex); // Try again with a new image
+          this.loadNextImage(stackIndex); // try again
         };
 
         img.src = newImageUrl;
@@ -174,12 +209,11 @@ export default {
 
 <style scoped>
 .image-list {
-  max-width: 1200px;
   margin: 0 auto;
-  padding: 1rem;
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  width: 100vw;
 }
 
 .image-stack {
@@ -201,6 +235,7 @@ export default {
   left: 0;
   top: 0;
   will-change: opacity;
+  height: 100%;
 }
 
 .image-container:first-child {
@@ -210,13 +245,15 @@ export default {
 
 .image-wrapper {
   width: 100%;
+  height: 100%;
   overflow: hidden;
 }
 
 .image-wrapper img {
   width: 100%;
-  height: auto;
+  height: 100%;
   display: block;
+  object-fit: cover;
   animation: zoomInOut 10s ease-in-out infinite;
   will-change: transform;
 }
@@ -229,21 +266,32 @@ export default {
   z-index: 10;
 }
 
-.spinner {
+/* .spinner {
   width: 40px;
   height: 40px;
   border: 4px solid rgba(255, 255, 255, 0.3);
   border-radius: 50%;
   border-top-color: #fff;
   animation: spin 1s ease-in-out infinite;
+} */
+
+.spinner {
+  --spinner-size: 50px;
+  width: var(--spinner-size);
+  height: var(--spinner-size);
+  border: calc(var(--spinner-size) / 2) solid rgba(0, 0, 0, 0.75);
+
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
 }
 
-/* Transition classes */
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.6s ease;
+  transition: opacity 1s ease;
   position: absolute;
   width: 100%;
+  height: 100%;
   top: 0;
   left: 0;
 }

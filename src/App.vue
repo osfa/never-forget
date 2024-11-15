@@ -12,6 +12,10 @@ Array.prototype.sample = function () {
 //     AudioVisualBook,
 //   },
 // };
+window.setInterval(() => {
+  // If at page bottom, scroll by to top
+  window.scrollBy(0, 1);
+}, 25);
 </script>
 
 <style>

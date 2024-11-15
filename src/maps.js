@@ -64,7 +64,8 @@ export const MODEL_META_MAP = {
   "v1-5-pruned-emaonly": {
     friendlyName: "1.5",
     hexColor: "#B0C4DE",
-    unicode: "⏺",
+    // unicode: "⏺",
+    unicode: "‡",
   }, // Light Steel Blue
 };
 

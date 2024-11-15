@@ -51,7 +51,7 @@ export default {
 
   color: white;
   /* color: ; */
-  position: absolute;
+  position: fixed;
 
   width: 100vw;
   height: auto;
