@@ -49,6 +49,7 @@
               alt="never forget"
               @load="handleImageLoad($event, index)"
               @error="handleImageError(index)" />
+            <div class="date-bar">{{ date_stamp() }}</div>
           </div>
         </div>
       </transition-group>
@@ -83,6 +84,20 @@ export default {
       heightTransitions: {},
       jpegQuality: 5,
       offsetSeed: 1,
+      date_stamp() {
+        const startYear = 1997;
+        const endYear = 2024;
+        const year =
+          Math.floor(Math.random() * (endYear - startYear + 1)) + startYear;
+        const month = String(Math.floor(Math.random() * 12) + 1).padStart(
+          2,
+          "0"
+        );
+        const day = String(Math.floor(Math.random() * 28) + 1).padStart(2, "0");
+        const hour = String(Math.floor(Math.random() * 24)).padStart(2, "0");
+        const minute = String(Math.floor(Math.random() * 60)).padStart(2, "0");
+        return `${year}-${month}-${day} ${hour}:${minute}`;
+      },
     };
   },
   async created() {
@@ -242,6 +257,19 @@ export default {
 <style scoped>
 @import "../assets/dzi-socialmediabar.css";
 
+.date-bar {
+  position: absolute;
+  color: rgb(255, 184, 52);
+  bottom: 0.5rem;
+  right: 0.5rem;
+  font-size: 1rem;
+  z-index: 1000;
+  mix-blend-mode: hard-light;
+  text-shadow: 0 0 3px rgb(255, 184, 52);
+  opacity: 0.75;
+  display: none;
+}
+
 .image-list {
   margin: 0 auto;
   display: flex;
@@ -301,6 +329,10 @@ export default {
   object-fit: cover;
   animation: zoomInOut 10s ease-in-out infinite;
   will-change: transform;
+}
+
+.image-stack:hover .date-bar {
+  display: block;
 }
 
 .loading-indicator {
