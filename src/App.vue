@@ -1,15 +1,28 @@
 <template>
-  <router-view><h2 clas="loader">LOADER</h2></router-view>
+  <router-view />
 </template>
 
 <script>
 Array.prototype.sample = function () {
   return this[Math.floor(Math.random() * this.length)];
 };
+
+let isUserScrolling = false;
+
+window.addEventListener("scroll", () => {
+  isUserScrolling = true;
+  clearTimeout(scrollTimeout);
+  scrollTimeout = setTimeout(() => {
+    isUserScrolling = false;
+  }, 100);
+});
+
 window.setInterval(() => {
-  if (window.innerHeight + window.scrollY >= document.body.offsetHeight)
-    window.scrollTo(0, 0);
-  else window.scrollBy(0, 1);
+  if (!isUserScrolling) {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight)
+      window.scrollTo(0, 0);
+    else window.scrollBy(0, 1);
+  }
 }, 25);
 </script>
 
@@ -20,11 +33,25 @@ window.setInterval(() => {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  background-color: black;
+}
+html {
+  background-color: black;
+}
+body {
+  animation: fadeInAnimation ease 3s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  background-color: black;
 }
 
-:root {
-  --animate-duration: 350ms;
-  --animate-delay: 0;
+@keyframes fadeInAnimation {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }
 </style>

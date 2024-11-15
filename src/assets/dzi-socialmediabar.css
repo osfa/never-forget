@@ -46,6 +46,7 @@
 
 @media (orientation: portrait) {
   #social-media-bar { 
+    /* height: calc(100vh - 3rem); */
     height: 90vh;
     width: 3rem;
   }
