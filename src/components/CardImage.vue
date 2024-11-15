@@ -5,18 +5,18 @@
       
     </transition> -->
     <!-- <transition name="fade"> -->
-    <div v-if="isLoading" class="loading-card"></div>
+    <!-- <div v-if="isLoading" class="loading-card"></div> -->
     <!-- </transition> -->
-    <!-- <transition name="fade" mode="out"> -->
+    <transition :name="transitionName">
       <img
       v-if="!isLoading"
       :class="{ fried: imageOperation === 'fry', dithered: imageOperation === 'dither'}"
       :key="remotePath"
       :src="remotePath">
       </img>
-    <!-- </transition> -->
+    </transition>
 
-    <img v-if="bufferImagePath !== undefined"  class="buffer-card" :src="bufferImagePath" :class="{ fried: imageOperation === 'fry', dithered: imageOperation === 'dither'}"/>
+    <!-- <img v-if="bufferImagePath !== undefined"  class="buffer-card" :src="bufferImagePath" :class="{ fried: imageOperation === 'fry', dithered: imageOperation === 'dither'}"/> -->
 
     <div class="date-bar">{{ date_stamp() }}</div>
   </div>
@@ -42,8 +42,8 @@ export default {
   data() {
     return {
       transitionName: 'fade',
-      // transitions: ['fadeLeft', 'fadeRight', 'fadeUp', 'fadeDown'],
-      transitions: ['fade'],
+      transitions: ['fadeLeft', 'fadeRight', 'fadeUp', 'fadeDown'],
+      // transitions: ['fade'],
       placeHolderPath:  'https://placehold.co/600x400/EEE/31343C',
       poolImagePath: MODEL_META_MAP[this.modelName].plate.sample().replace('MP-1.0', 'MP-1'),
       bufferImagePath: null,
@@ -222,7 +222,7 @@ img {
 /* } */
 
 .fade-enter-active, .fade-leave-active {
-  transition: opacity 150ms;
+  transition: opacity 5000ms;
 }
 
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {

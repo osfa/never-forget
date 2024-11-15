@@ -6,6 +6,7 @@ import RatingBook from "./components/RatingBook.vue";
 // import Landing from "./components/Landing.vue";
 import DziViewer from "./components/DziViewer.vue";
 import CardWorld from "./components/CardWorld.vue";
+import ImageStack from "./components/ImageStack.vue";
 
 Vue.use(VueRouter);
 
@@ -15,6 +16,7 @@ const routes = [
   // { path: "/legacy", component: AudioVisualBook },
   // { path: "/console", component: RatingBook },
   { path: "/", component: CardWorld },
+  { path: "/stack", component: ImageStack },
 ];
 
 const router = new VueRouter({

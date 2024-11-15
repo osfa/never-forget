@@ -28,7 +28,7 @@
 
 #subs-container {
   z-index: 3000;
-  position: absolute;
+  position: fixed;
   bottom: 0;
 
   font-size: 2rem;

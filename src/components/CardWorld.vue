@@ -100,23 +100,23 @@
     </div>
 
     <!-- <div class="grid-container"> -->
-    <transition-group
+    <!-- <transition-group
       :name="animationName"
       tag="div"
       class="grid-container"
-      mode="out-in">
-      <CardImage
-        @click.native="moveStory"
-        v-for="(c, i) in cols * rows"
-        :key="`${c}-${i}`"
-        :imageOperation="plateFried ? 'fry' : 'dither'"
-        :jpegQuality="jpegQuality"
-        :ditherPalette="ditherPalette"
-        :ditherColors="ditherColors"
-        :sizeMultiplier="String(sizeMultiplier)"
-        :modelName="selectedModels[0]"
-        :step="items[i]" />
-    </transition-group>
+      mode="out-in"> -->
+    <CardImage
+      @click.native="moveStory"
+      v-for="(c, i) in cols * rows"
+      :key="`${c}-${i}`"
+      :imageOperation="plateFried ? 'fry' : 'dither'"
+      :jpegQuality="jpegQuality"
+      :ditherPalette="ditherPalette"
+      :ditherColors="ditherColors"
+      :sizeMultiplier="String(sizeMultiplier)"
+      :modelName="selectedModels[0]"
+      :step="items[i]" />
+    <!-- </transition-group> -->
     <!-- </div> -->
     <BarebonesTone ref="audioModule" automaticFade :debug="false" />
     <div id="subs-container">
@@ -155,8 +155,8 @@ import Chat from "./Chat.vue";
 import Typewriter from "typewriter-effect/dist/core";
 import { MODEL_META_MAP } from "../plateMap.js";
 
-const DEFAULT_COLS = 1;
-const DEFAULT_ROWS = 1;
+const DEFAULT_COLS = 3;
+const DEFAULT_ROWS = 3;
 
 export default {
   components: {
@@ -238,15 +238,15 @@ export default {
       //   this.tickDown = this.slideTickInterval;
       // };
 
-      if (this.cueTicks % 2 === 0) {
-        const cardIdx = this.randomInt(0, this.cols * this.rows);
-        this.items[cardIdx] += 1;
-        this.rollNewSettings();
-        return;
-      }
+      // if (this.cueTicks % 2 === 0) {
+      const cardIdx = this.randomInt(0, this.cols * this.rows);
+      this.items[cardIdx] += 1;
+      this.rollNewSettings();
+      return;
+      // }
 
       let rolledNewLayout = false;
-      if (this.cueTicks % 3 === 0) {
+      if (this.cueTicks % 2 === 0) {
         this.rollNewLayout();
         rolledNewLayout = true;
       }
@@ -287,8 +287,11 @@ export default {
     rollNewLayout(cueTicks) {
       // layout roll
       const confs = [
-        [1, 1],
-        [2, 2],
+        // [1, 1],
+        // [1, 1],
+        // [2, 2],
+        // [2, 3],
+        [3, 3],
       ];
       const conf = confs.sample();
       this.cols = conf[0];
@@ -310,6 +313,8 @@ export default {
       } else {
         this.cols = 1;
         this.rows = 1;
+        this.cols = DEFAULT_COLS;
+        this.rows = DEFAULT_ROWS;
         // this.rows = 3;
       }
     },
