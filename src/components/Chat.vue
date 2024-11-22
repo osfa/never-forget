@@ -35,12 +35,12 @@ export default {
   },
   watch: {
     ticks() {
-      const chat = this.allMessages[this.ticks % this.allMessages.length];
+      let chat = this.allMessages[this.ticks % this.allMessages.length];
 
       let maxUp = [8, 4, 2, 0].sample();
       let maxMid = [4, 2, 1, 0].sample();
       let maxDown = [8, 4, 2, 0].sample();
-      // zalgofy(chat, maxUp, maxMid, maxDown)
+      // chat = zalgofy(chat, maxUp, maxMid, maxDown)
       this.messages.push(chat);
       // console.log(chat);
 
