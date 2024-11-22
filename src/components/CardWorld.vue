@@ -58,6 +58,7 @@
           ◡
         </div>
         <div
+          :key="q"
           class="btn-layer"
           :class="{ active: jpegQuality === q }"
           @click="setQ(q)"
@@ -89,7 +90,8 @@
     <div class="filter-bar">
       <div class="model-section">
         <div
-          v-for="(model, idx) in Object.keys(MODEL_META_MAP)"
+          v-for="model in Object.keys(MODEL_META_MAP)"
+          :key="model"
           class="btn-layer"
           :class="{ active: selectedModels.includes(model) }"
           :style="{ backgroundColor: MODEL_META_MAP[model]?.hexColor }"

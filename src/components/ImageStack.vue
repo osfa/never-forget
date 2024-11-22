@@ -54,7 +54,11 @@
         </div>
       </transition-group>
     </div>
-    <SubsPlayer ref="subsPlayer" @story-tick="autoSwap" />
+
+    <SubsPlayer
+      ref="subsPlayer"
+      @story-tick="autoSwap"
+      :subsStyle="subsStyle" />
     <BarebonesTone ref="audioModule" automaticFade :debug="false" />
   </div>
 </template>
@@ -84,6 +88,9 @@ export default {
       heightTransitions: {},
       jpegQuality: 5,
       offsetSeed: 1,
+      subsStyle: "plain",
+      showChat: false,
+      ticks: 0,
       date_stamp() {
         const startYear = 1997;
         const endYear = 2024;
@@ -132,7 +139,7 @@ export default {
       let fullPath;
 
       // wip images get higher quality rolls?
-      const sizeMultiplier = ["0.5", "0.25"].sample();
+      const sizeMultiplier = ["1.0", "0.5", "0.25"].sample();
       const jpegQuality = [10, 5].sample();
       const modelName = this.selectedModels.sample();
       console.log("selected model:", modelName);
@@ -187,6 +194,8 @@ export default {
         this.loadNextImage(this.currentAutoIndex);
         this.currentAutoIndex = (this.currentAutoIndex + 1) % 9;
       }
+      this.subsStyle = ["fried", "plain", "png", "papyrus"].sample();
+      console.log("subs style:", this.subsStyle);
     },
     startAutoSwap() {
       this.autoSwapInterval = setInterval(this.autoSwap, 1000);

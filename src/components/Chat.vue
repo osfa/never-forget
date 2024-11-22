@@ -75,6 +75,7 @@ export default {
   color: white;
   transition: right 100ms ease-out;
   cursor: pointer;
+  display: none;
 }
 
 #log.active {

@@ -1,0 +1,48 @@
+export const stories = [
+  "walter-MOUkjp8QegoLBXXmOWjl--script-bot_system32-24-11-05-split-live-stream-chat-zephyr.mp3",
+  "aerisita-5x4OabTaxKEADQiUryOC--art_speak-mistral.mp3",
+  "amelia-ZF6FPAbjXT4488VcRRnw--serene-mistral.mp3",
+  "ASMRFALLBACK-uGsicD2PM4l1YdqqaUUh--greek_drama-llama3.mp3",
+  "Ayinde-77aEIu0qStu8Jwv1EdhX--sublime-zephyr.mp3",
+  "clarion-1vHrrFQuLuyqEl17e9gl--video_essay-mistral.mp3",
+  "edgar-OJhAF5u7ife0nkK4veeh--bad_manga-llama3.1.mp3",
+  "en_female_emotional--elementary_school-llama3.mp3",
+  "en_male_funny--tag_cloud-mistral.mp3",
+  "en_male_m03_lobby--live_stream-mistral.mp3",
+  "en_male_narration--euphoria-zephyr-t1.0-0-short-concat-2s.mp3",
+  "en_us_001--biblical-openchat.mp3",
+  "en_us_002--recipe-mistral.mp3",
+  "en_us_006--group_chat-mistral.mp3",
+  "en_us_007--dramatic-openchat.mp3",
+  "en_us_ghostface--summary-llama3-t1.0-0-short-concat-2s.mp3",
+  "en_us_stitch--art_speak-llama3-t1.0-0-short-concat-2s.mp3",
+  "foxy-robot-NAlMjotG5yqZRiSH0pRx--random-mistral-t1.0-0-short-concat-2s.mp3",
+  "health-news-5e3JKXK83vvgQqBcdUol--LARP-zephyr-t1.0-0-short-concat-2s.mp3",
+  "jack-s0GiK2helkVWdtc4eTnI--random-llama3.mp3",
+  "Janiah-TktBvjlOL7NNOK3y7GzJ--corporate-openchat-t1.0-0-short-concat-2s.mp3",
+  "joanne-yE5Ip6G1XtFmCJ75pd00--video_essay-llama3-t1.0-0-short-concat-2s.mp3",
+  "johnson-GKTfz85AYxZsKwxZKXEo--bad_manga-zephyr.mp3",
+  "luca-4JVOFy4SLQs9my0OLhEw--chaotic-llama3.mp3",
+  "marshall-nzeAacJi50IvxcyDnMXa--dramatic-llama3.mp3",
+  "michael-young-7yhLOQfaP8gOgduie1l7--ancient_lore-zephyr.mp3",
+  "mr-p-od84OdVweqzO3t6kKlWT--product_review-zephyr-t1.0-0-short-concat-2s.mp3",
+  "myriam-jvoRV5vhkXrRIZp9GmyV--biblical-llama3-t1.0-0-short-concat-2s.mp3",
+  "omnibot-tnR9M3hUP7uPy0YPSMBU--movie_script-mistral-t1.0-0-short-concat-2s.mp3",
+  "seth-c6kFzbpMaJ8UMD5P6l72--email-zephyr.mp3",
+  "spuds-NOpBlnGInO9m6vDvFkFC--script-bot_system32-24-11-05-split-live-stream-chat-llama3.mp3",
+];
+
+// const availableSubs = [
+//   [
+//     "/audio/narration/bush-bad-video-streaming-66-amount.mp3",
+//     "/audio/narration/bush.vtt",
+//   ],
+//   [
+//     "/audio/narration/BL-EPIC-0-en_us_001--script-bot_system31-sr16000-bra8k.mp3",
+//     "/audio/narration/BL-EPIC-0.vtt",
+//   ],
+//   [
+//     "/audio/narration/BL-EPIC-ANIVERSE-1-luca-sr16000-bra8k.mp3",
+//     "/audio/narration/BL-EPIC-ANIVERSE-1.vtt",
+//   ],
+// ];

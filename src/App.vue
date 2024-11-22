@@ -9,12 +9,21 @@ Array.prototype.sample = function () {
 
 let isUserScrolling = false;
 let scrollTimeout;
-window.addEventListener("scroll", () => {
+
+window.addEventListener("touchstart", () => {
   isUserScrolling = true;
-  clearTimeout(scrollTimeout);
-  scrollTimeout = setTimeout(() => {
-    isUserScrolling = false;
-  }, 100);
+  // clearTimeout(scrollTimeout);
+  // scrollTimeout = setTimeout(() => {
+  //   isUserScrolling = false;
+  // }, 100);
+});
+
+window.addEventListener("touchend", () => {
+  isUserScrolling = false;
+  // clearTimeout(scrollTimeout);
+  // scrollTimeout = setTimeout(() => {
+  //   isUserScrolling = false;
+  // }, 100);
 });
 
 window.setInterval(() => {

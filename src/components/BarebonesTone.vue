@@ -34,7 +34,7 @@ export default {
       baseVolume: -6,
       narrationVolume: -12,
       narrationVolumeMin: -32,
-      audioTagVolume: 0.2,
+      audioTagVolume: 0.5,
       noiseMaker: null,
       noiserMakerVolume: -16,
 
@@ -100,7 +100,7 @@ export default {
       return Math.floor(Math.random() * (max - min)) + min;
     },
     muteIcon() {
-      return this.isPlaying ? "🔇" : "🕳️";
+      return this.isPlaying ? "🔇" : "⏸";
     },
     initAudio() {
       const context = new Tone.Context();
