@@ -26,13 +26,13 @@ window.addEventListener("touchend", () => {
   // }, 100);
 });
 
-window.setInterval(() => {
-  if (!isUserScrolling) {
-    if (window.innerHeight + window.scrollY >= document.body.offsetHeight)
-      window.scrollTo(0, 0);
-    else window.scrollBy(0, 1);
-  }
-}, 25);
+// window.setInterval(() => {
+//   if (!isUserScrolling) {
+//     if (window.innerHeight + window.scrollY >= document.body.offsetHeight)
+//       window.scrollTo(0, 0);
+//     else window.scrollBy(0, 1);
+//   }
+// }, 25);
 </script>
 
 <style>

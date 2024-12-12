@@ -40,7 +40,7 @@
         @enter="onEnter"
         @leave="onLeave">
         <div
-          v-for="(image, stackIndex) in stack.displayedImages"
+          v-for="image in stack.displayedImages"
           :key="image"
           class="image-container">
           <div class="image-wrapper">

@@ -14,7 +14,7 @@ const routes = [
   // { path: "/dzi", component: DziViewer },
   // { path: "/landing", component: Landing },
   // { path: "/legacy", component: AudioVisualBook },
-  // { path: "/console", component: RatingBook },
+  { path: "/console", component: RatingBook },
   { path: "/", component: ImageStack },
   // { path: "/stack", component: ImageStack },
 ];

@@ -56,7 +56,7 @@
           </select>
           <select required name="BASE_URI" id="BASE_URI" v-model="BASE_URI">
             <option value="">local</option>
-            <option value="DSK8/">DSK8</option>
+            <option value="DSK9/">DSK9</option>
             <option value="http://jpeg.matrix.surf/">bucket</option>
             <option value="http://localhost:5000/image?url=/">flask</option>
           </select>
@@ -345,8 +345,8 @@
 // import parsedBatch from "../data/pics-dummy.json";
 // import parsedBatch from "../data/pics-parsed.json";
 
-// import parsedBatch from "../data/pics-parsed-favs-jbe-090424.json";
-import parsedBatch from "../data/pics-parsed-tiny.json";
+import parsedBatch from "../data/pics-parsed-favs-jbe-090424.json";
+// import parsedBatch from "../data/pics-parsed-tiny.json";
 
 import { CATEGORY_MAP, MODEL_META_MAP, PROMPT_MAP } from "../maps";
 // import {
