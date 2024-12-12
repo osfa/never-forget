@@ -14,11 +14,11 @@ export const MODEL_META_MAP = {
     hexColor: "#FF4500",
     unicode: "⏅",
   }, // Orange Red
-  // divineanimemix_V2: {
-  //   friendlyName: "Divine Anime",
-  //   hexColor: "#BA55D3",
-  //   unicode: "⁂",
-  // }, // Medium Orchid
+  divineanimemix_V2: {
+    friendlyName: "Divine Anime",
+    hexColor: "#BA55D3",
+    unicode: "⁂",
+  }, // Medium Orchid
   // divineelegancemix_V9: {
   //   friendlyName: "Divine Elegance",
   //   hexColor: "#DB7093",
