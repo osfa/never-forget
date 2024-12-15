@@ -2,7 +2,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 
 // import AudioVisualBook from "./components/AudioVisualBook.vue";
-import RatingBook from "./components/RatingBook.vue";
+// import RatingBook from "./components/RatingBook.vue";
 // import Landing from "./components/Landing.vue";
 import DziViewer from "./components/DziViewer.vue";
 import CardWorld from "./components/CardWorld.vue";
@@ -14,7 +14,7 @@ const routes = [
   // { path: "/dzi", component: DziViewer },
   // { path: "/landing", component: Landing },
   // { path: "/legacy", component: AudioVisualBook },
-  { path: "/console", component: RatingBook },
+  // { path: "/console", component: RatingBook },
   { path: "/", component: ImageStack },
   // { path: "/stack", component: ImageStack },
 ];
