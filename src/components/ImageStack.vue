@@ -117,9 +117,10 @@ export default {
       }))
     );
 
-    // this.startAutoSwap();
+    window.addEventListener("scroll", this.handleScroll);
   },
   beforeDestroy() {
+    window.removeEventListener("scroll", this.handleScroll);
     this.stopAutoSwap();
   },
   methods: {
@@ -258,6 +259,29 @@ export default {
         stack.isLoading = false;
         stack.isTransitioning = false;
       }
+    },
+    async handleScroll() {
+      if (
+        window.innerHeight + window.scrollY >=
+        document.body.offsetHeight - 500
+      ) {
+        if (!this.imageStacks[this.imageStacks.length - 1].isLoading) {
+          await this.addNewStack();
+        }
+      }
+    },
+    async addNewStack() {
+      if (this.imageStacks.length >= 9) {
+        this.imageStacks.shift();
+      }
+      const newStack = {
+        displayedImages: [await this.getRandomImageUrl()],
+        isTransitioning: false,
+        isLoading: false,
+        height: 0,
+      };
+      this.imageStacks.push(newStack);
+      window.scrollBy(0, -window.innerHeight);
     },
   },
 };
