@@ -100,7 +100,9 @@ export default {
       return Math.floor(Math.random() * (max - min)) + min;
     },
     muteIcon() {
-      return this.isPlaying ? "🔇" : "⏸";
+      // return this.isPlaying ? "🔇" : "⏸";
+      return this.isPlaying ? "🔇" : "| |";
+      // return this.isPlaying ? "🔇" : "⏻︎";
     },
     initAudio() {
       const context = new Tone.Context();

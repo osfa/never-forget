@@ -259,21 +259,24 @@ export default {
       }
     },
     async handleScroll() {
+      if (this.scrollTimeout) return;
+
       if (
         window.innerHeight + window.scrollY >=
         document.body.offsetHeight - 500
       ) {
-        // if previous stack is not loading, add a new stack?
-        // is isLoading set here?
-        // timeout throttle insteaD?
-        // since they animate in....
         if (!this.imageStacks[this.imageStacks.length - 1].isLoading) {
           await this.addNewStack();
         }
       }
+
+      this.scrollTimeout = setTimeout(() => {
+        this.scrollTimeout = null;
+      }, 100);
     },
     async addNewStack() {
-      console.log("adding new stack");
+      console.log("addNewStack");
+
       if (this.imageStacks.length >= 9) {
         this.imageStacks.shift();
       }
