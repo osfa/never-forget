@@ -106,13 +106,11 @@ export default {
       .textTracks[0].addEventListener("cuechange", (event) => {
         if (event.target.activeCues.length > 0) {
           const srtText = event.target.activeCues[0].text;
-          // console.log("cuechange: ", event.target.activeCues[0].text);
-          // this.subtitles = srtText;
           let maxUp = [8, 4, 2, 0].sample();
           let maxMid = [4, 2, 1, 0].sample();
           let maxDown = [8, 4, 2, 0].sample();
           //
-          this.subtitles = [true, false].sample()
+          this.subtitles = [true, false, false, false, false].sample()
             ? zalgofy(srtText, maxUp, maxMid, maxDown)
             : srtText;
           this.cueTicks += 1;
