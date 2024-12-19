@@ -263,15 +263,21 @@ export default {
         window.innerHeight + window.scrollY >=
         document.body.offsetHeight - 500
       ) {
+        // if previous stack is not loading, add a new stack?
+        // is isLoading set here?
+        // timeout throttle insteaD?
+        // since they animate in....
         if (!this.imageStacks[this.imageStacks.length - 1].isLoading) {
           await this.addNewStack();
         }
       }
     },
     async addNewStack() {
+      console.log("adding new stack");
       if (this.imageStacks.length >= 9) {
         this.imageStacks.shift();
       }
+
       const newStack = {
         displayedImages: [await this.getRandomImageUrl()],
         isTransitioning: false,
@@ -279,7 +285,14 @@ export default {
         height: 0,
       };
       this.imageStacks.push(newStack);
-      window.scrollBy(0, -window.innerHeight);
+
+      console.log("scrolly top");
+
+      const element = this.$refs.imageStacks[0];
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+
+      // diff type of throttle?
+      // window.scrollBy(0, -window.innerHeight);
     },
   },
 };
