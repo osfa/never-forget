@@ -1,3 +1,4 @@
+// aws s3 sync /Volumes/DSK9/never-forget/audio/narration s3://jpeg.matrix.surf/audio/narration
 export const stories = [
   "walter-MOUkjp8QegoLBXXmOWjl--script-bot_system32-24-11-05-split-live-stream-chat-zephyr.mp3",
   "aerisita-5x4OabTaxKEADQiUryOC--art_speak-mistral.mp3",
@@ -31,18 +32,3 @@ export const stories = [
   "seth-c6kFzbpMaJ8UMD5P6l72--email-zephyr.mp3",
   "spuds-NOpBlnGInO9m6vDvFkFC--script-bot_system32-24-11-05-split-live-stream-chat-llama3.mp3",
 ];
-
-// const availableSubs = [
-//   [
-//     "/audio/narration/bush-bad-video-streaming-66-amount.mp3",
-//     "/audio/narration/bush.vtt",
-//   ],
-//   [
-//     "/audio/narration/BL-EPIC-0-en_us_001--script-bot_system31-sr16000-bra8k.mp3",
-//     "/audio/narration/BL-EPIC-0.vtt",
-//   ],
-//   [
-//     "/audio/narration/BL-EPIC-ANIVERSE-1-luca-sr16000-bra8k.mp3",
-//     "/audio/narration/BL-EPIC-ANIVERSE-1.vtt",
-//   ],
-// ];

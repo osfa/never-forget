@@ -10,6 +10,7 @@ import { revanimatedPlate } from "./data/plates/revanimated-512-4-5.js";
 import { dreamlikePlate } from "./data/plates/dreamlike-512-4-5.js";
 import { dreamshaperPlate } from "./data/plates/dreamshaper-512-4-5.js";
 import { toonyouPlate } from "./data/plates/toonyou-512-4-5.js";
+// import * as realisticPlate from "./data/plates/realistic-512-4-5.json"; // doesnt get sample func...
 import { realisticPlate } from "./data/plates/realistic-512-4-5.js";
 
 export const MODEL_META_MAP = {

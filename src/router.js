@@ -15,7 +15,12 @@ const routes = [
   // { path: "/landing", component: Landing },
   // { path: "/legacy", component: AudioVisualBook },
   // { path: "/console", component: RatingBook },
-  { path: "/", component: ImageStack },
+  // { path: "/", component: ImageStack },
+  {
+    path: "/:id",
+    component: ImageStack,
+    props: (route) => ({ id: route.params.id }),
+  },
   // { path: "/stack", component: ImageStack },
 ];
 

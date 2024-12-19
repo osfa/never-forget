@@ -116,7 +116,13 @@ export default {
         height: 0,
       }))
     );
-
+    // if (this.$route.params.id) {
+    //   console.log(this.$route.params.id);
+    //   // 0002-H-A-C-0256--2012-06-24T18-02-23Z
+    //   this.imageStacks[0].displayedImages = [
+    //     "https://jpeg.matrix.surf/NF-03-5/ava/aniverse_v15Pruned/jpegged/NF-03-5--aniverse_v15Pruned--avatar12-00037-2x.jpg_prompt-unheimlich_support_prompt-9-11_MP-1_cfg-18_ss-15_seed-1000195145_cnet_d-0.9_cnet_c-0_00001_-q10x0.25.jpg",
+    //   ];
+    // }
     window.addEventListener("scroll", this.handleScroll);
   },
   beforeDestroy() {
@@ -139,11 +145,9 @@ export default {
       const cdn_path = "https://jpeg.matrix.surf/";
       let fullPath;
 
-      // wip images get higher quality rolls?
       const sizeMultiplier = ["1.0", "0.5", "0.25"].sample();
       const jpegQuality = [10, 5].sample();
       const modelName = this.selectedModels.sample();
-      console.log("selected model:", modelName);
       const poolImagePath = MODEL_META_MAP[modelName].plate
         .sample()
         .replace("MP-1.0", "MP-1");
