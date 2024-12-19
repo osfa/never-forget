@@ -142,31 +142,25 @@ export default {
       return Math.floor(Math.random() * (max - min)) + min;
     },
     getRandomImageUrl() {
-      const cdn_path = "https://jpeg.matrix.surf/";
-      let fullPath;
-
+      const cdn_path = "https://jpeg.matrix.surf/memories";
       const sizeMultiplier = ["1.0", "0.5", "0.25"].sample();
       const jpegQuality = [10, 5].sample();
       const modelName = this.selectedModels.sample();
-      const poolImagePath = MODEL_META_MAP[modelName].plate
-        .sample()
-        .replace("MP-1.0", "MP-1");
-
+      const poolImagePath = MODEL_META_MAP[modelName].plate.sample();
+      const modelPrefix = poolImagePath.split("-")[0];
       const imageOperation = ["fry", "fry", "dither"].sample();
 
       if (imageOperation === "fry") {
-        const jpegPath = `${poolImagePath
-          .replace("2pass", "jpegged")
-          .slice(0, -4)}-q${jpegQuality}x${sizeMultiplier}.jpg`;
-        fullPath = `${cdn_path}${jpegPath}`;
+        // B-A-A-0001--2005-02-06T23-48-37Z-Q1-X0.5
+        const suffix = `-Q${jpegQuality}-X${sizeMultiplier}.JPEG`;
+        const jpegPath = poolImagePath.replace(".JPEG", suffix);
+        return `${cdn_path}/${modelPrefix}/${jpegPath}`;
       } else {
-        const dithSuffix = `-cmykPlus-8c-Jarvis-x${sizeMultiplier}-dith.png`;
-        const dithPath = `${poolImagePath
-          .replace("2pass", "dithered")
-          .slice(0, -4)}${dithSuffix}`;
-        fullPath = `${cdn_path}${dithPath}`;
+        // B-A-A-0001--2005-02-06T23-48-37Z-CMYK-X1.0
+        const suffix = `-CMYK-X${sizeMultiplier}.PNG`;
+        const dithPath = poolImagePath.replace(".JPEG", suffix);
+        return `${cdn_path}/${modelPrefix}/${dithPath}`;
       }
-      return fullPath;
     },
     onEnter(el) {
       const wrapper = el.closest(".image-stack");

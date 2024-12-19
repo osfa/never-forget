@@ -21,7 +21,7 @@ const routes = [
     component: ImageStack,
     props: (route) => ({ id: route.params.id }),
   },
-  // { path: "/stack", component: ImageStack },
+  { path: "/", component: ImageStack },
 ];
 
 const router = new VueRouter({
