@@ -13,6 +13,7 @@
   height: 92vh;
   width: 5rem;
   flex-direction: column;
+  display: none;
 }
 
 #social-media-bar a {

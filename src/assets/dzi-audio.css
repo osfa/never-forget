@@ -10,6 +10,7 @@
   z-index: 10000;
 
   width: calc(90vw - 6rem);
+  width: calc(90vw);
   height: 100vh;
 
   display: flex;
