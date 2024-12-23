@@ -12,7 +12,7 @@
   mix-blend-mode: difference;
   height: 84vh;
   width: 5rem;
-  z-index: 10000;
+  z-index: 10003;
   flex-direction: column;
 }
 

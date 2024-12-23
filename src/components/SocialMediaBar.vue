@@ -106,6 +106,7 @@ export default {
   align-items: center;
   font-family: Papyrus, fantasy;
 }
+
 .info-button.active {
   background: rgba(255, 255, 255, 0.9);
 }
@@ -114,6 +115,7 @@ export default {
   background-color: yellow;
   color: black;
 }
+
 .modal {
   position: fixed;
   top: 0;
@@ -146,7 +148,7 @@ export default {
   font-size: 1.5rem;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 p {
