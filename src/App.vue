@@ -9,21 +9,22 @@ Array.prototype.sample = function () {
 
 let isUserScrolling = false;
 let scrollTimeout;
+let timeoutTime = 500;
 
 window.addEventListener("touchstart", () => {
   isUserScrolling = true;
-  // clearTimeout(scrollTimeout);
-  // scrollTimeout = setTimeout(() => {
-  //   isUserScrolling = false;
-  // }, 100);
+  clearTimeout(scrollTimeout);
+  scrollTimeout = setTimeout(() => {
+    isUserScrolling = false;
+  }, timeoutTime);
 });
 
 window.addEventListener("touchend", () => {
   isUserScrolling = false;
-  // clearTimeout(scrollTimeout);
-  // scrollTimeout = setTimeout(() => {
-  //   isUserScrolling = false;
-  // }, 100);
+  clearTimeout(scrollTimeout);
+  scrollTimeout = setTimeout(() => {
+    isUserScrolling = false;
+  }, timeoutTime);
 });
 
 window.setInterval(() => {
@@ -31,7 +32,8 @@ window.setInterval(() => {
     // if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
     //   // window.scrollTo(0, 0);
     // } else {
-    window.scrollBy(0, 1);
+    // window.scrollBy(0, 1);
+    window.scrollBy(0, -1);
     // }
   }
 }, 25);

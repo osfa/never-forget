@@ -86,7 +86,7 @@ export default {
   mounted() {
     // have gradually speed up
     // document.getElementById("my-audio-player").playbackRate = 2;
-    document.getElementById(PLAYER_ID).volume = 0.5;
+    document.getElementById(PLAYER_ID).volume = 0.7;
 
     document.getElementById("captions").addEventListener("load", (event) => {
       console.log("captions loaded: ", event);

@@ -10,10 +10,10 @@
   font-size: 0.5rem;
   border-bottom: 1px dashed white;
   mix-blend-mode: difference;
-  height: 92vh;
+  height: 84vh;
   width: 5rem;
+  z-index: 10000;
   flex-direction: column;
-  display: none;
 }
 
 #social-media-bar a {
@@ -25,7 +25,7 @@
   text-align: center;
   display: flex;
   justify-content: center;
-  height: 5vh;
+  height: 4vh;
   background-color: rgba(0, 0, 0, 0.3);
   width: 100%;
   cursor: pointer;
@@ -48,7 +48,7 @@
 @media (orientation: portrait) {
   #social-media-bar { 
     /* height: calc(100vh - 3rem); */
-    height: 90vh;
+    height: 80vh;
     width: 3rem;
   }
   .btn-platform  {

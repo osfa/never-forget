@@ -1,26 +1,7 @@
 <template>
   <div class="image-list">
     <SmallClock :offset="randomInt(-25, 25) * offsetSeed" />
-    <div id="social-media-bar" class="model-section">
-      <a
-        href="https://www.youtube.com/@NeverForgetNow"
-        target="_blank"
-        class="btn-layer btn-platform youtube"
-        ><img src="/img/icons/yt.svg"
-      /></a>
-      <a
-        href="https://www.tiktok.com/@neverforgetnow"
-        target="_blank"
-        class="btn-layer btn-platform tiktok"
-        ><img src="/img/icons/tiktok.svg"
-      /></a>
-      <a
-        href="https://www.instagram.com/neverforget.pics"
-        target="_blank"
-        class="btn-layer btn-platform instagram"
-        ><img src="/img/icons/insta.svg"
-      /></a>
-    </div>
+    <SocialMediaBar />
     <PrettyFilterBar @update:selectedModels="handleSelectedModelsUpdate" />
     <div
       v-for="(stack, index) in imageStacks"
@@ -69,6 +50,7 @@ import SubsPlayer from "./SubsPlayer.vue";
 import BarebonesTone from "./BarebonesTone.vue";
 import SmallClock from "./SmallClock.vue";
 import PrettyFilterBar from "./PrettyFilterBar.vue";
+import SocialMediaBar from "./SocialMediaBar.vue";
 
 export default {
   components: {
@@ -76,6 +58,7 @@ export default {
     BarebonesTone,
     SmallClock,
     PrettyFilterBar,
+    SocialMediaBar,
   },
   name: "ImageStack",
   data() {
@@ -272,7 +255,7 @@ export default {
 
       this.scrollTimeout = setTimeout(() => {
         this.scrollTimeout = null;
-      }, 100);
+      }, 2500);
     },
     async addNewStack() {
       console.log("addNewStack");
@@ -291,8 +274,8 @@ export default {
 
       console.log("scrolly top");
 
-      const element = this.$refs.imageStacks[0];
-      element.scrollIntoView({ behavior: "smooth", block: "start" });
+      // const element = this.$refs.imageStacks[0];
+      // element.scrollIntoView({ behavior: "smooth", block: "start" });
 
       // diff type of throttle?
       // window.scrollBy(0, -window.innerHeight);

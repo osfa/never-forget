@@ -36,9 +36,10 @@ export default {
       narrationVolumeMin: -32,
       audioTagVolume: 0.5,
       noiseMaker: null,
-      noiserMakerVolume: -16,
 
-      ambianceVolume: -9,
+      noiserMakerVolume: -24,
+      ambianceVolume: -18,
+
       ambianceChannel1: undefined,
       ambianceChannel2: undefined,
 
@@ -57,96 +58,39 @@ export default {
   methods: {
     playTick() {
       if (!this.isPlaying) return;
-
-      // if (this.narrationPlayer && this.narrationPlayer.state === "stopped") {
-      //   if (this.pauseTicks === 0) {
-      //     const file = audioLibrary.asmr.sample();
-      //     console.log("new narration:", file);
-      //     this.narrationPlayer.player(file).start();
-      //     this.pauseTicks = this.randomInt(10, 30);
-      //   } else {
-      //     console.log("pause", this.pauseTicks);
-      //     this.pauseTicks -= 1;
-      //   }
-      // }
-
-      // if (this.narrationPlayer1 && this.narrationPlayer1.state === "stopped") {
-      //   console.log("new narration.");
-      //   this.narrationPlayer1.player(audioLibrary.bush.sample()).start();
-      // }
     },
-    // narrationSwap() {
-    //   console.log("narrationSwap:", this.narrationPlayerDirection);
-    //   // this.narrationPlayer1.volume.rampTo(12, 4);
-
-    //   if (!this.isPlaying) return;
-    //   if (this.narrationPlayerDirection) {
-    //     this.narrationPlayerDirection = !this.narrationPlayerDirection;
-    //     this.crossFadeNarrations(this.narrationPlayer, this.narrationPlayer1);
-    //   } else {
-    //     this.narrationPlayerDirection = !this.narrationPlayerDirection;
-    //     this.crossFadeNarrations(this.narrationPlayer1, this.narrationPlayer);
-    //   }
-    // },
-    // crossFadeNarrations(playerToFadeOut, playerToFadeIn) {
-    //   console.log("out:", playerToFadeOut.volume.value);
-    //   playerToFadeOut.volume.rampTo(this.narrationVolumeMin, 4);
-    //   console.log("in:", playerToFadeIn.volume.value);
-    //   playerToFadeIn.volume.rampTo(this.narrationVolume, 4);
-    // },
     randomInt(min, max) {
       min = Math.ceil(min);
       max = Math.floor(max);
       return Math.floor(Math.random() * (max - min)) + min;
     },
     muteIcon() {
-      // return this.isPlaying ? "🔇" : "⏸";
-      return this.isPlaying ? "🔇" : "| |";
-      // return this.isPlaying ? "🔇" : "⏻︎";
+      return this.isPlaying ? "🔇" : "🕳️";
     },
     initAudio() {
       const context = new Tone.Context();
       Tone.setContext(context);
+
       this.audioCtx = context.rawContext;
       this.setVolume();
-      const file1 = this.BASE_URI + "/audio/cabin.mp3";
 
-      const ambiancePlayer = new Tone.Player(file1, () => {
-        console.log("loaded into ambiancePlayer", file1);
-        this.ambiancePlayer = ambiancePlayer;
-        // this.sampler1.playbackRate = 0.9
-        this.ambiancePlayer.autostart = true;
-        this.ambiancePlayer.loop = true;
-        this.ambiancePlayer.volume.value = -9;
-      }).toDestination();
+      // const file1 = this.BASE_URI + "/audio/cabin.mp3";
 
-      ambiancePlayer.onstop = () => {
-        console.log("ambiancePlayer stopped");
-      };
+      // baked audio file? for loop?
+      // const ambiancePlayer = new Tone.Player(file1, () => {
+      //   console.log("loaded into ambiancePlayer", file1);
+      //   this.ambiancePlayer = ambiancePlayer;
+      //   // this.sampler1.playbackRate = 0.9
+      //   this.ambiancePlayer.autostart = true;
+      //   this.ambiancePlayer.loop = true;
+      //   this.ambiancePlayer.volume.value = this.ambianceVolume;
+      // }).toDestination();
+
+      // ambiancePlayer.onstop = () => {
+      //   console.log("ambiancePlayer stopped");
+      // };
 
       this.initAmbiance();
-
-      const narrationUrls = audioLibrary.asmr.reduce(
-        (acc, curr) => ((acc[curr] = this.BASE_URI + curr), acc),
-        {}
-      );
-      const narrationPlayer = new Tone.Players(narrationUrls, () => {
-        // console.log("loaded into narrationPlayer", narrationUrls);
-        this.narrationPlayer = narrationPlayer;
-        this.narrationPlayer.volume.value = this.narrationVolume;
-      }).toDestination();
-
-      // const narrationPlayer1 = new Tone.Players(narrationUrls, () => {
-      //   console.log("loaded into narrationPlaye1", narrationUrls);
-      //   this.narrationPlayer1 = narrationPlayer1;
-      //   this.narrationPlayer1.volume.value = -32;
-      // }).toDestination();
-
-      // const narrationPlayer2 = new Tone.Players(narrationUrls, () => {
-      //   console.log("loaded into narrationPlayer2", narrationUrls);
-      //   this.narrationPlayer2 = narrationPlayer2;
-      //   this.narrationPlayer2.volume.value = this.narrationVolume;
-      // }).toDestination();
 
       this.noiseMaker = new Tone.Noise("brown");
       const autoFilter = new Tone.AutoFilter({
