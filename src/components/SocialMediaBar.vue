@@ -99,6 +99,10 @@ export default {
   text-shadow: #000 0 0 3px;
 }
 
+::selection {
+  background-color: yellow;
+  color: black;
+}
 .modal {
   position: fixed;
   top: 0;
@@ -111,13 +115,13 @@ export default {
   justify-content: center;
   align-items: center;
 
-  z-index: 10000;
+  z-index: 10001;
   color: #ff0;
   font-family: Papyrus, fantasy;
 }
 
 .modal-content {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
   padding: 2rem;
 
   width: calc(100% - 10vw);
@@ -129,6 +133,9 @@ export default {
   position: relative;
   overflow-y: auto;
   font-size: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 p {
@@ -147,6 +154,7 @@ p {
     padding-top: 5vh;
     padding-right: 4.5rem;
     overflow-y: scroll;
+    justify-content: flex-start;
   }
   .info-button {
     width: 3rem;
