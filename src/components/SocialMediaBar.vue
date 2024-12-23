@@ -1,12 +1,16 @@
 <template>
   <div>
-    <button @click="toggleModal" class="info-button">i</button>
+    <button
+      @click="toggleModal"
+      :class="{ 'info-button': true, active: showModal }">
+      i
+    </button>
     <transition name="fade">
       <div v-if="showModal" class="modal">
         <div class="modal-content" @click="toggleModal">
           <!-- <span class="close" @click="toggleModal">&times;</span> -->
 
-          <!-- write in avatar script.txt link "via terminals" "algoritmic novel?
+          <!-- write in avatar script.txt link "via terminals" "algoritmic novel? dreamhacks
           nah? not here?" -->
           <p>
             POV: You are the subject of a groundbreaking time-travel experiment
@@ -19,8 +23,8 @@
             The experiment anchors you to a recurring location: an airport’s
             viewing pier, where fragmented memories, fleeting interactions, and
             hauntingly familiar faces create a surreal tapestry of the past.
-            Each visit is different, yet eerily the same—a loop of events where
-            the details shift, but the stakes remain high.
+            Each visit is different, yet eerily the same — a loop of events
+            where the details shift, but the stakes remain high.
           </p>
           <p>
             Your task is to piece together the truth by observe with objects,
@@ -88,7 +92,7 @@ export default {
   position: fixed;
   top: 8vh;
   right: 0;
-  z-index: 10001;
+  z-index: 10002;
   background: rgba(255, 255, 255, 0.6);
   border: none;
   width: 5rem;
@@ -97,6 +101,13 @@ export default {
   cursor: pointer;
   font-size: 2rem;
   text-shadow: #000 0 0 3px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Papyrus, fantasy;
+}
+.info-button.active {
+  background: rgba(255, 255, 255, 0.9);
 }
 
 ::selection {
