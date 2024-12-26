@@ -30,5 +30,5 @@ export const stories = [
   "myriam-jvoRV5vhkXrRIZp9GmyV--biblical-llama3-t1.0-0-short-concat-2s.mp3",
   "omnibot-tnR9M3hUP7uPy0YPSMBU--movie_script-mistral-t1.0-0-short-concat-2s.mp3",
   "seth-c6kFzbpMaJ8UMD5P6l72--email-zephyr.mp3",
-  "spuds-NOpBlnGInO9m6vDvFkFC--script-bot_system32-24-11-05-split-live-stream-chat-llama3.mp3",
+  "spuds-NOpBlnGInO9m6vDvFkFC--script-bot_system32-24-11-05-split-live-stream-chat-llama3.1.mp3",
 ];
