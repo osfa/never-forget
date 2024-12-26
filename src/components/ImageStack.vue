@@ -187,12 +187,25 @@ export default {
         this.currentAutoIndex,
         this.currentAutoIndex % 4
       );
+
       this.$refs.audioModule.playTick();
 
       if (!this.imageStacks[this.currentAutoIndex].isTransitioning) {
         this.loadNextImage(this.currentAutoIndex);
         this.currentAutoIndex =
           (this.currentAutoIndex + 1) % this.imageStacks.length;
+
+        const stackInView = this.imageStacks.findIndex((stack, idx) => {
+          const element = this.$refs.imageStacks[idx];
+          const rect = element.getBoundingClientRect();
+          return rect.top >= 0 && rect.bottom - rect.top <= window.innerHeight;
+        });
+
+        // console.log("stackInView", stackInView);
+
+        if (stackInView !== -1) {
+          this.loadNextImage(stackInView);
+        }
       }
 
       if (this.currentAutoIndex % 4 == 0) {

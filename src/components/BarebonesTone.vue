@@ -230,7 +230,7 @@ export default {
       this.audioCounter2 += 1;
     },
     doCrossFade() {
-      console.log("cross fade", this.crossFade.fade.value);
+      // console.log("cross fade", this.crossFade.fade.value);
       const stepSize = this.kioskMode ? 0.1 : 0.05;
       if (
         this.crossFade.fade.value === 1.0 ||

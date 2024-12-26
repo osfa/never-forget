@@ -43,7 +43,7 @@
         </div>
       </div>
     </transition>
-    <transition name="fade">
+    <transition name="fade-slow">
       <div id="social-media-bar" class="model-section" v-if="showModal">
         <a
           href="https://www.youtube.com/@NeverForgetNow"
@@ -195,6 +195,16 @@ p {
 
 .fade-enter,
 .fade-leave-to {
+  opacity: 0;
+}
+
+.fade-slow-enter-active,
+.fade-slow-leave-active {
+  transition: opacity 1.5s;
+}
+
+.fade-slow-enter,
+.fade-slow-leave-to {
   opacity: 0;
 }
 </style>
