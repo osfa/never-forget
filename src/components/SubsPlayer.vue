@@ -113,7 +113,7 @@ export default {
           this.subtitles = [false, false, false, false].sample()
             ? zalgofy(srtText, maxUp, maxMid, maxDown)
             : srtText;
-          this.cueTicks += 10;
+          this.cueTicks += 1;
           this.$emit("story-tick");
         }
       });
