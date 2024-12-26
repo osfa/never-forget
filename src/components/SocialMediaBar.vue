@@ -171,6 +171,7 @@ p {
     padding-right: 4.5rem;
     overflow-y: scroll;
     justify-content: flex-start;
+    padding-bottom: 4rem;
   }
   .info-button {
     width: 3rem;

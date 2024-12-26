@@ -80,6 +80,12 @@ export default {
       const nextSub = this.currentSubs[this.cueTicks + 1];
       // this.cueTicks += 1;
       this.scrobble(nextSub.startTime);
+
+      document.getElementById(PLAYER_ID).playbackRate = [
+        0.8, 0.9, 1, 1.1,
+      ].sample();
+
+      document.getElementById(PLAYER_ID).volume = [0.2, 0.5, 0.7].sample();
     },
     scrobble(position_in_seconds) {
       document.getElementById(PLAYER_ID).currentTime = position_in_seconds;
