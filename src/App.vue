@@ -11,6 +11,27 @@ let isUserScrolling = false;
 let scrollTimeout;
 let timeoutTime = 500;
 
+export default {
+  methods: {
+    toggleScrolling(isScrolling) {
+      // isUserScrolling = isScrolling;
+      // clearTimeout(scrollTimeout);
+      // if (isScrolling) {
+      //   scrollTimeout = setTimeout(() => {
+      //     isUserScrolling = false;
+      //   }, timeoutTime);
+      // }
+    },
+  },
+  created() {
+    this.$on("toggleScrolling", this.toggleScrolling);
+  },
+  beforeDestroy() {
+    this.$off("toggleScrolling", this.toggleScrolling);
+  },
+};
+
+// add to create/destroy hooks?
 window.addEventListener("touchstart", () => {
   isUserScrolling = true;
   clearTimeout(scrollTimeout);

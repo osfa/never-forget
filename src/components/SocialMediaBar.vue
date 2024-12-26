@@ -149,6 +149,7 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  cursor: pointer;
 }
 
 p {
