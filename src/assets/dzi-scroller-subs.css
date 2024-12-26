@@ -80,6 +80,11 @@
   /* mix-blend-mode: luminosity; */
 
 }
+@media (max-device-width: 1024px) and (orientation: landscape) {
+  #subs-container {
+    font-size: 1.5rem;
+  }
+}
 
 #subs-text {
   margin-bottom: 3rem;
