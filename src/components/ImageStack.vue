@@ -244,9 +244,10 @@ export default {
     async handleScroll() {
       if (this.scrollTimeout) return;
 
+      const offset = 500; // HMMMM
       if (
         window.innerHeight + window.scrollY >=
-        document.body.offsetHeight - 500
+        document.body.offsetHeight - offset
       ) {
         if (!this.imageStacks[this.imageStacks.length - 1].isLoading) {
           await this.addNewStack();
@@ -260,9 +261,9 @@ export default {
     async addNewStack() {
       console.log("addNewStack");
 
-      if (this.imageStacks.length >= 9) {
-        this.imageStacks.shift();
-      }
+      // if (this.imageStacks.length >= 9) {
+      //   this.imageStacks.shift();
+      // }
 
       const newStack = {
         displayedImages: [await this.getRandomImageUrl()],
@@ -272,7 +273,18 @@ export default {
       };
       this.imageStacks.push(newStack);
 
-      console.log("scrolly top");
+      // console.log("scrolly top");
+
+      // this.$nextTick(() => {
+      //   window.scrollBy(0, document.body.scrollHeight);
+      // });
+
+      // this.$nextTick(() => {
+      //   window.scrollTo({
+      //     top: document.body.scrollHeight,
+      //     behavior: "smooth",
+      //   });
+      // });
 
       // const element = this.$refs.imageStacks[0];
       // element.scrollIntoView({ behavior: "smooth", block: "start" });

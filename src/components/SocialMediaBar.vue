@@ -160,11 +160,11 @@ p {
     overflow-y: scroll;
   }
   .modal-content {
-    height: calc(95vh - 2rem);
+    height: calc(95% - 2rem);
     margin: 0;
     font-size: 1rem;
     width: calc(100% - 5rem);
-    padding-top: 5vh;
+    padding-top: 5%;
     padding-right: 4.5rem;
     overflow-y: scroll;
     justify-content: flex-start;

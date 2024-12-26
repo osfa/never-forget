@@ -33,6 +33,8 @@ window.setInterval(() => {
     //   // window.scrollTo(0, 0);
     // } else {
     // window.scrollBy(0, 1);
+
+    // need pause here for scroll to bottom to work
     window.scrollBy(0, -1);
     // }
   }

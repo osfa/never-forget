@@ -12,7 +12,8 @@
       <span>{{ subtitles }}</span>
     </div>
     <audio
-      controls
+      :controls="controlMode"
+      :class="{ controlMode }"
       id="my-audio-player"
       :src="currentAudioFile"
       crossorigin="anonymous">
@@ -57,6 +58,7 @@ export default {
   props: {
     currentText: { type: String, default: "" },
     subsStyle: { type: String, default: "fried" },
+    controlMode: { type: Boolean, default: false },
   },
   components: {
     Chat,
