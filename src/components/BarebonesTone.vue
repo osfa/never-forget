@@ -38,7 +38,9 @@ export default {
       noiseMaker: null,
 
       noiserMakerVolume: -24,
+      // noiserMakerVolume: -Infinity,
       ambianceVolume: -18,
+      // ambianceVolume: -9,
 
       ambianceChannel1: undefined,
       ambianceChannel2: undefined,
@@ -151,7 +153,7 @@ export default {
       if (this.automaticFade) {
         this.crossFadeInterval = setInterval(
           this.doCrossFade,
-          (this.crossFadeDuration / 5) * 1000
+          (this.crossFadeDuration / 10) * 1000
         );
       }
       autoFilter.start();
@@ -228,7 +230,7 @@ export default {
       this.audioCounter2 += 1;
     },
     doCrossFade() {
-      // console.log("cross fade");
+      console.log("cross fade", this.crossFade.fade.value);
       const stepSize = this.kioskMode ? 0.1 : 0.05;
       if (
         this.crossFade.fade.value === 1.0 ||

@@ -2,7 +2,10 @@
   <div id="app">
     <header>
       <h1 class="hero">Never Forget: Terminal Avatar</h1>
-      <h3>POV you're a stochastic reality fragmenting multidimensional time travelling statistical render</h3>
+      <h3>
+        POV you're a statistical reality fragmenting multidimensional time
+        travelling statistical render
+      </h3>
       <!-- <img style="width: 64px; padding: 2rem;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/159px-YouTube_full-color_icon_%282017%29.svg.png" /> -->
       <!-- <p>
         During the shooting of “Ghosts of the Abyss”, a documentary about the RMS Titanic as an extension of the movie Titanic, a moment occurs. Right after having ascended up from isolation in the
@@ -12,10 +15,15 @@
         place both then, now and in the future. A La Jetée of the metaverse.
       </p> -->
       <p>
-        and you are in an endless spiralling now trying to decode it read it all in one go you’re the main character you check the time it’s cybernetic your time has others time in it other blue lossy
-        Avatars in the betweens of number, text and image in minecraft on Pandora you yield to the algorithmification of the subject and surrender to computational reality of trying to break free of
-        trying to find the technical imagination a cylinder that can decode it all burn all the simulacra turn the data into intelligence undo the triple alienation and become the hero that the world
-        needs #neverforget #ForYou #ForYouPage #fp
+        and you are in an endless spiralling now trying to decode it read it all
+        in one go you’re the main character you check the time it’s cybernetic
+        your time has others time in it other blue lossy Avatars in the betweens
+        of number, text and image in minecraft on Pandora you yield to the
+        algorithmification of the subject and surrender to computational reality
+        of trying to break free of trying to find the technical imagination a
+        cylinder that can decode it all burn all the simulacra turn the data
+        into intelligence undo the triple alienation and become the hero that
+        the world needs #neverforget #ForYou #ForYouPage #fp
       </p>
     </header>
     <div class="row">
@@ -34,22 +42,26 @@
     </div>
     <div class="row">
       <div class="cell">
-        <img src="http://localhost:3000/memories/ava-anime-500k/_fried-q10-sharpen0/05476-446329742_703.jpg-fried.jpg" />
+        <img
+          src="http://localhost:3000/memories/ava-anime-500k/_fried-q10-sharpen0/05476-446329742_703.jpg-fried.jpg" />
       </div>
     </div>
     <div class="row">
       <div class="cell fenced">
         <h1>The Events of 9/11</h1>
-        <img src="http://localhost:3000/memories/vip-secondlife-500k/_fried-q10-sharpen0/00099-4041737367_17.jpg-fried.jpg" />
+        <img
+          src="http://localhost:3000/memories/vip-secondlife-500k/_fried-q10-sharpen0/00099-4041737367_17.jpg-fried.jpg" />
       </div>
     </div>
     <div class="row row-text">
       <div class="image">
         <div class="cell">
-          <img src="http://localhost:3000/memories/911-secondlife-500k/_fried-q10-sharpen0/00640-1129259480_104.jpg-fried.jpg" />
+          <img
+            src="http://localhost:3000/memories/911-secondlife-500k/_fried-q10-sharpen0/00640-1129259480_104.jpg-fried.jpg" />
         </div>
         <div class="cell">
-          <img src="http://localhost:3000/memories/911-secondlife-500k/_fried-q10-sharpen0/00640-1129259480_104.jpg-fried.jpg" />
+          <img
+            src="http://localhost:3000/memories/911-secondlife-500k/_fried-q10-sharpen0/00640-1129259480_104.jpg-fried.jpg" />
         </div>
       </div>
       <div class="text">
@@ -78,27 +90,32 @@
     <div class="row">
       <div class="cell">
         <h1>Memories</h1>
-        <img src="http://localhost:3000/memories/vip-secondlife-500k/_fried-q10-sharpen0/00688-4041737367_93.jpg-fried.jpg" />
+        <img
+          src="http://localhost:3000/memories/vip-secondlife-500k/_fried-q10-sharpen0/00688-4041737367_93.jpg-fried.jpg" />
       </div>
       <div class="cell">
         <h1>Data</h1>
-        <img src="http://localhost:3000/memories/vip-secondlife-500k/_fried-q10-sharpen0/00688-4041737367_93.jpg-fried.jpg" />
+        <img
+          src="http://localhost:3000/memories/vip-secondlife-500k/_fried-q10-sharpen0/00688-4041737367_93.jpg-fried.jpg" />
       </div>
     </div>
     <div class="row">
       <div class="cell">
         <h1>Compression</h1>
-        <img src="http://localhost:3000/memories/ava-secondlife-500k/_fried-q10-sharpen0/00384-1566466393.jpg-fried.jpg" />
+        <img
+          src="http://localhost:3000/memories/ava-secondlife-500k/_fried-q10-sharpen0/00384-1566466393.jpg-fried.jpg" />
       </div>
     </div>
     <div class="row">
       <div class="cell">
         <h1>Never</h1>
-        <img src="http://localhost:3000/memories/ava-anime-500k/_fried-q10-sharpen0/01943-446329742_291.jpg-fried.jpg" />
+        <img
+          src="http://localhost:3000/memories/ava-anime-500k/_fried-q10-sharpen0/01943-446329742_291.jpg-fried.jpg" />
       </div>
       <div class="cell">
         <h1>Forget</h1>
-        <img src="http://localhost:3000/memories/ava-anime-500k/_fried-q10-sharpen0/01943-446329742_291.jpg-fried.jpg" />
+        <img
+          src="http://localhost:3000/memories/ava-anime-500k/_fried-q10-sharpen0/01943-446329742_291.jpg-fried.jpg" />
       </div>
     </div>
     <div class="row">

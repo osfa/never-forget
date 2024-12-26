@@ -9,15 +9,13 @@
       <div v-if="showModal" class="modal">
         <div class="modal-content" @click="toggleModal">
           <!-- <span class="close" @click="toggleModal">&times;</span> -->
-
-          <!-- write in avatar script.txt link "via terminals" "algoritmic novel? dreamhacks
-          nah? not here?" -->
           <p>
-            POV: You are the subject of a groundbreaking time-travel experiment
-            designed to uncover the key to humanity's survival in the aftermath
-            of 9/11. Flung back and forth through fractured timelines, you find
-            yourself drawn repeatedly to pivotal moments that might hold the
-            solution to restoring a devastated world.
+            POV: You are a statistical render and the subject of a
+            groundbreaking time-travel experiment designed to uncover the key to
+            humanity's survival in the aftermath of 9/11. Flung back and forth
+            through fractured timelines and dream hacks, you find yourself drawn
+            repeatedly to pivotal moments that might hold the solution to
+            restoring a devastated world.
           </p>
           <p>
             The experiment anchors you to a recurring location: an airport’s
@@ -41,7 +39,7 @@
             reminiscence?
           </p>
           <!-- <p>Loosely based on Chris Markers <i>"La Jeteé"</i> (1963)</p> -->
-          <p><a href="script.txt">jetee.txt</a></p>
+          <p><a href="terminal.txt">jetee.txt</a></p>
         </div>
       </div>
     </transition>
@@ -96,7 +94,7 @@ export default {
   background: rgba(255, 255, 255, 0.6);
   border: none;
   width: 5rem;
-  /* height: 8vh; */
+  height: 5rem;
   color: black;
   cursor: pointer;
   font-size: 2rem;
@@ -154,6 +152,10 @@ export default {
 
 p {
   max-width: 960px;
+}
+
+.modal-content a {
+  font-size: 2rem;
 }
 
 @media (orientation: portrait) {

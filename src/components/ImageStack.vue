@@ -2,7 +2,9 @@
   <div class="image-list">
     <SmallClock :offset="randomInt(-25, 25) * offsetSeed" />
     <SocialMediaBar />
-    <PrettyFilterBar @update:selectedModels="handleSelectedModelsUpdate" />
+    <PrettyFilterBar
+      @update:selectedModels="handleSelectedModelsUpdate"
+      :selectedModels="selectedModels" />
     <div
       v-for="(stack, index) in imageStacks"
       :key="index"
@@ -38,8 +40,9 @@
 
     <SubsPlayer
       ref="subsPlayer"
-      @story-tick="autoSwap"
+      @story-tick="storyTick"
       :subsStyle="subsStyle" />
+
     <BarebonesTone ref="audioModule" automaticFade :debug="false" />
   </div>
 </template>
@@ -113,11 +116,12 @@ export default {
     this.stopAutoSwap();
   },
   methods: {
-    // onStoryTick() {
-    //   this.loadNextImage(this.randomInt(0, 9));
-    // },
-    handleSelectedModelsUpdate(models) {
-      this.selectedModels = models;
+    handleSelectedModelsUpdate(model) {
+      if (this.selectedModels.includes(model)) {
+        this.selectedModels = this.selectedModels.filter((m) => m !== model);
+      } else {
+        this.selectedModels.push(model);
+      }
     },
     randomInt(min, max) {
       min = Math.ceil(min);
@@ -126,7 +130,12 @@ export default {
     },
     getRandomImageUrl() {
       const cdn_path = "https://jpeg.matrix.surf/memories";
-      const sizeMultiplier = ["1.0", "0.5", "0.25"].sample();
+
+      const sizeMultiplier =
+        window.innerWidth <= 768
+          ? ["0.5", "0.25"].sample()
+          : ["1.0", "0.5", "0.25"].sample();
+
       const jpegQuality = [10, 5].sample();
       const modelName = this.selectedModels.sample();
       const poolImagePath = MODEL_META_MAP[modelName].plate.sample();
@@ -164,6 +173,7 @@ export default {
       wrapper.style.height = `${wrapper.offsetHeight}px`;
     },
     updateStackHeight(wrapper, img) {
+      // @todo
       const ratio = img.naturalHeight / img.naturalWidth;
       const newHeight = wrapper.offsetWidth * ratio;
 
@@ -171,13 +181,28 @@ export default {
         wrapper.style.height = `${newHeight}px`;
       });
     },
-    autoSwap() {
+    storyTick() {
+      console.log(
+        "storyTick",
+        this.currentAutoIndex,
+        this.currentAutoIndex % 4
+      );
+      this.$refs.audioModule.playTick();
+
       if (!this.imageStacks[this.currentAutoIndex].isTransitioning) {
         this.loadNextImage(this.currentAutoIndex);
-        this.currentAutoIndex = (this.currentAutoIndex + 1) % 9;
+        this.currentAutoIndex =
+          (this.currentAutoIndex + 1) % this.imageStacks.length;
       }
+
+      if (this.currentAutoIndex % 4 == 0) {
+        this.selectedModels = [
+          Object.keys(MODEL_META_MAP).random(),
+          Object.keys(MODEL_META_MAP).random(),
+        ];
+      }
+
       this.subsStyle = ["fried", "plain", "png", "papyrus"].sample();
-      console.log("subs style:", this.subsStyle);
     },
     startAutoSwap() {
       this.autoSwapInterval = setInterval(this.autoSwap, 1000);
@@ -201,7 +226,7 @@ export default {
     },
     async loadNextImage(stackIndex, scrobbleStory = false) {
       if (scrobbleStory) {
-        // if (this.$refs.audioModule) this.$refs.audioModule.playTick();
+        if (this.$refs.audioModule) this.$refs.audioModule.playTick();
         if (this.$refs.subsPlayer) this.$refs.subsPlayer.scrobbleStory();
       }
 
@@ -261,16 +286,13 @@ export default {
     async addNewStack() {
       console.log("addNewStack");
 
-      // if (this.imageStacks.length >= 9) {
-      //   this.imageStacks.shift();
-      // }
-
       const newStack = {
         displayedImages: [await this.getRandomImageUrl()],
         isTransitioning: false,
         isLoading: false,
         height: 0,
       };
+
       this.imageStacks.push(newStack);
 
       // console.log("scrolly top");
@@ -280,10 +302,12 @@ export default {
       // });
 
       // this.$nextTick(() => {
-      //   window.scrollTo({
-      //     top: document.body.scrollHeight,
-      //     behavior: "smooth",
-      //   });
+      //   setTimeout(() => {
+      //     window.scrollTo({
+      //       top: document.body.scrollHeight,
+      //       behavior: "smooth",
+      //     });
+      //   }, 1000);
       // });
 
       // const element = this.$refs.imageStacks[0];
