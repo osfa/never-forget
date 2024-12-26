@@ -12,8 +12,8 @@
       <span>{{ subtitles }}</span>
     </div>
     <audio
+      controls
       id="my-audio-player"
-      loop
       :src="currentAudioFile"
       crossorigin="anonymous">
       <track
@@ -109,17 +109,25 @@ export default {
           let maxUp = [8, 4, 2, 0].sample();
           let maxMid = [4, 2, 1, 0].sample();
           let maxDown = [8, 4, 2, 0].sample();
-          //
-          this.subtitles = [true, false, false, false, false].sample()
+
+          this.subtitles = [false, false, false, false].sample()
             ? zalgofy(srtText, maxUp, maxMid, maxDown)
             : srtText;
-          this.cueTicks += 1;
+          this.cueTicks += 10;
           this.$emit("story-tick");
         }
-        // @todo roll new if at end
-        // this.currentAudioFile = this.availableSubs.sample()[0];
-        // this.currentVttFile = this.currentAudioFile.replace(".mp3", ".vtt");
       });
+
+    document.getElementById(PLAYER_ID).addEventListener("ended", (event) => {
+      console.log("ended; new.", event);
+      this.currentAudioFile = this.availableSubs.sample()[0];
+      this.currentVttFile = this.currentAudioFile.replace(".mp3", ".vtt");
+      this.$nextTick(() => {
+        document.getElementById(PLAYER_ID).load();
+        document.getElementById(PLAYER_ID).play();
+        document.getElementById(PLAYER_ID).volume = 0.1;
+      });
+    });
   },
 };
 </script>

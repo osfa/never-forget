@@ -93,7 +93,7 @@ export default {
   top: 8vh;
   right: 0;
   z-index: 10002;
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.8);
   border: none;
   width: 5rem;
   height: 8vh;

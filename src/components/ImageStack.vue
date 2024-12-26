@@ -293,7 +293,7 @@ export default {
   color: white;
   bottom: 0.5rem;
   right: 0.5rem;
-  font-size: 3rem;
+  font-size: 2rem;
   z-index: 1000;
   mix-blend-mode: hard-light;
   text-shadow: 0 0 3px rgb(255, 184, 52);
@@ -304,7 +304,7 @@ export default {
 @media (orientation: portrait) {
   .date-bar {
     display: block;
-    font-size: 2rem;
+    font-size: 1rem;
   }
 }
 .image-list {
