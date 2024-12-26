@@ -9,7 +9,7 @@ Array.prototype.sample = function () {
 
 let isUserScrolling = false;
 let scrollTimeout;
-let timeoutTime = 500;
+let timeoutTime = 1000;
 
 export default {
   methods: {
@@ -40,13 +40,13 @@ window.addEventListener("touchstart", () => {
   }, timeoutTime);
 });
 
-window.addEventListener("touchend", () => {
-  isUserScrolling = false;
-  clearTimeout(scrollTimeout);
-  scrollTimeout = setTimeout(() => {
-    isUserScrolling = false;
-  }, timeoutTime);
-});
+// window.addEventListener("touchend", () => {
+//   isUserScrolling = false;
+//   clearTimeout(scrollTimeout);
+//   scrollTimeout = setTimeout(() => {
+//     isUserScrolling = false;
+//   }, timeoutTime);
+// });
 
 window.setInterval(() => {
   if (!isUserScrolling) {
