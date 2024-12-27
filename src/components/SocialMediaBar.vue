@@ -167,7 +167,7 @@ p {
     margin: 0;
     font-size: 1rem;
     width: calc(100% - 5rem);
-    padding-top: 5%;
+    padding-top: 10%;
     padding-right: 4.5rem;
     overflow-y: scroll;
     justify-content: flex-start;

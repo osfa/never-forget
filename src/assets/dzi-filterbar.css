@@ -11,6 +11,7 @@
   mix-blend-mode: difference;
   font-size: 2rem;
   cursor: pointer;
+  height: 100%;
 }
 
 .filter-bar.right .model-section {
@@ -23,7 +24,7 @@
 }
 
 #model-section, .model-section {
-  height: 100vh;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
