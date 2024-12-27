@@ -294,7 +294,7 @@ export default {
 
       this.scrollTimeout = setTimeout(() => {
         this.scrollTimeout = null;
-      }, 2500);
+      }, 1000);
     },
     async addNewStack() {
       console.log("addNewStack");
