@@ -102,13 +102,17 @@ export default {
         height: 0,
       }))
     );
-    // if (this.$route.params.id) {
-    //   console.log(this.$route.params.id);
-    //   // 0002-H-A-C-0256--2012-06-24T18-02-23Z
-    //   this.imageStacks[0].displayedImages = [
-    //     "https://jpeg.matrix.surf/NF-03-5/ava/aniverse_v15Pruned/jpegged/NF-03-5--aniverse_v15Pruned--avatar12-00037-2x.jpg_prompt-unheimlich_support_prompt-9-11_MP-1_cfg-18_ss-15_seed-1000195145_cnet_d-0.9_cnet_c-0_00001_-q10x0.25.jpg",
-    //   ];
-    // }
+    // A deep link opens on the image it names, in the first stack. The other eight
+    // keep rolling, so the page stays the piece rather than becoming a detail view.
+    //
+    // The id needs no lookup table. An obfuscated name already carries its model
+    // prefix in the first dash-segment, which is exactly how getRandomImageUrl
+    // builds every other URL here — so the same rule resolves a link. Every pin
+    // the posting queue publishes points at one of these.
+    const linked = this.imageUrlForId(this.$route.params.id);
+    if (linked) {
+      this.imageStacks[0].displayedImages = [linked];
+    }
     window.addEventListener("scroll", this.handleScroll);
   },
   beforeDestroy() {
@@ -127,6 +131,24 @@ export default {
       min = Math.ceil(min);
       max = Math.floor(max);
       return Math.floor(Math.random() * (max - min)) + min;
+    },
+    // The bucket URL for one named image, or null if the id is not one.
+    //
+    // Accepts the name with or without its .JPEG, and tolerates the leading index
+    // the plate folders carry ("0072-A-H-S-0006--…"), because that is the form the
+    // posting queue has been writing into links since 2024.
+    //
+    // The rendering choice is deliberate and matches the rest of the page: a
+    // deep-linked image is still fried, not served clean. Q5 at half scale is the
+    // middle of what getRandomImageUrl rolls.
+    imageUrlForId(id) {
+      if (!id) return null;
+      const bare = decodeURIComponent(id)
+        .replace(/\.(JPEG|PNG)$/i, "")
+        .replace(/^\d+-(?=[A-Z]-)/, "");
+      if (!/^[A-Z]+-/.test(bare)) return null;
+      const modelPrefix = bare.split("-")[0];
+      return `https://jpeg.matrix.surf/memories/${modelPrefix}/${bare}-Q5-X0.5.JPEG`;
     },
     getRandomImageUrl() {
       const cdn_path = "https://jpeg.matrix.surf/memories";
