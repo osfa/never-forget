@@ -109,7 +109,7 @@ export default {
     // prefix in the first dash-segment, which is exactly how getRandomImageUrl
     // builds every other URL here — so the same rule resolves a link. Every pin
     // the posting queue publishes points at one of these.
-    const linked = this.imageUrlForId(this.$route.params.id);
+    const linked = this.imageUrlForId(this.routeId());
     if (linked) {
       this.imageStacks[0].displayedImages = [linked];
     }
@@ -131,6 +131,20 @@ export default {
       min = Math.ceil(min);
       max = Math.floor(max);
       return Math.floor(Math.random() * (max - min)) + min;
+    },
+    // The id this page was opened on, from either URL shape.
+    //
+    // The route is the path now that the router is in history mode. But links
+    // published before that are /#/<id>, and there are some in the world already —
+    // Tumblr posts queued on 9 September point at them. Under history mode the
+    // router ignores a hash, so read it directly rather than letting those links
+    // rot into a shuffle.
+    routeId() {
+      if (this.$route.params.id) {
+        return this.$route.params.id;
+      }
+      const hash = window.location.hash || "";
+      return hash.startsWith("#/") ? hash.slice(2) : "";
     },
     // The bucket URL for one named image, or null if the id is not one.
     //

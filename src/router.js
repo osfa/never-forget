@@ -26,7 +26,18 @@ const routes = [
 
 const router = new VueRouter({
   routes,
-  // mode: "history", // Use 'history' mode for clean URLs (requires server configuration)
+  // History mode, because a hash is never sent to a server. Under /#/<id> every
+  // deep link returned a byte-identical response, so nothing fetching those URLs
+  // could tell one image from another — not a link preview, not a crawler, and not
+  // Pinterest's RSS reader, which fetches each item's <link>. /<id> is a real URL.
+  //
+  // The "server configuration" this asks for is public/_redirects, which hands
+  // every path to index.html so the router gets to see it. Without that file this
+  // mode 404s on any reload.
+  //
+  // Links already published as /#/<id> keep working: ImageStack falls back to the
+  // hash when the route has no id.
+  mode: "history",
 });
 
 export default router;

@@ -1,0 +1,7 @@
+# Every path is the same single-page app, so hand them all to index.html and let
+# vue-router read the path. Without this, history mode 404s on reload and on any
+# link followed from outside the site — which is every link that matters here.
+#
+# 200 rather than 301: the URL stays what it was, so /A-H-S-0006--… is still the
+# address of that image rather than a redirect to the shuffle.
+/*    /index.html   200
