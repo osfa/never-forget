@@ -1,6 +1,14 @@
-# Every path is the same single-page app, so hand them all to index.html and let
-# vue-router read the path. Without this, history mode 404s on reload and on any
-# link followed from outside the site — which is every link that matters here.
+# The Pinterest feeds, served by functions rather than as files. First match wins,
+# so these have to come before the catch-all below or it swallows them into the app.
+#
+#   /pins.xml       a year of stills, 11 Sep 2026 – 11 Sep 2027, as they fall due
+#   /pins-test.xml  five stills held out of the year, for checking the connection
+/pins.xml        /.netlify/functions/pins        200
+/pins-test.xml   /.netlify/functions/pins-test   200
+
+# Every other path is the same single-page app, so hand them all to index.html and
+# let vue-router read the path. Without this, history mode 404s on reload and on
+# any link followed from outside the site — which is every link that matters here.
 #
 # 200 rather than 301: the URL stays what it was, so /A-H-S-0006--… is still the
 # address of that image rather than a redirect to the shuffle.
